@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import avatarPlaceholder from "../../assets/images/profile-blank.png";
 import styles from "./HeaderAuth.module.scss";
 
 export function HeaderAuth() {
@@ -11,7 +12,11 @@ export function HeaderAuth() {
                className={styles["header-auth__avatar"]}
                aria-label="Профиль"
             >
-               <span className={styles["header-auth__avatar-text"]}>П</span>
+               <img
+                  className={styles["header-auth__avatar-image"]}
+                  src={avatarPlaceholder}
+                  alt="Аватар"
+               />
             </span>
          </Link>
       );

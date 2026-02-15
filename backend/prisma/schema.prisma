@@ -23,6 +23,8 @@ model Day {
   userId    String
   date      String
   note      String?
+  mileageKm Int?
+  engineHours Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -30,8 +32,6 @@ model Day {
   fuelings    Fueling[]
   washes      Wash[]
   snacks      Snack[]
-  mileages    Mileage[]
-  engineHours EngineHours[]
 
   @@unique([userId, date])
 }
@@ -39,11 +39,7 @@ model Day {
 model Fueling {
   id           String   @id @default(cuid())
   dayId        String
-  time         String?
-  volumeLiters Float
-  costTotal    Float?
-  odometerKm   Int?
-  note         String?
+  costTotal    Float
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -53,9 +49,7 @@ model Fueling {
 model Wash {
   id        String   @id @default(cuid())
   dayId     String
-  time      String?
-  costTotal Float?
-  note      String?
+  costTotal Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -65,36 +59,10 @@ model Wash {
 model Snack {
   id        String   @id @default(cuid())
   dayId     String
-  time      String?
-  title     String?
-  costTotal Float?
-  note      String?
+  costTotal Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   day Day @relation(fields: [dayId], references: [id], onDelete: Cascade)
 }
 
-model Mileage {
-  id         String   @id @default(cuid())
-  dayId      String
-  time       String?
-  distanceKm Int
-  note       String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  day Day @relation(fields: [dayId], references: [id], onDelete: Cascade)
-}
-
-model EngineHours {
-  id        String   @id @default(cuid())
-  dayId     String
-  time      String?
-  hours     Float
-  note      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  day Day @relation(fields: [dayId], references: [id], onDelete: Cascade)
-}

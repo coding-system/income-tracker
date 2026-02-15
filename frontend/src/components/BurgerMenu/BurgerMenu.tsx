@@ -46,6 +46,16 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                </button>
             </div>
             <nav className={styles.menu__nav}>
+               <Link to="/" className={styles.menu__link} onClick={onClose}>
+                  Главная
+               </Link>
+               <Link
+                  to="/profile"
+                  className={styles.menu__link}
+                  onClick={onClose}
+               >
+                  Профиль
+               </Link>
                <Link
                   to="/login"
                   className={styles.menu__link}

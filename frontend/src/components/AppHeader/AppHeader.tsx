@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { BurgerButton } from "../BurgerButton/BurgerButton";
 import { BurgerMenu } from "../BurgerMenu/BurgerMenu";
 import { HeaderAuth } from "../HeaderAuth/HeaderAuth";
@@ -18,11 +19,11 @@ export function AppHeader() {
    return (
       <>
          <header className={styles.header}>
-            <div className={styles.header__brand}>
-               <span className={styles.header__title}>$</span>
-            </div>
             <div className={styles.header__actions}>
                <HeaderAuth />
+               <Link className={styles.header__brand} to="/">
+                  <span className={styles.header__title}>$</span>
+               </Link>
                <BurgerButton isOpen={isMenuOpen} onClick={handleToggleMenu} />
             </div>
          </header>
