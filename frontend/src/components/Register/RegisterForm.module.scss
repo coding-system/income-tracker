@@ -51,6 +51,24 @@
    gap: 0.8em;
 }
 
+.register__status {
+   font-size: 0.9em;
+   padding: 0.8em 1em;
+   border-radius: 0.8em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+}
+
+.register__status--error {
+   border-color: var(--color-error);
+   color: var(--color-error);
+}
+
+.register__status--success {
+   border-color: var(--color-success);
+   color: var(--color-success);
+}
+
 .register__button {
    font-size: 0.9em;
    padding: 0.6em 1.4em;
