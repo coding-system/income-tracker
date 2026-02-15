@@ -1,0 +1,53 @@
+@import "../../styles/variables.scss";
+
+.header-auth {
+   font-size: 1rem;
+
+   &__login {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3em 1.8em;
+      border-radius: 2em;
+      color: var(--color-text);
+      text-decoration: none;
+      cursor: pointer;
+      height: 3.5em;
+      border: 0.1em solid var(--color-primary);
+
+      &:hover {
+         border-color: var(--color-primary);
+         color: var(--color-primary);
+      }
+   }
+
+   &__login-text {
+      font-size: 1.4em;
+      color: var(--color-primary);
+      font-weight: 600;
+   }
+
+   &__avatar-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+   }
+
+   &__avatar {
+      width: 3.5em;
+      height: 3.5em;
+      border-radius: 50%;
+      border: 0.08em solid var(--color-border);
+      background-color: var(--color-surface-secondary);
+      color: var(--color-text);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+   }
+
+   &__avatar-text {
+      font-size: 1.2em;
+      font-weight: 600;
+   }
+}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./BurgerMenu.module.scss";
 
@@ -8,14 +8,11 @@ type BurgerMenuProps = {
 };
 
 export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
-   const [theme, setTheme] = useState<"light" | "dark">("dark");
+   const [theme, setTheme] = useState<"light" | "dark">(() => {
+      const current = document.documentElement.getAttribute("data-theme");
+      return current === "light" ? "light" : "dark";
+   });
    const [isAnimating, setIsAnimating] = useState(false);
-
-   useEffect(() => {
-      const root = document.documentElement;
-      const current = root.getAttribute("data-theme");
-      setTheme(current === "light" ? "light" : "dark");
-   }, []);
 
    const handleToggleTheme = () => {
       const root = document.documentElement;
