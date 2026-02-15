@@ -1,0 +1,128 @@
+:root {
+   --palette-neutral-50: #f9fafb;
+   --palette-neutral-100: #f3f4f6;
+   --palette-neutral-200: #e5e7eb;
+   --palette-neutral-300: #d1d5db;
+   --palette-neutral-400: #9ca3af;
+   --palette-neutral-500: #6b7280;
+   --palette-neutral-600: #4b5563;
+   --palette-neutral-700: #374151;
+   --palette-neutral-800: #1f2937;
+   --palette-neutral-900: #161c27;
+
+   --palette-blue-300: #93c5fd;
+   --palette-blue-400: #60a5fa;
+   --palette-blue-500: #3b82f6;
+   --palette-blue-600: #2563eb;
+   --palette-blue-700: #1d4ed8;
+
+   --palette-orange-400: #fb923c;
+   --palette-orange-500: #f97316;
+   --palette-orange-600: #ea580c;
+
+   --palette-green-500: #10b981;
+   --palette-red-500: #ef4444;
+   --palette-yellow-400: #facc15;
+
+   --color-text: var(--palette-neutral-900);
+   --color-text-secondary: var(--palette-neutral-600);
+   --color-text-tertiary: var(--palette-neutral-500);
+   --color-text-special: var(--palette-neutral-50);
+
+   --color-background: var(--palette-neutral-50);
+   --color-surface: #ffffff;
+   --color-surface-secondary: var(--palette-neutral-100);
+
+   --color-border: var(--palette-neutral-200);
+   --color-border-secondary: var(--palette-neutral-300);
+
+   --color-primary: var(--palette-blue-600);
+   --color-primary-hover: var(--palette-blue-700);
+   --color-primary-light: var(--palette-blue-300);
+
+   --color-accent: var(--palette-orange-500);
+   --color-accent-hover: var(--palette-orange-600);
+
+   --color-success: var(--palette-green-500);
+   --color-error: var(--palette-red-500);
+   --color-warning: var(--palette-yellow-400);
+
+   --color-primary-rgb: 37, 99, 235;
+}
+
+[data-theme="light"] {
+   --color-text: var(--palette-neutral-900);
+   --color-text-secondary: var(--palette-neutral-600);
+   --color-text-tertiary: var(--palette-neutral-500);
+   --color-text-special: var(--palette-neutral-50);
+
+   --color-background: var(--palette-neutral-50);
+   --color-surface: #ffffff;
+   --color-surface-secondary: var(--palette-neutral-100);
+
+   --color-border: var(--palette-neutral-200);
+   --color-border-secondary: var(--palette-neutral-300);
+
+   --color-primary: var(--palette-blue-600);
+   --color-primary-hover: var(--palette-blue-700);
+   --color-primary-light: var(--palette-blue-300);
+
+   --color-accent: var(--palette-orange-500);
+   --color-accent-hover: var(--palette-orange-600);
+
+   --color-success: var(--palette-green-500);
+   --color-error: var(--palette-red-500);
+   --color-warning: var(--palette-yellow-400);
+}
+
+[data-theme="dark"] {
+   --color-text: var(--palette-neutral-100);
+   --color-text-secondary: var(--palette-neutral-400);
+   --color-text-tertiary: var(--palette-neutral-500);
+   --color-text-special: var(--palette-neutral-50);
+
+   --color-background: var(--palette-neutral-900);
+   --color-surface: var(--palette-neutral-800);
+   --color-surface-secondary: var(--palette-neutral-800);
+
+   --color-border: var(--palette-neutral-700);
+   --color-border-secondary: var(--palette-neutral-600);
+
+   --color-primary: var(--palette-blue-400);
+   --color-primary-hover: var(--palette-blue-500);
+   --color-primary-light: var(--palette-blue-600);
+
+   --color-accent: var(--palette-orange-400);
+   --color-accent-hover: var(--palette-orange-500);
+
+   --color-success: var(--palette-green-500);
+   --color-error: var(--palette-red-500);
+   --color-warning: var(--palette-yellow-400);
+}
+
+@media (prefers-color-scheme: dark) {
+   :root:not([data-theme]) {
+      --color-text: var(--palette-neutral-100);
+      --color-text-secondary: var(--palette-neutral-400);
+      --color-text-tertiary: var(--palette-neutral-500);
+      --color-text-special: var(--palette-neutral-50);
+
+      --color-background: var(--palette-neutral-900);
+      --color-surface: var(--palette-neutral-800);
+      --color-surface-secondary: var(--palette-neutral-800);
+
+      --color-border: var(--palette-neutral-700);
+      --color-border-secondary: var(--palette-neutral-600);
+
+      --color-primary: var(--palette-blue-400);
+      --color-primary-hover: var(--palette-blue-500);
+      --color-primary-light: var(--palette-blue-600);
+
+      --color-accent: var(--palette-orange-400);
+      --color-accent-hover: var(--palette-orange-500);
+
+      --color-success: var(--palette-green-500);
+      --color-error: var(--palette-red-500);
+      --color-warning: var(--palette-yellow-400);
+   }
+}

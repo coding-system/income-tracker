@@ -111,3 +111,61 @@
 .menu__link:hover {
    background-color: var(--color-border);
 }
+
+.menu__themeToggle {
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   position: relative;
+   width: 2.2em;
+   height: 2.2em;
+   padding: 0.35em;
+}
+
+.menu__themeIcon {
+   position: absolute;
+   font-size: 1.1em;
+   line-height: 1;
+   opacity: 0;
+   transform: scale(0);
+}
+
+.menu__themeIcon--active {
+   opacity: 1;
+   transform: scale(1);
+}
+
+.menu__themeIcon--inactive {
+   opacity: 0;
+   transform: scale(0);
+}
+
+.menu__themeToggle--animating .menu__themeIcon--active {
+   animation: themeIn 0.3s ease forwards;
+}
+
+.menu__themeToggle--animating .menu__themeIcon--inactive {
+   animation: themeOut 0.3s ease forwards;
+}
+
+@keyframes themeOut {
+   0% {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+   }
+   100% {
+      opacity: 0;
+      transform: scale(0.5) rotate(360deg);
+   }
+}
+
+@keyframes themeIn {
+   0% {
+      opacity: 0;
+      transform: scale(0.5) rotate(0deg);
+   }
+   100% {
+      opacity: 1;
+      transform: scale(1) rotate(360deg);
+   }
+}

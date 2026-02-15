@@ -4,9 +4,9 @@ export function RegisterForm() {
    return (
       <section className={styles.register}>
          <header className={styles.register__header}>
-            <h2 className={styles.register__title}>Create account</h2>
+            <h2 className={styles.register__title}>Регистрация</h2>
             <p className={styles.register__subtitle}>
-               Start tracking daily entries
+               Начните вести учет сразу
             </p>
          </header>
          <form className={styles.register__form}>
@@ -29,21 +29,21 @@ export function RegisterForm() {
                   className={styles.register__label}
                   htmlFor="register-password"
                >
-                  Password
+                  Пароль
                </label>
                <input
                   id="register-password"
                   className={styles.register__input}
                   type="password"
-                  placeholder="At least 6 characters"
+                  placeholder="Минимум 6 символов"
                />
             </div>
             <div className={styles.register__actions}>
                <button className={styles.register__button} type="button">
-                  Register
+                  Зарегистрироваться
                </button>
                <button className={styles.register__buttonGhost} type="button">
-                  Go to login
+                  Перейти ко входу
                </button>
             </div>
          </form>

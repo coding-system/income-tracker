@@ -41,8 +41,8 @@
    font-size: 1em;
    padding: 0.7em 0.9em;
    border-radius: 0.8em;
-   border: 0.08em solid #bcc5ce;
-   background: #fdfdfd;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
 }
 
 .register__actions {
@@ -56,8 +56,8 @@
    padding: 0.6em 1.4em;
    border-radius: 999em;
    border: 0.08em solid transparent;
-   background: #1f2933;
-   color: #f7f5f1;
+   background: var(--color-primary);
+   color: var(--color-text-special);
    cursor: pointer;
 }
 
@@ -65,8 +65,8 @@
    font-size: 0.9em;
    padding: 0.6em 1.4em;
    border-radius: 999em;
-   border: 0.08em solid #1f2933;
+   border: 0.08em solid var(--color-text);
    background: transparent;
-   color: #1f2933;
+   color: var(--color-text);
    cursor: pointer;
 }

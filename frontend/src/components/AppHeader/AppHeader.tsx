@@ -18,7 +18,7 @@ export function AppHeader() {
       <>
          <header className={styles.header}>
             <div className={styles.header__brand}>
-               <span className={styles.header__title}>Income Tracker</span>
+               <span className={styles.header__title}>Трекер доходов</span>
             </div>
             <div className={styles.header__actions}>
                <BurgerButton isOpen={isMenuOpen} onClick={handleToggleMenu} />
