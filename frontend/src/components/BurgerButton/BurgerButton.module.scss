@@ -1,0 +1,25 @@
+.button {
+   font-size: 1rem;
+   width: 3.2em;
+   height: 3.2em;
+   display: inline-flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 0.45em;
+   border: 0.08em solid var(--color-border);
+   border-radius: 0.5em;
+   background-color: transparent;
+   cursor: pointer;
+}
+
+.button--active {
+   border-color: var(--color-primary);
+}
+
+.button__line {
+   width: 1.5em;
+   height: 0.12em;
+   background-color: var(--color-text);
+   border-radius: 0.2em;
+}

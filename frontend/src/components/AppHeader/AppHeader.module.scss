@@ -1,0 +1,32 @@
+.header {
+   font-size: 1rem;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: 0.6em 1.6em;
+   background-color: var(--color-surface);
+   border-bottom: 0.08em solid var(--color-border);
+   position: sticky;
+   top: 0;
+   z-index: 10;
+   height: 5.5em;
+}
+
+.header__brand {
+   display: flex;
+   align-items: center;
+   gap: 0.6em;
+}
+
+.header__title {
+   font-size: 1.4em;
+   letter-spacing: 0.08em;
+   text-transform: uppercase;
+   color: var(--color-primary);
+}
+
+.header__actions {
+   display: flex;
+   align-items: center;
+   gap: 0.8em;
+}
