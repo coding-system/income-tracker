@@ -1,7 +1,6 @@
 import { useState } from "react";
+import { fetchWithAuth } from "../../api/authClient";
 import styles from "./NewShiftForm.module.scss";
-
-const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 const toNumberArray = (values: string[]) =>
    values
@@ -132,18 +131,15 @@ export function NewShiftForm() {
             snacks: toNumberArray(snacks),
          };
 
-         const response = await fetch(`${apiBase}/shifts`, {
+         const response = await fetchWithAuth("/shifts", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
-               Authorization: `Bearer ${accessToken}`,
             },
             body: JSON.stringify(payload),
          });
 
          if (response.status === 401) {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
             throw new Error("Сессия истекла. Войдите снова.");
          }
 

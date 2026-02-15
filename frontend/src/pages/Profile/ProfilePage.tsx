@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import avatarPlaceholder from "../../assets/images/profile-blank.png";
-import {
-   getAccessToken,
-   notifyAuthChanged,
-   useAuthStatus,
-} from "../../hooks/useAuthStatus";
+import { clearAuth, fetchWithAuth } from "../../api/authClient";
+import { getAccessToken, useAuthStatus } from "../../hooks/useAuthStatus";
 import styles from "./ProfilePage.module.scss";
 
 type ProfileData = {
@@ -33,18 +30,11 @@ export function ProfilePage() {
 
       const loadProfile = async () => {
          try {
-            const response = await fetch(`${apiBase}/auth/me`, {
-               headers: {
-                  Authorization: `Bearer ${accessToken}`,
-               },
-            });
+            const response = await fetchWithAuth("/auth/me");
 
             if (response.status === 401) {
-               localStorage.removeItem("accessToken");
-               localStorage.removeItem("refreshToken");
-               localStorage.removeItem("userName");
-               localStorage.removeItem("userEmail");
-               notifyAuthChanged();
+               clearAuth();
+               navigate("/login", { replace: true });
                return;
             }
 
@@ -67,25 +57,13 @@ export function ProfilePage() {
    }, []);
 
    const handleLogout = async () => {
-      const accessToken = localStorage.getItem("accessToken");
-      if (accessToken) {
-         try {
-            await fetch(`${apiBase}/auth/logout`, {
-               method: "POST",
-               headers: {
-                  Authorization: `Bearer ${accessToken}`,
-               },
-            });
-         } catch {
-            // ignore logout errors
-         }
+      try {
+         await fetchWithAuth("/auth/logout", { method: "POST" });
+      } catch {
+         // ignore logout errors
       }
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("userEmail");
-      notifyAuthChanged();
+      clearAuth();
       navigate("/login", { replace: true });
    };
 
