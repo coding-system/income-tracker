@@ -93,6 +93,21 @@
    font-weight: 600;
 }
 
+.profile__actions {
+   display: flex;
+   justify-content: flex-end;
+}
+
+.profile__logout {
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.6em 1.4em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
 @media (max-width: 40em) {
    .profile {
       padding: 6.5em 1.2em 1.8em;

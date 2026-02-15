@@ -1,9 +1,97 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import avatarPlaceholder from "../../assets/images/profile-blank.png";
+import {
+   getAccessToken,
+   notifyAuthChanged,
+   useAuthStatus,
+} from "../../hooks/useAuthStatus";
 import styles from "./ProfilePage.module.scss";
 
+type ProfileData = {
+   userId: string;
+   email: string;
+   name: string | null;
+};
+
+const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
+
 export function ProfilePage() {
-   const userName = localStorage.getItem("userName") ?? "Пользователь";
-   const userEmail = localStorage.getItem("userEmail") ?? "user@example.com";
+   const navigate = useNavigate();
+   const isAuthenticated = useAuthStatus();
+   const [profile, setProfile] = useState<ProfileData | null>(null);
+   const userName =
+      profile?.name ?? localStorage.getItem("userName") ?? "Пользователь";
+   const userEmail =
+      profile?.email ?? localStorage.getItem("userEmail") ?? "user@example.com";
+
+   useEffect(() => {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+         return;
+      }
+
+      const loadProfile = async () => {
+         try {
+            const response = await fetch(`${apiBase}/auth/me`, {
+               headers: {
+                  Authorization: `Bearer ${accessToken}`,
+               },
+            });
+
+            if (response.status === 401) {
+               localStorage.removeItem("accessToken");
+               localStorage.removeItem("refreshToken");
+               localStorage.removeItem("userName");
+               localStorage.removeItem("userEmail");
+               notifyAuthChanged();
+               return;
+            }
+
+            if (!response.ok) {
+               return;
+            }
+
+            const data = (await response.json()) as ProfileData;
+            setProfile(data);
+            if (data.name) {
+               localStorage.setItem("userName", data.name);
+            }
+            localStorage.setItem("userEmail", data.email);
+         } catch {
+            // ignore and keep cached values
+         }
+      };
+
+      void loadProfile();
+   }, []);
+
+   const handleLogout = async () => {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+         try {
+            await fetch(`${apiBase}/auth/logout`, {
+               method: "POST",
+               headers: {
+                  Authorization: `Bearer ${accessToken}`,
+               },
+            });
+         } catch {
+            // ignore logout errors
+         }
+      }
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("userEmail");
+      notifyAuthChanged();
+      navigate("/login", { replace: true });
+   };
+
+   if (!isAuthenticated) {
+      return null;
+   }
 
    return (
       <main className={styles.profile}>
@@ -34,6 +122,15 @@ export function ProfilePage() {
                   <p className={styles.profile__label}>Регион</p>
                   <p className={styles.profile__value}>Россия</p>
                </div>
+            </div>
+            <div className={styles.profile__actions}>
+               <button
+                  className={styles.profile__logout}
+                  type="button"
+                  onClick={handleLogout}
+               >
+                  Выйти
+               </button>
             </div>
          </section>
       </main>

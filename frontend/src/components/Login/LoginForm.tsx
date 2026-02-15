@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { notifyAuthChanged } from "../../hooks/useAuthStatus";
 import styles from "./LoginForm.module.scss";
 
 type TokenPair = {
@@ -10,6 +11,7 @@ type TokenPair = {
 const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 export function LoginForm() {
+   const navigate = useNavigate();
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
    const [status, setStatus] = useState<{
@@ -38,10 +40,11 @@ export function LoginForm() {
          const tokens = (await response.json()) as TokenPair;
          localStorage.setItem("accessToken", tokens.accessToken);
          localStorage.setItem("refreshToken", tokens.refreshToken);
+         notifyAuthChanged();
 
          setStatus({ type: "success", text: "Вход выполнен" });
          setPassword("");
-         window.location.reload();
+         navigate("/profile", { replace: true });
       } catch (error) {
          const message =
             error instanceof Error ? error.message : "Ошибка входа";

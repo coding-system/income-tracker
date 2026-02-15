@@ -1,0 +1,193 @@
+.panel {
+   width: min(58em, 100%);
+   background: var(--color-surface);
+   border-radius: 1.6em;
+   padding: 2.4em;
+   border: 0.08em solid var(--color-border);
+   box-shadow: 0 1.4em 2.6em rgba(0, 0, 0, 0.08);
+   display: flex;
+   flex-direction: column;
+   gap: 2em;
+}
+
+.header {
+   display: flex;
+   flex-direction: column;
+   gap: 0.4em;
+}
+
+.title {
+   margin: 0;
+   font-size: 2em;
+}
+
+.subtitle {
+   margin: 0;
+   color: var(--color-text-secondary);
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+   gap: 2em;
+}
+
+.form__status {
+   font-size: 0.95em;
+   padding: 0.8em 1em;
+   border-radius: 0.8em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+}
+
+.form__status--error {
+   border-color: var(--color-error);
+   color: var(--color-error);
+}
+
+.form__status--success {
+   border-color: var(--color-success);
+   color: var(--color-success);
+}
+
+.form__grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+   gap: 1.2em;
+}
+
+.form__field {
+   display: flex;
+   flex-direction: column;
+   gap: 0.4em;
+}
+
+.form__inlineInputs {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 0.6em;
+}
+
+.form__inlineField {
+   display: flex;
+   flex-direction: column;
+   gap: 0.35em;
+}
+
+.form__inlineLabel {
+   font-size: 0.85em;
+   color: var(--color-text-tertiary);
+}
+
+.form__label {
+   font-size: 0.95em;
+   color: var(--color-text-secondary);
+}
+
+.form__dateToggle {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 0.6em;
+}
+
+.form__dateButton {
+   border-radius: 0.9em;
+   padding: 0.7em 1em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+   color: var(--color-text);
+   font-size: 0.95em;
+   cursor: pointer;
+   text-transform: capitalize;
+}
+
+.form__dateButton--active {
+   border-color: var(--color-primary);
+   background: rgba(var(--color-primary-rgb), 0.12);
+   color: var(--color-primary);
+   font-weight: 600;
+}
+
+.form__input {
+   border-radius: 0.8em;
+   padding: 0.6em 0.8em;
+   border: 0.08em solid var(--color-border);
+   font-size: 1em;
+   background: var(--color-surface);
+   color: var(--color-text);
+}
+
+.form__section {
+   display: flex;
+   flex-direction: column;
+   gap: 1em;
+}
+
+.form__sectionHeader {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+}
+
+.form__sectionTitle {
+   margin: 0;
+   font-size: 1.2em;
+}
+
+.form__addButton {
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.4em 1em;
+   border-radius: 1.6em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.form__list {
+   display: flex;
+   flex-direction: column;
+   gap: 0.8em;
+}
+
+.form__listItem {
+   display: grid;
+   grid-template-columns: 1fr auto;
+   gap: 0.8em;
+   align-items: center;
+}
+
+.form__removeButton {
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.5em 0.9em;
+   border-radius: 0.8em;
+   cursor: pointer;
+}
+
+.form__submit {
+   align-self: flex-start;
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.8em 2em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+@media (max-width: 40em) {
+   .panel {
+      padding: 1.6em;
+   }
+
+   .form__listItem {
+      grid-template-columns: 1fr;
+   }
+
+   .form__submit {
+      width: 100%;
+      text-align: center;
+   }
+}

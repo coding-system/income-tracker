@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuthStatus } from "../../hooks/useAuthStatus";
 import styles from "./BurgerMenu.module.scss";
 
 type BurgerMenuProps = {
@@ -8,6 +9,7 @@ type BurgerMenuProps = {
 };
 
 export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
+   const isAuthenticated = useAuthStatus();
    const [theme, setTheme] = useState<"light" | "dark">(() => {
       const current = document.documentElement.getAttribute("data-theme");
       return current === "light" ? "light" : "dark";
@@ -57,19 +59,30 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                   Профиль
                </Link>
                <Link
-                  to="/login"
+                  to="/shifts/new"
                   className={styles.menu__link}
                   onClick={onClose}
                >
-                  Вход
+                  Новая смена
                </Link>
-               <Link
-                  to="/register"
-                  className={styles.menu__link}
-                  onClick={onClose}
-               >
-                  Регистрация
-               </Link>
+               {!isAuthenticated ? (
+                  <>
+                     <Link
+                        to="/login"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        Вход
+                     </Link>
+                     <Link
+                        to="/register"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        Регистрация
+                     </Link>
+                  </>
+               ) : null}
 
                <button
                   type="button"
