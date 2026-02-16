@@ -17,6 +17,11 @@ type ShiftData = {
    fuelings?: ShiftCost[];
 };
 
+type ProfileSettings = {
+   dailyTargetNet?: number | null;
+   hasWeeklyPlan?: boolean;
+};
+
 const formatMoneyWhole = (value: number) =>
    new Intl.NumberFormat("ru-RU", {
       minimumFractionDigits: 0,
@@ -73,6 +78,8 @@ export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
    const [rangeDays, setRangeDays] = useState<15 | 30>(15);
+   const [dailyTargetNet, setDailyTargetNet] = useState<number | null>(null);
+   const [hasWeeklyPlan, setHasWeeklyPlan] = useState(false);
 
    const netIncomeByDate = shifts.reduce<Record<string, number>>(
       (acc, shift) => {
@@ -97,6 +104,10 @@ export function HistoryPage() {
       ? workedValues.reduce((sum, value) => sum + value, 0) /
         workedValues.length
       : null;
+   const targetDailyIncome =
+      hasWeeklyPlan && dailyTargetNet !== null && dailyTargetNet > 0
+         ? dailyTargetNet
+         : null;
 
    const weeklyNetIncome = shifts.reduce((total, shift) => {
       const shiftDate = parseDateLocal(shift.date);
@@ -157,6 +168,13 @@ export function HistoryPage() {
                      new Date(b.date).getTime() - new Date(a.date).getTime(),
                );
                setShifts(sorted);
+            }
+            const profileResponse = await fetchWithAuth("/auth/me");
+            if (profileResponse.ok) {
+               const profile =
+                  (await profileResponse.json()) as ProfileSettings;
+               setDailyTargetNet(profile.dailyTargetNet ?? null);
+               setHasWeeklyPlan(Boolean(profile.hasWeeklyPlan));
             }
          } catch {
             // ignore for now
@@ -237,6 +255,7 @@ export function HistoryPage() {
                      points={chartPoints}
                      rangeLabel={`График за ${rangeDays} дней`}
                      averageValue={averageNetIncome}
+                     targetValue={targetDailyIncome}
                   />
                   <ShiftList shifts={shifts} />
                </>
