@@ -5,13 +5,15 @@
    // border-bottom: 0.08em solid var(--color-border);
    // border: 0.1em solid #fff;
    border-radius: 0.5em;
+   border: 0.1em solid #5f5f5f;
 
    &:nth-child(odd) {
-      background-color: rgba(255, 255, 255, 0.02);
+      background-color: var(--color-row-odd);
+   border: 0.1em solid #5f5f5f;
    }
 
    &:nth-child(even) {
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: var(--color-row-even);
    }
 }
 
@@ -32,7 +34,7 @@
    position: relative;
    height: 0.35em;
    border-radius: 999px;
-   background: rgba(255, 255, 255, 0.12);
+   background: var(--color-bar-track);
    overflow: hidden;
 }
 

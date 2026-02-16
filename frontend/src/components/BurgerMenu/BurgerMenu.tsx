@@ -49,20 +49,26 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             </div>
             <nav className={styles.menu__nav}>
                <Link to="/" className={styles.menu__link} onClick={onClose}>
-                  Главная
+                  <span className="material-symbols-outlined">
+                     home
+                  </span>Главная
                </Link>
                <Link
                   to="/profile"
                   className={styles.menu__link}
                   onClick={onClose}
-               >
+               ><span className="material-symbols-outlined">
+                     account_circle
+                  </span>
                   Профиль
                </Link>
                <Link
                   to="/shifts/new"
                   className={styles.menu__link}
                   onClick={onClose}
-               >
+               ><span className="material-symbols-outlined">
+                     local_taxi
+                  </span>
                   Новая смена
                </Link>
                <Link
@@ -70,6 +76,9 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                   className={styles.menu__link}
                   onClick={onClose}
                >
+                  <span className="material-symbols-outlined">
+                     import_contacts
+                  </span>
                   История
                </Link>
                {!isAuthenticated ? (

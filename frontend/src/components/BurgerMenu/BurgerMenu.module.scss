@@ -93,7 +93,7 @@
    display: flex;
    flex-direction: column;
    gap: 0.8em;
-   padding: 1.4em 1.2em;
+   padding: 0em;
 }
 
 .menu__link {
@@ -106,6 +106,9 @@
    background: transparent;
    border: none;
    cursor: pointer;
+   display: flex;
+   justify-content: center;align-items: center;
+   gap: 0.6em;
 }
 
 .menu__link:hover {
@@ -124,7 +127,7 @@
 
 .menu__themeIcon {
    position: absolute;
-   font-size: 1.1em;
+   font-size: 1.2em;
    line-height: 1;
    opacity: 0;
    transform: scale(0);
