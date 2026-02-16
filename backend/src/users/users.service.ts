@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
+import { UpdateSettingsDto } from "./dto/update-settings.dto";
 
 @Injectable()
 export class UsersService {
@@ -38,6 +39,25 @@ export class UsersService {
       return this.prisma.user.update({
          where: { id: userId },
          data: { refreshTokenHash: null },
+      });
+   }
+
+   async updateSettings(userId: string, dto: UpdateSettingsDto) {
+      return this.prisma.user.update({
+         where: { id: userId },
+         data: {
+            dailyTargetNet: dto.dailyTargetNet ?? null,
+            workDaysPerWeek: dto.workDaysPerWeek ?? null,
+            hasWeeklyPlan: dto.hasWeeklyPlan ?? false,
+         },
+         select: {
+            id: true,
+            email: true,
+            name: true,
+            dailyTargetNet: true,
+            workDaysPerWeek: true,
+            hasWeeklyPlan: true,
+         },
       });
    }
 }

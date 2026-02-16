@@ -74,6 +74,118 @@
    gap: 1.2em;
 }
 
+.profile__settings {
+   padding: 1.4em;
+   border-radius: 1.2em;
+   background: var(--color-surface-secondary);
+   border: 0.08em solid var(--color-border);
+   display: flex;
+   flex-direction: column;
+   gap: 1.2em;
+}
+
+.profile__settingsHeader {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 1em;
+}
+
+.profile__settingsHint {
+   margin: 0.3em 0 0;
+   color: var(--color-text-secondary);
+   font-size: 0.95em;
+}
+
+.profile__settingsToggle {
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.5em 1.2em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.profile__settingsGrid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(14em, 1fr));
+   gap: 1em;
+}
+
+.profile__settingsCheckbox {
+   display: flex;
+   align-items: center;
+   gap: 0.6em;
+   font-size: 0.95em;
+   color: var(--color-text);
+}
+
+.profile__settingsCheckboxInput {
+   width: 1.1em;
+   height: 1.1em;
+   accent-color: var(--color-primary);
+}
+
+.profile__settingsCheckboxText {
+   color: var(--color-text-secondary);
+}
+
+.profile__settingsField {
+   display: flex;
+   flex-direction: column;
+   gap: 0.4em;
+}
+
+.profile__settingsLabel {
+   font-size: 0.9em;
+   color: var(--color-text-tertiary);
+}
+
+.profile__settingsInput {
+   border: 0.08em solid var(--color-border);
+   border-radius: 0.8em;
+   padding: 0.6em 0.8em;
+   background: var(--color-surface);
+   color: var(--color-text);
+   font-size: 1em;
+}
+
+.profile__settingsValue {
+   margin: 0;
+   font-weight: 600;
+   font-size: 1.1em;
+}
+
+.profile__settingsActions {
+   display: flex;
+   align-items: center;
+   justify-content: flex-end;
+   grid-column: 1 / -1;
+}
+
+.profile__settingsSave {
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.65em 1.6em;
+   border-radius: 2em;
+   font-weight: 600;
+   cursor: pointer;
+}
+
+.profile__settingsSave:disabled {
+   opacity: 0.7;
+   cursor: default;
+}
+
+.profile__settingsError {
+   margin: 0;
+   color: var(--color-error);
+   font-size: 0.9em;
+   grid-column: 1 / -1;
+}
+
 .profile__infoItem {
    padding: 1.2em 1.4em;
    border-radius: 1.2em;

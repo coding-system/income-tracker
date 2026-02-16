@@ -54,6 +54,9 @@ export class AuthController {
          userId: profile.id,
          email: profile.email,
          name: profile.name,
+         dailyTargetNet: profile.dailyTargetNet,
+         workDaysPerWeek: profile.workDaysPerWeek,
+         hasWeeklyPlan: profile.hasWeeklyPlan,
       };
    }
 }
