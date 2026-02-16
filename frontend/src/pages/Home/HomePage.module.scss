@@ -1,8 +1,8 @@
 .home {
    font-size: 1rem;
-   min-height: 100vh;
+   min-height: calc(100vh - var(--header-height));
    padding: 7.5em 2em 4em;
-   
+
    padding-top: 16em;
    display: flex;
    flex-direction: column;

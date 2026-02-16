@@ -15,60 +15,62 @@ function App() {
    return (
       <div className={styles.app}>
          <AppHeader />
-         <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route
-               path="/login"
-               element={
-                  isAuthenticated ? (
-                     <Navigate to="/profile" replace />
-                  ) : (
-                     <LoginPage />
-                  )
-               }
-            />
-            <Route
-               path="/register"
-               element={
-                  isAuthenticated ? (
-                     <Navigate to="/profile" replace />
-                  ) : (
-                     <RegisterPage />
-                  )
-               }
-            />
-            <Route
-               path="/profile"
-               element={
-                  isAuthenticated ? (
-                     <ProfilePage />
-                  ) : (
-                     <Navigate to="/login" replace />
-                  )
-               }
-            />
-            <Route
-               path="/history"
-               element={
-                  isAuthenticated ? (
-                     <HistoryPage />
-                  ) : (
-                     <Navigate to="/login" replace />
-                  )
-               }
-            />
-            <Route
-               path="/shifts/new"
-               element={
-                  isAuthenticated ? (
-                     <NewShiftPage />
-                  ) : (
-                     <Navigate to="/login" replace />
-                  )
-               }
-            />
-            <Route path="*" element={<Navigate to="/" replace />} />
-         </Routes>
+         <main className={styles.app__content}>
+            <Routes>
+               <Route path="/" element={<HomePage />} />
+               <Route
+                  path="/login"
+                  element={
+                     isAuthenticated ? (
+                        <Navigate to="/profile" replace />
+                     ) : (
+                        <LoginPage />
+                     )
+                  }
+               />
+               <Route
+                  path="/register"
+                  element={
+                     isAuthenticated ? (
+                        <Navigate to="/profile" replace />
+                     ) : (
+                        <RegisterPage />
+                     )
+                  }
+               />
+               <Route
+                  path="/profile"
+                  element={
+                     isAuthenticated ? (
+                        <ProfilePage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/history"
+                  element={
+                     isAuthenticated ? (
+                        <HistoryPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/shifts/new"
+                  element={
+                     isAuthenticated ? (
+                        <NewShiftPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+         </main>
       </div>
    );
 }

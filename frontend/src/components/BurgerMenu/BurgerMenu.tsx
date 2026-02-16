@@ -58,7 +58,7 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                   className={styles.menu__link}
                   onClick={onClose}
                ><span className="material-symbols-outlined">
-                     account_circle
+                     person
                   </span>
                   Профиль
                </Link>
@@ -88,14 +88,18 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         className={styles.menu__link}
                         onClick={onClose}
                      >
-                        Вход
+                        <span className="material-symbols-outlined">
+                     login
+                  </span>Вход
                      </Link>
                      <Link
                         to="/register"
                         className={styles.menu__link}
                         onClick={onClose}
                      >
-                        Регистрация
+                        <span className="material-symbols-outlined">
+                     app_registration
+                  </span>Регистрация
                      </Link>
                   </>
                ) : null}

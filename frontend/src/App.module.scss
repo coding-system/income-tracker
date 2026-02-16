@@ -1,4 +1,10 @@
 .app {
    font-size: 1rem;
    min-height: 100vh;
+   --header-height: 5.5em;
+}
+
+.app__content {
+   padding-top: var(--header-height);
+   min-height: 100vh;
 }

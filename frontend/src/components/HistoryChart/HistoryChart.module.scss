@@ -5,8 +5,8 @@
    grid-template-columns: repeat(var(--chart-columns, 15), minmax(0, 1fr));
    gap: 0.4em;
    align-items: end;
-   padding: 0.6em 0.4em;
-   border-radius: 0.8em;
+   padding: 0.4em 0.4em 0.2em;
+   border-radius: 0.5em;
    background: var(--color-surface-secondary);
    border: 0.08em solid var(--color-border);
    position: relative;
