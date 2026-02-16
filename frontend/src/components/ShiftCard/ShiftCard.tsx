@@ -47,12 +47,44 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
          ? netIncome / shift.engineHours
          : 0;
    const minIncomePerHour = 500;
+   const baseIncomePerHour = 1000;
    const maxIncomePerHour = 1500;
-   const normalized =
-      (incomePerHour - minIncomePerHour) /
-      (maxIncomePerHour - minIncomePerHour);
-   const barPercent = Math.min(Math.max(normalized, 0), 1) * 100;
-   const barStyle = { "--bar-width": `${barPercent}%` } as CSSProperties;
+   const halfRange = maxIncomePerHour - baseIncomePerHour;
+   const clampedIncome = Math.min(
+      Math.max(incomePerHour, minIncomePerHour),
+      maxIncomePerHour,
+   );
+   const delta = (clampedIncome - baseIncomePerHour) / halfRange;
+   const barWidth = Math.abs(delta) * 50;
+   const barStart = delta >= 0 ? 50 : 50 - barWidth;
+
+   let red = 255;
+   let green = 0;
+   let blue = 0;
+
+   if (clampedIncome <= baseIncomePerHour) {
+      const t =
+         (clampedIncome - minIncomePerHour) /
+         (baseIncomePerHour - minIncomePerHour);
+      red = Math.round(255 * (1 - t));
+      green = Math.round(255 * t);
+      blue = 0;
+   } else {
+      const t =
+         (clampedIncome - baseIncomePerHour) /
+         (maxIncomePerHour - baseIncomePerHour);
+      red = 0;
+      green = 255;
+      blue = Math.round(255 * t);
+   }
+
+   const barStyle = {
+      "--bar-start": `${barStart}%`,
+      "--bar-width": `${barWidth}%`,
+      "--bar-red": red,
+      "--bar-green": green,
+      "--bar-blue": blue,
+   } as CSSProperties;
 
    return (
       <article className={styles.card}>

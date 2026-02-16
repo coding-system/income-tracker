@@ -36,17 +36,29 @@
    overflow: hidden;
 }
 
+.card__bar::after {
+   content: "";
+   position: absolute;
+   left: 50%;
+   top: 0;
+   bottom: 0;
+   width: 0.2em;
+   height: 0.5em;
+   background: rgba(255, 255, 255, 0.35);
+   transform: translateX(-50%);
+}
+
 .card__barFill {
    position: absolute;
-   left: 0;
+   left: var(--bar-start, 50%);
    top: 0;
    bottom: 0;
    width: var(--bar-width, 0%);
-   background: linear-gradient(
-      90deg,
-      var(--color-primary),
-      var(--color-accent)
-   );
    border-radius: 999px;
-   background-color: rgb(119, 0, 255);
+   background-color: rgb(
+      var(--bar-red, 255),
+      var(--bar-green, 0),
+      var(--bar-blue, 0)
+   );
+   background-color: rgb(123, 255, 0);
 }
