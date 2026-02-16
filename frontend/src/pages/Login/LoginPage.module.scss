@@ -6,13 +6,14 @@
    align-items: center;
    justify-content: center;
    color: var(--color-text);
+   margin-top: 6em;
 }
 
 .page__panel {
    font-size: 1rem;
    width: min(36em, 100%);
    background: var(--color-surface);
-   border-radius: 1.4em;   
+   border-radius: 1.4em;
    padding: 2em;
    border: 0.08em solid var(--color-border);
    box-shadow: 0 1.2em 2.4em rgba(var(--color-primary-rgb), 0.1);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../../api/authClient";
+import { HistoryChart } from "../../components/HistoryChart/HistoryChart";
 import { ShiftList } from "../../components/ShiftList/ShiftList";
 import styles from "./HistoryPage.module.scss";
 
@@ -43,13 +44,99 @@ const isWithinLastSevenDays = (date: Date) => {
    return date >= start && date <= end;
 };
 
+const isWithinLastDays = (date: Date, days: number) => {
+   const start = new Date();
+   start.setHours(0, 0, 0, 0);
+   start.setDate(start.getDate() - (days - 1));
+
+   const end = new Date();
+   end.setHours(23, 59, 59, 999);
+
+   return date >= start && date <= end;
+};
+
+const buildLastDays = (count: number) => {
+   const days: string[] = [];
+   const today = new Date();
+   today.setHours(0, 0, 0, 0);
+
+   for (let offset = count - 1; offset >= 0; offset -= 1) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - offset);
+      days.push(date.toISOString().slice(0, 10));
+   }
+
+   return days;
+};
+
 export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
+   const [rangeDays, setRangeDays] = useState<15 | 30>(15);
+
+   const netIncomeByDate = shifts.reduce<Record<string, number>>(
+      (acc, shift) => {
+         const fuelTotal =
+            shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+         const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+         acc[shift.date] = (acc[shift.date] ?? 0) + netIncome;
+         return acc;
+      },
+      {},
+   );
+
+   const lastDays = buildLastDays(rangeDays);
+   const chartPoints = lastDays.map((date) => ({
+      date,
+      value: netIncomeByDate[date] ?? 0,
+   }));
+   const workedValues = chartPoints
+      .map((item) => item.value)
+      .filter((value) => value > 0);
+   const averageNetIncome = workedValues.length
+      ? workedValues.reduce((sum, value) => sum + value, 0) /
+        workedValues.length
+      : null;
 
    const weeklyNetIncome = shifts.reduce((total, shift) => {
       const shiftDate = parseDateLocal(shift.date);
       if (!shiftDate || !isWithinLastSevenDays(shiftDate)) {
+         return total;
+      }
+
+      const fuelTotal =
+         shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+      return total + netIncome;
+   }, 0);
+
+   const lastThirtyNetIncome = shifts.reduce((total, shift) => {
+      const shiftDate = parseDateLocal(shift.date);
+      if (!shiftDate || !isWithinLastDays(shiftDate, 30)) {
+         return total;
+      }
+
+      const fuelTotal =
+         shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+      return total + netIncome;
+   }, 0);
+
+   const monthLabel = new Intl.DateTimeFormat("ru-RU", {
+      month: "long",
+   }).format(new Date());
+
+   const monthlyNetIncome = shifts.reduce((total, shift) => {
+      const shiftDate = parseDateLocal(shift.date);
+      if (!shiftDate) {
+         return total;
+      }
+
+      const now = new Date();
+      if (
+         shiftDate.getFullYear() !== now.getFullYear() ||
+         shiftDate.getMonth() !== now.getMonth()
+      ) {
          return total;
       }
 
@@ -87,12 +174,30 @@ export function HistoryPage() {
             <header className={styles.page__header}>
                <h1 className={styles.page__title}>История смен</h1>
                <div className={styles.page__summary}>
-                  <span className={styles.page__summaryLabel}>
-                     Итого за 7 дней
-                  </span>
-                  <span className={styles.page__summaryValue}>
-                     {formatMoneyWhole(weeklyNetIncome)} ₽
-                  </span>
+                  <div className={styles.page__summaryRow}>
+                     <span className={styles.page__summaryLabel}>
+                        Итого за 7 дней
+                     </span>
+                     <span className={styles.page__summaryValue}>
+                        {formatMoneyWhole(weeklyNetIncome)} ₽
+                     </span>
+                  </div>
+                  <div className={styles.page__summaryRow}>
+                     <span className={styles.page__summaryLabel}>
+                        Итого за 30 дней
+                     </span>
+                     <span className={styles.page__summaryValue}>
+                        {formatMoneyWhole(lastThirtyNetIncome)} ₽
+                     </span>
+                  </div>
+                  <div className={styles.page__summaryRow}>
+                     <span className={styles.page__summaryLabel}>
+                        Итого за {monthLabel}
+                     </span>
+                     <span className={styles.page__summaryValue}>
+                        {formatMoneyWhole(monthlyNetIncome)} ₽
+                     </span>
+                  </div>
                </div>
             </header>
             {isLoading ? (
@@ -100,7 +205,41 @@ export function HistoryPage() {
             ) : shifts.length === 0 ? (
                <p className={styles.page__empty}>Смен пока нет.</p>
             ) : (
-               <ShiftList shifts={shifts} />
+               <>
+                  <div className={styles.page__chartHeader}>
+                     <span className={styles.page__chartTitle}>График</span>
+                     <div className={styles.page__chartToggle}>
+                        <button
+                           className={`${styles.page__chartButton} ${
+                              rangeDays === 15
+                                 ? styles["page__chartButton--active"]
+                                 : ""
+                           }`}
+                           type="button"
+                           onClick={() => setRangeDays(15)}
+                        >
+                           15 дней
+                        </button>
+                        <button
+                           className={`${styles.page__chartButton} ${
+                              rangeDays === 30
+                                 ? styles["page__chartButton--active"]
+                                 : ""
+                           }`}
+                           type="button"
+                           onClick={() => setRangeDays(30)}
+                        >
+                           30 дней
+                        </button>
+                     </div>
+                  </div>
+                  <HistoryChart
+                     points={chartPoints}
+                     rangeLabel={`График за ${rangeDays} дней`}
+                     averageValue={averageNetIncome}
+                  />
+                  <ShiftList shifts={shifts} />
+               </>
             )}
          </section>
       </main>
