@@ -6,6 +6,18 @@ import { CreateShiftDto } from "./dto/create-shift.dto";
 export class ShiftsService {
    constructor(private readonly prisma: PrismaService) {}
 
+   async listShifts(userId: string) {
+      return this.prisma.day.findMany({
+         where: { userId },
+         orderBy: { date: "desc" },
+         include: {
+            fuelings: true,
+            washes: true,
+            snacks: true,
+         },
+      });
+   }
+
    async createShift(userId: string, dto: CreateShiftDto) {
       const { fuelings = [], washes = [], snacks = [], ...dayData } = dto;
 

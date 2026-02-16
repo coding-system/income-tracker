@@ -1,0 +1,52 @@
+.card {
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr;
+   padding: 0.5em 1em;
+   // border-bottom: 0.08em solid var(--color-border);
+   // border: 0.1em solid #fff;
+   border-radius: 0.5em;
+
+   &:nth-child(odd) {
+      background-color: rgba(255, 255, 255, 0.02);
+   }
+
+   &:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.1);
+   }
+}
+
+.card__cell {
+   font-size: 1em;
+   font-weight: 600;
+   color: var(--color-text);
+   // border: 0.1em solid #fff;
+}
+
+.card__cell--income {
+   display: flex;
+   flex-direction: column;
+   gap: 0.3em;
+}
+
+.card__bar {
+   position: relative;
+   height: 0.35em;
+   border-radius: 999px;
+   background: rgba(255, 255, 255, 0.12);
+   overflow: hidden;
+}
+
+.card__barFill {
+   position: absolute;
+   left: 0;
+   top: 0;
+   bottom: 0;
+   width: var(--bar-width, 0%);
+   background: linear-gradient(
+      90deg,
+      var(--color-primary),
+      var(--color-accent)
+   );
+   border-radius: 999px;
+   background-color: rgb(119, 0, 255);
+}

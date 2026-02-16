@@ -3,6 +3,7 @@ import { AppHeader } from "./components/AppHeader/AppHeader";
 import { useAuthStatus } from "./hooks/useAuthStatus";
 import styles from "./App.module.scss";
 import { HomePage } from "./pages/Home/HomePage";
+import { HistoryPage } from "./pages/History/HistoryPage";
 import { LoginPage } from "./pages/Login/LoginPage";
 import { NewShiftPage } from "./pages/NewShift/NewShiftPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
@@ -41,6 +42,16 @@ function App() {
                element={
                   isAuthenticated ? (
                      <ProfilePage />
+                  ) : (
+                     <Navigate to="/login" replace />
+                  )
+               }
+            />
+            <Route
+               path="/history"
+               element={
+                  isAuthenticated ? (
+                     <HistoryPage />
                   ) : (
                      <Navigate to="/login" replace />
                   )

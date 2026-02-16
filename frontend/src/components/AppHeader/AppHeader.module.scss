@@ -6,7 +6,8 @@
    padding: 0.6em 1.6em;
    background-color: var(--color-surface);
    border-bottom: 0.08em solid var(--color-border);
-   position: sticky;
+   position: fixed;
+   width: 100%;
    top: 0;
    z-index: 10;
    height: 5.5em;

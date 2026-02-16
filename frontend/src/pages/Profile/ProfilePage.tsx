@@ -11,8 +11,6 @@ type ProfileData = {
    name: string | null;
 };
 
-const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
-
 export function ProfilePage() {
    const navigate = useNavigate();
    const isAuthenticated = useAuthStatus();

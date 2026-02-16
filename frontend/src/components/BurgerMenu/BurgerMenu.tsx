@@ -65,6 +65,13 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                >
                   Новая смена
                </Link>
+               <Link
+                  to="/history"
+                  className={styles.menu__link}
+                  onClick={onClose}
+               >
+                  История
+               </Link>
                {!isAuthenticated ? (
                   <>
                      <Link
