@@ -31,7 +31,7 @@
 
    --color-background: var(--palette-neutral-50);
    --color-surface: #ffffff;
-   --color-surface-secondary: var(--palette-neutral-100);
+   --color-surface-secondary: var(--palette-neutral-50);
 
    --color-border: var(--palette-neutral-200);
    --color-border-secondary: var(--palette-neutral-300);
@@ -49,9 +49,9 @@
 
    --color-primary-rgb: 37, 99, 235;
 
-   --color-row-odd: rgba(0, 0, 0, 0.03);
-   --color-row-even: rgba(0, 0, 0, 0.06);
-   --color-bar-track: rgba(0, 0, 0, 0.12);
+   --color-row-odd: rgba(0, 0, 0, 0.2);
+   --color-row-even: rgba(0, 0, 0, 0.01);
+   --color-bar-track: rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="light"] {
@@ -62,7 +62,7 @@
 
    --color-background: var(--palette-neutral-50);
    --color-surface: #ffffff;
-   --color-surface-secondary: var(--palette-neutral-100);
+   --color-surface-secondary: var(--palette-neutral-50);
 
    --color-border: var(--palette-neutral-200);
    --color-border-secondary: var(--palette-neutral-300);
@@ -78,9 +78,9 @@
    --color-error: var(--palette-red-500);
    --color-warning: var(--palette-yellow-400);
 
-   --color-row-odd: rgba(0, 0, 0, 0.03);
-   --color-row-even: rgba(0, 0, 0, 0.06);
-   --color-bar-track: rgba(0, 0, 0, 0.12);
+   --color-row-odd: rgba(0, 0, 0, 0.2);
+   --color-row-even: rgba(0, 0, 0, 0.01);
+   --color-bar-track: rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="dark"] {
@@ -91,7 +91,7 @@
 
    --color-background: var(--palette-neutral-900);
    --color-surface: var(--palette-neutral-800);
-   --color-surface-secondary: var(--palette-neutral-800);
+   --color-surface-secondary: var(--palette-neutral-900);
 
    --color-border: var(--palette-neutral-700);
    --color-border-secondary: var(--palette-neutral-600);
@@ -107,9 +107,9 @@
    --color-error: var(--palette-red-500);
    --color-warning: var(--palette-yellow-400);
 
-   --color-row-odd: rgba(255, 255, 255, 0.03);
-   --color-row-even: rgba(0, 0, 0, 0.2);
-   --color-bar-track: rgba(255, 255, 255, 0.12);
+   --color-row-odd: rgba(255, 255, 255, 0.1);
+   --color-row-even: rgba(255, 255, 255, 0.01);
+   --color-bar-track: rgba(255, 255, 255, 0.15);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -137,8 +137,8 @@
       --color-error: var(--palette-red-500);
       --color-warning: var(--palette-yellow-400);
 
-      --color-row-odd: rgba(255, 255, 255, 0.03);
-      --color-row-even: rgba(0, 0, 0, 0.2);
-      --color-bar-track: rgba(255, 255, 255, 0.12);
+      --color-row-odd: rgba(255, 255, 255, 0.1);
+      --color-row-even: rgba(255, 255, 255, 0.01);
+      --color-bar-track: rgba(255, 255, 255, 0.15);
    }
 }

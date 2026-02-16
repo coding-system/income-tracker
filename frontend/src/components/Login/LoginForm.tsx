@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { notifyAuthChanged } from "../../hooks/useAuthStatus";
 import styles from "./LoginForm.module.scss";
 
@@ -110,9 +110,13 @@ export function LoginForm() {
                >
                   {isLoading ? "Загрузка..." : "Войти"}
                </button>
-               <Link className={styles.login__buttonGhost} to="/register">
+               <button
+                  className={styles.login__buttonGhost}
+                  type="button"
+                  onClick={() => navigate("/register")}
+               >
                   Создать аккаунт
-               </Link>
+               </button>
             </div>
          </form>
       </section>

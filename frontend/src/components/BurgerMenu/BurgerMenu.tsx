@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStatus } from "../../hooks/useAuthStatus";
+import { applyTheme, getInitialTheme, setStoredTheme } from "../../utils/theme";
 import styles from "./BurgerMenu.module.scss";
 
 type BurgerMenuProps = {
@@ -10,17 +11,16 @@ type BurgerMenuProps = {
 
 export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
    const isAuthenticated = useAuthStatus();
-   const [theme, setTheme] = useState<"light" | "dark">(() => {
-      const current = document.documentElement.getAttribute("data-theme");
-      return current === "light" ? "light" : "dark";
-   });
+   const [theme, setTheme] = useState<"light" | "dark">(() =>
+      getInitialTheme(),
+   );
    const [isAnimating, setIsAnimating] = useState(false);
 
    const handleToggleTheme = () => {
-      const root = document.documentElement;
-      const current = root.getAttribute("data-theme");
+      const current = document.documentElement.getAttribute("data-theme");
       const next = current === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
+      applyTheme(next);
+      setStoredTheme(next);
       setTheme(next === "light" ? "light" : "dark");
       setIsAnimating(true);
       window.setTimeout(() => setIsAnimating(false), 300);
@@ -49,26 +49,22 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             </div>
             <nav className={styles.menu__nav}>
                <Link to="/" className={styles.menu__link} onClick={onClose}>
-                  <span className="material-symbols-outlined">
-                     home
-                  </span>Главная
+                  <span className="material-symbols-outlined">home</span>Главная
                </Link>
                <Link
                   to="/profile"
                   className={styles.menu__link}
                   onClick={onClose}
-               ><span className="material-symbols-outlined">
-                     person
-                  </span>
+               >
+                  <span className="material-symbols-outlined">person</span>
                   Профиль
                </Link>
                <Link
                   to="/shifts/new"
                   className={styles.menu__link}
                   onClick={onClose}
-               ><span className="material-symbols-outlined">
-                     local_taxi
-                  </span>
+               >
+                  <span className="material-symbols-outlined">local_taxi</span>
                   Новая смена
                </Link>
                <Link
@@ -88,9 +84,8 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         className={styles.menu__link}
                         onClick={onClose}
                      >
-                        <span className="material-symbols-outlined">
-                     login
-                  </span>Вход
+                        <span className="material-symbols-outlined">login</span>
+                        Вход
                      </Link>
                      <Link
                         to="/register"
@@ -98,8 +93,9 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         onClick={onClose}
                      >
                         <span className="material-symbols-outlined">
-                     app_registration
-                  </span>Регистрация
+                           app_registration
+                        </span>
+                        Регистрация
                      </Link>
                   </>
                ) : null}

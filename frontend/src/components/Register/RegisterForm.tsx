@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./RegisterForm.module.scss";
 
 const apiBase = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
 export function RegisterForm() {
+   const navigate = useNavigate();
    const [email, setEmail] = useState("");
    const [name, setName] = useState("");
    const [password, setPassword] = useState("");
@@ -151,7 +153,11 @@ export function RegisterForm() {
                >
                   {isLoading ? "Загрузка..." : "Зарегистрироваться"}
                </button>
-               <button className={styles.register__buttonGhost} type="button">
+               <button
+                  className={styles.register__buttonGhost}
+                  type="button"
+                  onClick={() => navigate("/login")}
+               >
                   Перейти ко входу
                </button>
             </div>
