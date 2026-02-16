@@ -36,17 +36,16 @@
    overflow: hidden;
 }
 
-.card__bar::after {
-   content: "";
-   position: absolute;
-   left: 50%;
-   top: 0;
-   bottom: 0;
-   width: 0.2em;
-   height: 0.5em;
-   background: rgba(255, 255, 255, 0.35);
-   transform: translateX(-50%);
-}
+// .card__bar::after {
+//    content: "";
+//    position: absolute;
+//    left: 50%;
+//    top: 0;
+//    bottom: 0;
+//    width: 0.2em;
+//    // background: rgba(255, 255, 255, 0.35);
+//    transform: translateX(-50%);
+// }
 
 .card__barFill {
    position: absolute;
@@ -60,5 +59,4 @@
       var(--bar-green, 0),
       var(--bar-blue, 0)
    );
-   background-color: rgb(123, 255, 0);
 }

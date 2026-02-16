@@ -58,6 +58,10 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
    const barWidth = Math.abs(delta) * 50;
    const barStart = delta >= 0 ? 50 : 50 - barWidth;
 
+   const step = 17;
+   const quantize = (value: number) =>
+      Math.min(255, Math.max(0, Math.round(value / step) * step));
+
    let red = 255;
    let green = 0;
    let blue = 0;
@@ -66,7 +70,7 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
       const t =
          (clampedIncome - minIncomePerHour) /
          (baseIncomePerHour - minIncomePerHour);
-      red = Math.round(255 * (1 - t));
+      red = 255;
       green = Math.round(255 * t);
       blue = 0;
    } else {
@@ -77,6 +81,10 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
       green = 255;
       blue = Math.round(255 * t);
    }
+
+   red = quantize(red);
+   green = quantize(green);
+   blue = quantize(blue);
 
    const barStyle = {
       "--bar-start": `${barStart}%`,
