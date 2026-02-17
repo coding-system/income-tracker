@@ -65,10 +65,17 @@ const buildLastDays = (count: number) => {
    const today = new Date();
    today.setHours(0, 0, 0, 0);
 
+   const toLocalIso = (value: Date) => {
+      const year = value.getFullYear();
+      const month = String(value.getMonth() + 1).padStart(2, "0");
+      const day = String(value.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+   };
+
    for (let offset = count - 1; offset >= 0; offset -= 1) {
       const date = new Date(today);
       date.setDate(today.getDate() - offset);
-      days.push(date.toISOString().slice(0, 10));
+      days.push(toLocalIso(date));
    }
 
    return days;
@@ -77,7 +84,7 @@ const buildLastDays = (count: number) => {
 export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
-   const [rangeDays, setRangeDays] = useState<15 | 30>(15);
+   const [rangeDays, setRangeDays] = useState<7 | 15 | 30>(15);
    const [dailyTargetNet, setDailyTargetNet] = useState<number | null>(null);
    const [hasWeeklyPlan, setHasWeeklyPlan] = useState(false);
 
@@ -227,6 +234,17 @@ export function HistoryPage() {
                   <div className={styles.page__chartHeader}>
                      <span className={styles.page__chartTitle}>График</span>
                      <div className={styles.page__chartToggle}>
+                        <button
+                           className={`${styles.page__chartButton} ${
+                              rangeDays === 7
+                                 ? styles["page__chartButton--active"]
+                                 : ""
+                           }`}
+                           type="button"
+                           onClick={() => setRangeDays(7)}
+                        >
+                           7 дней
+                        </button>
                         <button
                            className={`${styles.page__chartButton} ${
                               rangeDays === 15

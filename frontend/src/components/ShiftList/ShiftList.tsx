@@ -11,6 +11,8 @@ type ShiftData = {
    incomeTotal: number;
    engineHours: number | null;
    fuelings?: ShiftCost[];
+   washes?: ShiftCost[];
+   snacks?: ShiftCost[];
 };
 
 type ShiftListProps = {
@@ -22,8 +24,9 @@ export function ShiftList({ shifts }: ShiftListProps) {
       <section className={styles.list}>
          <div className={styles.header}>
             <span className={styles.header__cell}>Дата</span>
-            <span className={styles.header__cell}>Чистыми</span>
-            <span className={styles.header__cell}>Доход в час</span>
+            <span className={styles.header__cell}>Общий</span>
+            <span className={styles.header__cell}>Доход</span>
+            <span className={styles.header__cell}>час</span>
          </div>
          {shifts.map((shift) => (
             <ShiftCard key={shift.id} shift={shift} />

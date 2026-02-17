@@ -11,19 +11,26 @@ type ShiftData = {
    incomeTotal: number;
    engineHours: number | null;
    fuelings?: ShiftCost[];
+   washes?: ShiftCost[];
+   snacks?: ShiftCost[];
 };
 
 const formatDate = (value: string) => {
    const parsed = new Date(value);
    if (Number.isNaN(parsed.getTime())) {
-      return value;
+      return { weekday: "", dateLabel: value };
    }
 
-   return parsed.toLocaleDateString("ru-RU", {
+   const weekdayMap = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+   const weekday = weekdayMap[parsed.getDay()] ?? "";
+
+   const dateLabel = parsed.toLocaleDateString("ru-RU", {
       day: "2-digit",
       month: "2-digit",
       year: "2-digit",
    });
+
+   return { weekday, dateLabel };
 };
 
 const formatMoney = (value: number) =>
@@ -39,12 +46,21 @@ const formatMoneyWhole = (value: number) =>
    }).format(value);
 
 export function ShiftCard({ shift }: { shift: ShiftData }) {
+   const dateParts = formatDate(shift.date);
    const fuelTotal =
       shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-   const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+   const washTotal =
+      shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+   const snackTotal =
+      shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+   const grossIncome = shift.incomeTotal;
+   const netIncome = Math.max(
+      0,
+      grossIncome - fuelTotal - washTotal - snackTotal,
+   );
    const incomePerHour =
       shift.engineHours && shift.engineHours > 0
-         ? netIncome / shift.engineHours
+         ? grossIncome / shift.engineHours
          : 0;
    const minIncomePerHour = 500;
    const baseIncomePerHour = 1000;
@@ -96,12 +112,18 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
 
    return (
       <article className={styles.card}>
-         <div className={styles.card__cell}>{formatDate(shift.date)}</div>
+         <div className={styles.card__cell}>
+            <span className={styles.card__dateBadge}>{dateParts.weekday}</span>
+            <span className={styles.card__dateLabel}>
+               {dateParts.dateLabel}
+            </span>
+         </div>
+         <div className={styles.card__cell}>{formatMoney(grossIncome)} ₽</div>
          <div className={styles.card__cell}>{formatMoney(netIncome)} ₽</div>
-         <div
-            className={`${styles.card__cell} ${styles["card__cell--income"]}`}
-         >
-            <span>{formatMoneyWhole(incomePerHour)} ₽</span>
+         <div className={styles.card__cell}>
+            {formatMoneyWhole(incomePerHour)} ₽
+         </div>
+         <div className={styles.card__barRow}>
             <span className={styles.card__bar} style={barStyle}>
                <span className={styles.card__barFill} />
             </span>
