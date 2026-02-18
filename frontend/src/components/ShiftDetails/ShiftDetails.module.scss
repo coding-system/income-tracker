@@ -1,0 +1,80 @@
+.details {
+   display: flex;
+   flex-direction: column;
+   gap: 1.6em;
+}
+
+.details__header {
+   display: flex;
+   flex-direction: column;
+   gap: 0.4em;
+}
+
+.details__eyebrow {
+   margin: 0;
+   color: var(--color-text-secondary);
+   text-transform: uppercase;
+   letter-spacing: 0.1em;
+   font-size: 0.85em;
+}
+
+.details__title {
+   margin: 0;
+   font-size: 2em;
+}
+
+.details__grid {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 1em;
+}
+
+.details__card {
+   padding: 0.3em 1em;
+   border-radius: 1em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+}
+
+.details__label {
+   margin: 0;
+   color: var(--color-text-tertiary);
+   font-size: 0.85em;
+}
+
+.details__value {
+   font-weight: 600;
+   font-size: 1.2em;
+   display: inline-flex;
+   align-items: center;
+   gap: 0.3em;
+}
+
+.details__icon {
+   font-size: 1.1em;
+   color: var(--color-text-secondary);
+}
+
+.details__expenses {
+   display: flex;
+   flex-direction: column;
+   gap: 0.8em;
+}
+
+.details__subtitle {
+   margin: 0;
+   font-size: 1.2em;
+}
+
+.details__expenseGrid {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 1em;
+}
+
+.details__expenseItem {
+   padding: 1em 1.2em;
+   border-radius: 1em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
+}

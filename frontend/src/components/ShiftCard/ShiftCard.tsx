@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { Link } from "react-router-dom";
 import styles from "./ShiftCard.module.scss";
 
 type ShiftCost = {
@@ -13,6 +14,7 @@ type ShiftData = {
    fuelings?: ShiftCost[];
    washes?: ShiftCost[];
    snacks?: ShiftCost[];
+   others?: ShiftCost[];
 };
 
 const formatDate = (value: string) => {
@@ -53,10 +55,12 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
       shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
    const snackTotal =
       shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+   const otherTotal =
+      shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
    const grossIncome = shift.incomeTotal;
    const netIncome = Math.max(
       0,
-      grossIncome - fuelTotal - washTotal - snackTotal,
+      grossIncome - fuelTotal - washTotal - snackTotal - otherTotal,
    );
    const incomePerHour =
       shift.engineHours && shift.engineHours > 0
@@ -111,7 +115,11 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
    } as CSSProperties;
 
    return (
-      <article className={styles.card}>
+      <Link
+         className={styles.card}
+         to={`/history/${shift.id}`}
+         aria-label={`Смена за ${dateParts.dateLabel}`}
+      >
          <div className={styles.card__cell}>
             <span className={styles.card__dateBadge}>{dateParts.weekday}</span>
             <span className={styles.card__dateLabel}>
@@ -128,6 +136,6 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
                <span className={styles.card__barFill} />
             </span>
          </div>
-      </article>
+      </Link>
    );
 }

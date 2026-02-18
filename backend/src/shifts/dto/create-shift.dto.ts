@@ -52,4 +52,11 @@ export class CreateShiftDto {
    @IsNumber({}, { each: true })
    @Min(0, { each: true })
    snacks?: number[];
+
+   @IsOptional()
+   @IsArray()
+   @Type(() => Number)
+   @IsNumber({}, { each: true })
+   @Min(0, { each: true })
+   others?: number[];
 }

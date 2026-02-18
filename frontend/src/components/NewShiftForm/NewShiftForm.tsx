@@ -36,6 +36,7 @@ export function NewShiftForm() {
    const [fuelings, setFuelings] = useState<string[]>([]);
    const [washes, setWashes] = useState<string[]>([]);
    const [snacks, setSnacks] = useState<string[]>([]);
+   const [others, setOthers] = useState<string[]>([]);
    const [status, setStatus] = useState<{
       type: "error" | "success";
       text: string;
@@ -134,6 +135,7 @@ export function NewShiftForm() {
             fuelings: toNumberArray(fuelings),
             washes: toNumberArray(washes),
             snacks: toNumberArray(snacks),
+            others: toNumberArray(others),
          };
 
          const response = await fetchWithAuth("/shifts", {
@@ -444,6 +446,54 @@ export function NewShiftForm() {
                               type="button"
                               onClick={() =>
                                  handleArrayRemove(setSnacks, index)
+                              }
+                           >
+                              Удалить
+                           </button>
+                        </div>
+                     ))}
+                  </div>
+               ) : null}
+            </div>
+
+            <div className={styles.form__section}>
+               <div className={styles.form__sectionHeader}>
+                  <h2 className={styles.form__sectionTitle}>Другое</h2>
+                  <button
+                     className={styles.form__addButton}
+                     type="button"
+                     onClick={() => handleArrayAdd(setOthers)}
+                  >
+                     + Добавить
+                  </button>
+               </div>
+               {others.length > 0 ? (
+                  <div className={styles.form__list}>
+                     {others.map((value, index) => (
+                        <div
+                           className={styles.form__listItem}
+                           key={`other-${index}`}
+                        >
+                           <input
+                              className={styles.form__input}
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              placeholder="Сумма"
+                              value={value}
+                              onChange={(event) =>
+                                 handleArrayChange(
+                                    setOthers,
+                                    index,
+                                    event.target.value,
+                                 )
+                              }
+                           />
+                           <button
+                              className={styles.form__removeButton}
+                              type="button"
+                              onClick={() =>
+                                 handleArrayRemove(setOthers, index)
                               }
                            >
                               Удалить

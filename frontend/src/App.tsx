@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/Login/LoginPage";
 import { NewShiftPage } from "./pages/NewShift/NewShiftPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { RegisterPage } from "./pages/Register/RegisterPage";
+import { ShiftDetailsPage } from "./pages/ShiftDetails/ShiftDetailsPage";
 
 function App() {
    const isAuthenticated = useAuthStatus();
@@ -53,6 +54,16 @@ function App() {
                   element={
                      isAuthenticated ? (
                         <HistoryPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/history/:id"
+                  element={
+                     isAuthenticated ? (
+                        <ShiftDetailsPage />
                      ) : (
                         <Navigate to="/login" replace />
                      )

@@ -15,6 +15,9 @@ type ShiftData = {
    engineHours: number | null;
    mileageKm: number | null;
    fuelings?: ShiftCost[];
+   washes?: ShiftCost[];
+   snacks?: ShiftCost[];
+   others?: ShiftCost[];
 };
 
 type ProfileSettings = {
@@ -92,7 +95,16 @@ export function HistoryPage() {
       (acc, shift) => {
          const fuelTotal =
             shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-         const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+         const washTotal =
+            shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+         const snackTotal =
+            shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+         const otherTotal =
+            shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+         const netIncome = Math.max(
+            0,
+            shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
+         );
          acc[shift.date] = (acc[shift.date] ?? 0) + netIncome;
          return acc;
       },
@@ -124,7 +136,16 @@ export function HistoryPage() {
 
       const fuelTotal =
          shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+      const washTotal =
+         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const snackTotal =
+         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const otherTotal =
+         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const netIncome = Math.max(
+         0,
+         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
+      );
       return total + netIncome;
    }, 0);
 
@@ -136,7 +157,16 @@ export function HistoryPage() {
 
       const fuelTotal =
          shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+      const washTotal =
+         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const snackTotal =
+         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const otherTotal =
+         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const netIncome = Math.max(
+         0,
+         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
+      );
       return total + netIncome;
    }, 0);
 
@@ -160,7 +190,16 @@ export function HistoryPage() {
 
       const fuelTotal =
          shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(0, shift.incomeTotal - fuelTotal);
+      const washTotal =
+         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const snackTotal =
+         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const otherTotal =
+         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
+      const netIncome = Math.max(
+         0,
+         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
+      );
       return total + netIncome;
    }, 0);
 

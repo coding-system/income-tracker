@@ -14,12 +14,34 @@ export class ShiftsService {
             fuelings: true,
             washes: true,
             snacks: true,
+            others: true,
+         },
+      });
+   }
+
+   async getShiftById(userId: string, shiftId: string) {
+      return this.prisma.day.findFirst({
+         where: {
+            id: shiftId,
+            userId,
+         },
+         include: {
+            fuelings: true,
+            washes: true,
+            snacks: true,
+            others: true,
          },
       });
    }
 
    async createShift(userId: string, dto: CreateShiftDto) {
-      const { fuelings = [], washes = [], snacks = [], ...dayData } = dto;
+      const {
+         fuelings = [],
+         washes = [],
+         snacks = [],
+         others = [],
+         ...dayData
+      } = dto;
 
       return this.prisma.day.upsert({
          where: {
@@ -40,6 +62,9 @@ export class ShiftsService {
             snacks: {
                create: snacks.map((costTotal) => ({ costTotal })),
             },
+            others: {
+               create: others.map((costTotal) => ({ costTotal })),
+            },
          },
          update: {
             ...dayData,
@@ -55,11 +80,16 @@ export class ShiftsService {
                deleteMany: {},
                create: snacks.map((costTotal) => ({ costTotal })),
             },
+            others: {
+               deleteMany: {},
+               create: others.map((costTotal) => ({ costTotal })),
+            },
          },
          include: {
             fuelings: true,
             washes: true,
             snacks: true,
+            others: true,
          },
       });
    }

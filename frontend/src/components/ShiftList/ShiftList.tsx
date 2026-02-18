@@ -13,6 +13,7 @@ type ShiftData = {
    fuelings?: ShiftCost[];
    washes?: ShiftCost[];
    snacks?: ShiftCost[];
+   others?: ShiftCost[];
 };
 
 type ShiftListProps = {

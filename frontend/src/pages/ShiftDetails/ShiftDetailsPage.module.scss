@@ -1,0 +1,42 @@
+.page {
+   font-size: 1rem;
+   display: flex;
+   justify-content: center;
+   color: var(--color-text);
+   background:
+      radial-gradient(
+         120% 120% at 0% 0%,
+         rgba(var(--color-primary-rgb), 0.12),
+         transparent 55%
+      ),
+      var(--color-background);
+}
+
+.page__panel {
+   width: min(62em, 100%);
+   padding: 0.8em 0.8em 2em;
+   display: flex;
+   flex-direction: column;
+   gap: 1.6em;
+}
+
+.page__actions {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+}
+
+.page__back {
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.5em 1.2em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.page__empty {
+   margin: 0;
+   color: var(--color-text-secondary);
+}

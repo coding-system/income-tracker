@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "Other" (
+    "id" TEXT NOT NULL,
+    "dayId" TEXT NOT NULL,
+    "costTotal" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Other_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Other" ADD CONSTRAINT "Other_dayId_fkey" FOREIGN KEY ("dayId") REFERENCES "Day"("id") ON DELETE CASCADE ON UPDATE CASCADE;
