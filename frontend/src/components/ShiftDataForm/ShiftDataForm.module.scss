@@ -151,8 +151,7 @@
 }
 
 .form__listItem {
-   display: grid;
-   grid-template-columns: 1fr auto;
+   display: flex;
    gap: 0.8em;
    align-items: center;
 }
