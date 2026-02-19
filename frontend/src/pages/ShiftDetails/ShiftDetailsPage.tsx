@@ -18,6 +18,7 @@ type ShiftDetailsData = {
    fuelings?: ShiftCost[];
    washes?: ShiftCost[];
    snacks?: ShiftCost[];
+   others?: ShiftCost[];
 };
 
 export function ShiftDetailsPage() {

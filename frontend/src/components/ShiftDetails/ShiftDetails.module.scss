@@ -6,8 +6,9 @@
 
 .details__header {
    display: flex;
-   flex-direction: column;
-   gap: 0.4em;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
 }
 
 .details__eyebrow {
@@ -20,7 +21,7 @@
 
 .details__title {
    margin: 0;
-   font-size: 2em;
+   font-size: 1.4em;
 }
 
 .details__grid {
@@ -73,28 +74,31 @@
 }
 
 .details__expenseItem {
-   padding: 1em 1.2em;
+   padding: 0.3em 1em;
    border-radius: 1em;
    border: 0.08em solid var(--color-border);
-   background: var(--color-surface);
+   background: var(--color-surface-secondary);
 }
 
 .details__actions {
    display: flex;
-   justify-content: flex-end;
 }
 
 .details__editButton {
-   display: inline-flex;
+   display: flex;
+   justify-content: center;
    align-items: center;
    gap: 0.4em;
    border: 0.08em solid var(--color-border);
    background: transparent;
    color: var(--color-text-secondary);
-   padding: 0.6em 1.4em;
+   padding: 0.4em;
    border-radius: 2em;
    cursor: pointer;
    font-weight: 600;
+   text-decoration: none;
+   font-size: 1.4em;
+   
 }
 
 .details__editIcon {

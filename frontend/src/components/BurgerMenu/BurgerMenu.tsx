@@ -60,7 +60,7 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                   Профиль
                </Link>
                <Link
-                  to="/shifts/new"
+                  to="/shift/new"
                   className={styles.menu__link}
                   onClick={onClose}
                >

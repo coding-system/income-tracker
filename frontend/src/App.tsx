@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/Login/LoginPage";
 import { NewShiftPage } from "./pages/NewShift/NewShiftPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { RegisterPage } from "./pages/Register/RegisterPage";
+import { ShiftEditPage } from "./pages/ShiftEdit/ShiftEditPage";
 import { ShiftDetailsPage } from "./pages/ShiftDetails/ShiftDetailsPage";
 
 function App() {
@@ -70,7 +71,27 @@ function App() {
                   }
                />
                <Route
-                  path="/shifts/new"
+                  path="/shift/:id"
+                  element={
+                     isAuthenticated ? (
+                        <ShiftDetailsPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/shift/:id/edit"
+                  element={
+                     isAuthenticated ? (
+                        <ShiftEditPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/shift/new"
                   element={
                      isAuthenticated ? (
                         <NewShiftPage />

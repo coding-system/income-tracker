@@ -117,7 +117,7 @@ export function ShiftCard({ shift }: { shift: ShiftData }) {
    return (
       <Link
          className={styles.card}
-         to={`/history/${shift.id}`}
+         to={`/shift/${shift.id}`}
          aria-label={`Смена за ${dateParts.dateLabel}`}
       >
          <div className={styles.card__cell}>

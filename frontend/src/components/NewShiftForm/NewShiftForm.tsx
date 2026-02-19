@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../../api/authClient";
 import styles from "./NewShiftForm.module.scss";
 
@@ -19,7 +19,50 @@ const toIsoDate = (value: Date) => {
 const toLabelDate = (value: Date) =>
    value.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
 
-export function NewShiftForm() {
+export type ShiftFormData = {
+   id?: string;
+   date: string;
+   incomeTotal: number;
+   mileageKm: number;
+   engineHours: number;
+   tripsCount: number;
+   fuelings?: number[];
+   washes?: number[];
+   snacks?: number[];
+   others?: number[];
+};
+
+type NewShiftFormProps = {
+   initialData?: ShiftFormData | null;
+   onSubmit?: (payload: ShiftFormData) => Promise<void>;
+   submitLabel?: string;
+   title?: string;
+   subtitle?: string;
+   successMessage?: string;
+};
+
+const splitEngineHours = (value: number | null | undefined) => {
+   if (!value || value <= 0) {
+      return { hours: "", minutes: "" };
+   }
+
+   const totalMinutes = Math.round(value * 60);
+   const hours = Math.floor(totalMinutes / 60);
+   const minutes = totalMinutes % 60;
+   return {
+      hours: String(hours),
+      minutes: String(minutes),
+   };
+};
+
+export function NewShiftForm({
+   initialData,
+   onSubmit,
+   submitLabel = "Сохранить",
+   title = "Новая смена",
+   subtitle = "Заполните данные и сохраните смену.",
+   successMessage = "Смена сохранена",
+}: NewShiftFormProps) {
    const today = new Date();
    const yesterday = new Date();
    yesterday.setDate(today.getDate() - 1);
@@ -27,21 +70,60 @@ export function NewShiftForm() {
    const todayIso = toIsoDate(today);
    const yesterdayIso = toIsoDate(yesterday);
 
-   const [date, setDate] = useState(todayIso);
-   const [incomeTotal, setIncomeTotal] = useState("");
-   const [mileageKm, setMileageKm] = useState("");
-   const [engineHoursHours, setEngineHoursHours] = useState("");
-   const [engineHoursMinutes, setEngineHoursMinutes] = useState("");
-   const [tripsCount, setTripsCount] = useState("");
-   const [fuelings, setFuelings] = useState<string[]>([]);
-   const [washes, setWashes] = useState<string[]>([]);
-   const [snacks, setSnacks] = useState<string[]>([]);
-   const [others, setOthers] = useState<string[]>([]);
+   const [date, setDate] = useState(initialData?.date ?? todayIso);
+   const [incomeTotal, setIncomeTotal] = useState(
+      initialData ? String(initialData.incomeTotal) : "",
+   );
+   const [mileageKm, setMileageKm] = useState(
+      initialData ? String(initialData.mileageKm) : "",
+   );
+   const initialEngine = splitEngineHours(initialData?.engineHours);
+   const [engineHoursHours, setEngineHoursHours] = useState(
+      initialEngine.hours,
+   );
+   const [engineHoursMinutes, setEngineHoursMinutes] = useState(
+      initialEngine.minutes,
+   );
+   const [tripsCount, setTripsCount] = useState(
+      initialData ? String(initialData.tripsCount) : "",
+   );
+   const [fuelings, setFuelings] = useState<string[]>(
+      initialData?.fuelings?.map(String) ?? [],
+   );
+   const [washes, setWashes] = useState<string[]>(
+      initialData?.washes?.map(String) ?? [],
+   );
+   const [snacks, setSnacks] = useState<string[]>(
+      initialData?.snacks?.map(String) ?? [],
+   );
+   const [others, setOthers] = useState<string[]>(
+      initialData?.others?.map(String) ?? [],
+   );
    const [status, setStatus] = useState<{
       type: "error" | "success";
       text: string;
    } | null>(null);
    const [isLoading, setIsLoading] = useState(false);
+
+   useEffect(() => {
+      if (!initialData) {
+         return;
+      }
+
+      setDate(initialData.date);
+      setIncomeTotal(String(initialData.incomeTotal));
+      setMileageKm(String(initialData.mileageKm));
+      setTripsCount(String(initialData.tripsCount));
+
+      const nextEngine = splitEngineHours(initialData.engineHours);
+      setEngineHoursHours(nextEngine.hours);
+      setEngineHoursMinutes(nextEngine.minutes);
+
+      setFuelings(initialData.fuelings?.map(String) ?? []);
+      setWashes(initialData.washes?.map(String) ?? []);
+      setSnacks(initialData.snacks?.map(String) ?? []);
+      setOthers(initialData.others?.map(String) ?? []);
+   }, [initialData]);
 
    const handleArrayChange = (
       setter: React.Dispatch<React.SetStateAction<string[]>>,
@@ -91,10 +173,10 @@ export function NewShiftForm() {
 
          if (
             !Number.isFinite(minutesValue) ||
-            minutesValue < 1 ||
+            minutesValue < 0 ||
             minutesValue > 59
          ) {
-            setStatus({ type: "error", text: "Минуты должны быть от 1 до 59" });
+            setStatus({ type: "error", text: "Минуты должны быть от 0 до 59" });
             setIsLoading(false);
             return;
          }
@@ -126,7 +208,8 @@ export function NewShiftForm() {
          const engineHours = Number(
             (hoursValue + minutesValue / 60).toFixed(2),
          );
-         const payload = {
+         const payload: ShiftFormData = {
+            id: initialData?.id,
             date,
             incomeTotal: incomeValue,
             mileageKm: mileageValue,
@@ -138,24 +221,40 @@ export function NewShiftForm() {
             others: toNumberArray(others),
          };
 
-         const response = await fetchWithAuth("/shifts", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-         });
+         if (onSubmit) {
+            await onSubmit(payload);
+         } else {
+            const response = await fetchWithAuth("/shifts", {
+               method: "POST",
+               headers: {
+                  "Content-Type": "application/json",
+               },
+               body: JSON.stringify(payload),
+            });
 
-         if (response.status === 401) {
-            throw new Error("Сессия истекла. Войдите снова.");
+            if (response.status === 401) {
+               throw new Error("Сессия истекла. Войдите снова.");
+            }
+
+            if (!response.ok) {
+               const message = await response.text();
+               throw new Error(message || "Ошибка сохранения");
+            }
          }
 
-         if (!response.ok) {
-            const message = await response.text();
-            throw new Error(message || "Ошибка сохранения");
+         setStatus({ type: "success", text: successMessage });
+         if (!initialData) {
+            setDate(todayIso);
+            setIncomeTotal("");
+            setMileageKm("");
+            setEngineHoursHours("");
+            setEngineHoursMinutes("");
+            setTripsCount("");
+            setFuelings([]);
+            setWashes([]);
+            setSnacks([]);
+            setOthers([]);
          }
-
-         setStatus({ type: "success", text: "Смена сохранена" });
       } catch (error) {
          const message =
             error instanceof Error ? error.message : "Ошибка сохранения";
@@ -168,10 +267,8 @@ export function NewShiftForm() {
    return (
       <section className={styles.panel}>
          <header className={styles.header}>
-            <h1 className={styles.title}>Новая смена</h1>
-            <p className={styles.subtitle}>
-               Заполните данные и сохраните смену.
-            </p>
+            <h1 className={styles.title}>{title}</h1>
+            <p className={styles.subtitle}>{subtitle}</p>
          </header>
          <form className={styles.form} onSubmit={handleSubmit}>
             {status ? (
@@ -509,7 +606,7 @@ export function NewShiftForm() {
                type="submit"
                disabled={isLoading}
             >
-               {isLoading ? "Сохранение..." : "Сохранить"}
+               {isLoading ? "Сохранение..." : submitLabel}
             </button>
          </form>
       </section>

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styles from "./ShiftDetails.module.scss";
 
 type ShiftCost = {
@@ -70,6 +71,19 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
             <h1 className={styles.details__title}>
                {formatDateLong(shift.date)}
             </h1>
+            <div className={styles.details__actions}>
+               <Link
+                  className={styles.details__editButton}
+                  to={`/shift/${shift.id}/edit`}
+                  aria-label="Редактировать смену"
+               >
+                  <span
+                     className={`material-symbols-outlined ${styles.details__editIcon}`}
+                  >
+                     edit
+                  </span>
+               </Link>
+            </div>
          </header>
 
          <div className={styles.details__grid}>
@@ -79,19 +93,6 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
                   {formatMoneyWhole(grossIncome)} ₽
                </p>
             </div>
-
-            <div className={styles.details__card}>
-               <p className={styles.details__label}>Чистыми</p>
-               <p className={styles.details__value}>
-                  {formatMoneyWhole(netIncome)} ₽
-               </p>
-            </div>
-            <div className={styles.details__card}>
-               <p className={styles.details__label}>Доход в час</p>
-               <p className={styles.details__value}>
-                  {formatMoneyWhole(incomePerHour)} ₽
-               </p>
-            </div>
             <div className={styles.details__card}>
                <p className={styles.details__label}>Моточасы</p>
                <p className={styles.details__value}>
@@ -99,9 +100,22 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
                </p>
             </div>
             <div className={styles.details__card}>
+               <p className={styles.details__label}>Чистыми</p>
+               <p className={styles.details__value}>
+                  {formatMoneyWhole(netIncome)} ₽
+               </p>
+            </div>
+
+            <div className={styles.details__card}>
                <p className={styles.details__label}>Пробег</p>
                <p className={styles.details__value}>
                   {shift.mileageKm ?? 0} км
+               </p>
+            </div>
+            <div className={styles.details__card}>
+               <p className={styles.details__label}>Доход в час</p>
+               <p className={styles.details__value}>
+                  {formatMoneyWhole(incomePerHour)} ₽
                </p>
             </div>
             <div className={styles.details__card}>
@@ -159,17 +173,6 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
                </div>
             </div>
          </section>
-
-         <div className={styles.details__actions}>
-            <button className={styles.details__editButton} type="button">
-               <span
-                  className={`material-symbols-outlined ${styles.details__editIcon}`}
-               >
-                  edit
-               </span>
-               Изменить
-            </button>
-         </div>
       </section>
    );
 }

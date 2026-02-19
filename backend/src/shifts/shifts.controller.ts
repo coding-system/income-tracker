@@ -4,6 +4,7 @@ import {
    Get,
    NotFoundException,
    Param,
+   Patch,
    Post,
    UseGuards,
 } from "@nestjs/common";
@@ -41,5 +42,19 @@ export class ShiftsController {
       @Body() dto: CreateShiftDto,
    ) {
       return this.shiftsService.createShift(user.userId, dto);
+   }
+
+   @Patch(":id")
+   async updateShift(
+      @CurrentUser() user: { userId: string },
+      @Param("id") id: string,
+      @Body() dto: CreateShiftDto,
+   ) {
+      const shift = await this.shiftsService.updateShift(user.userId, id, dto);
+      if (!shift) {
+         throw new NotFoundException("Shift not found");
+      }
+
+      return shift;
    }
 }

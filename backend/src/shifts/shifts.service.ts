@@ -93,4 +93,56 @@ export class ShiftsService {
          },
       });
    }
+
+   async updateShift(userId: string, shiftId: string, dto: CreateShiftDto) {
+      const existing = await this.prisma.day.findFirst({
+         where: {
+            id: shiftId,
+            userId,
+         },
+      });
+
+      if (!existing) {
+         return null;
+      }
+
+      const {
+         fuelings = [],
+         washes = [],
+         snacks = [],
+         others = [],
+         ...dayData
+      } = dto;
+
+      return this.prisma.day.update({
+         where: {
+            id: shiftId,
+         },
+         data: {
+            ...dayData,
+            fuelings: {
+               deleteMany: {},
+               create: fuelings.map((costTotal) => ({ costTotal })),
+            },
+            washes: {
+               deleteMany: {},
+               create: washes.map((costTotal) => ({ costTotal })),
+            },
+            snacks: {
+               deleteMany: {},
+               create: snacks.map((costTotal) => ({ costTotal })),
+            },
+            others: {
+               deleteMany: {},
+               create: others.map((costTotal) => ({ costTotal })),
+            },
+         },
+         include: {
+            fuelings: true,
+            washes: true,
+            snacks: true,
+            others: true,
+         },
+      });
+   }
 }
