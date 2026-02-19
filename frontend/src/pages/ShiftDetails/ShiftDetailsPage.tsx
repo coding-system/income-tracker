@@ -27,6 +27,7 @@ export function ShiftDetailsPage() {
    const [shift, setShift] = useState<ShiftDetailsData | null>(null);
    const [isLoading, setIsLoading] = useState(true);
    const [error, setError] = useState<string | null>(null);
+   const [isDeleting, setIsDeleting] = useState(false);
 
    useEffect(() => {
       const load = async () => {
@@ -59,6 +60,46 @@ export function ShiftDetailsPage() {
       void load();
    }, [id]);
 
+   const handleDelete = async () => {
+      if (!id) {
+         setError("Смена не найдена");
+         return;
+      }
+
+      const confirmed = window.confirm(
+         "Удалить смену без возможности восстановления?",
+      );
+      if (!confirmed) {
+         return;
+      }
+
+      setIsDeleting(true);
+      try {
+         const response = await fetchWithAuth(`/shifts/${id}`, {
+            method: "DELETE",
+         });
+
+         if (response.status === 401) {
+            throw new Error("Сессия истекла. Войдите снова.");
+         }
+
+         if (!response.ok) {
+            const message = await response.text();
+            throw new Error(message || "Не удалось удалить смену");
+         }
+
+         navigate("/history");
+      } catch (deleteError) {
+         const message =
+            deleteError instanceof Error
+               ? deleteError.message
+               : "Не удалось удалить смену";
+         setError(message);
+      } finally {
+         setIsDeleting(false);
+      }
+   };
+
    return (
       <main className={styles.page}>
          <section className={styles.page__panel}>
@@ -76,7 +117,11 @@ export function ShiftDetailsPage() {
             ) : error ? (
                <p className={styles.page__empty}>{error}</p>
             ) : shift ? (
-               <ShiftDetails shift={shift} />
+               <ShiftDetails
+                  shift={shift}
+                  onDelete={handleDelete}
+                  isDeleting={isDeleting}
+               />
             ) : (
                <p className={styles.page__empty}>Смена не найдена</p>
             )}

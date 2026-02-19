@@ -52,7 +52,15 @@ const formatEngineHours = (value: number | null) => {
    return `${hours} ч ${minutes} мин`;
 };
 
-export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
+export function ShiftDetails({
+   shift,
+   onDelete,
+   isDeleting = false,
+}: {
+   shift: ShiftDetailsData;
+   onDelete?: () => void;
+   isDeleting?: boolean;
+}) {
    const fuelTotal = sumCosts(shift.fuelings);
    const washTotal = sumCosts(shift.washes);
    const snackTotal = sumCosts(shift.snacks);
@@ -83,6 +91,21 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
                      edit
                   </span>
                </Link>
+               {onDelete ? (
+                  <button
+                     className={styles.details__deleteButton}
+                     type="button"
+                     onClick={onDelete}
+                     aria-label="Удалить смену"
+                     disabled={isDeleting}
+                  >
+                     <span
+                        className={`material-symbols-outlined ${styles.details__deleteIcon}`}
+                     >
+                        delete
+                     </span>
+                  </button>
+               ) : null}
             </div>
          </header>
 

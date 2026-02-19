@@ -1,6 +1,7 @@
 import {
    Body,
    Controller,
+   Delete,
    Get,
    NotFoundException,
    Param,
@@ -51,6 +52,19 @@ export class ShiftsController {
       @Body() dto: CreateShiftDto,
    ) {
       const shift = await this.shiftsService.updateShift(user.userId, id, dto);
+      if (!shift) {
+         throw new NotFoundException("Shift not found");
+      }
+
+      return shift;
+   }
+
+   @Delete(":id")
+   async deleteShift(
+      @CurrentUser() user: { userId: string },
+      @Param("id") id: string,
+   ) {
+      const shift = await this.shiftsService.deleteShift(user.userId, id);
       if (!shift) {
          throw new NotFoundException("Shift not found");
       }

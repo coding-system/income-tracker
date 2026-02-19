@@ -91,21 +91,9 @@ export function HistoryPage() {
    const [dailyTargetNet, setDailyTargetNet] = useState<number | null>(null);
    const [hasWeeklyPlan, setHasWeeklyPlan] = useState(false);
 
-   const netIncomeByDate = shifts.reduce<Record<string, number>>(
+   const grossIncomeByDate = shifts.reduce<Record<string, number>>(
       (acc, shift) => {
-         const fuelTotal =
-            shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-         const washTotal =
-            shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-         const snackTotal =
-            shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-         const otherTotal =
-            shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-         const netIncome = Math.max(
-            0,
-            shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
-         );
-         acc[shift.date] = (acc[shift.date] ?? 0) + netIncome;
+         acc[shift.date] = (acc[shift.date] ?? 0) + shift.incomeTotal;
          return acc;
       },
       {},
@@ -114,12 +102,12 @@ export function HistoryPage() {
    const lastDays = buildLastDays(rangeDays);
    const chartPoints = lastDays.map((date) => ({
       date,
-      value: netIncomeByDate[date] ?? 0,
+      value: grossIncomeByDate[date] ?? 0,
    }));
    const workedValues = chartPoints
       .map((item) => item.value)
       .filter((value) => value > 0);
-   const averageNetIncome = workedValues.length
+   const averageGrossIncome = workedValues.length
       ? workedValues.reduce((sum, value) => sum + value, 0) /
         workedValues.length
       : null;
@@ -128,53 +116,29 @@ export function HistoryPage() {
          ? dailyTargetNet
          : null;
 
-   const weeklyNetIncome = shifts.reduce((total, shift) => {
+   const weeklyGrossIncome = shifts.reduce((total, shift) => {
       const shiftDate = parseDateLocal(shift.date);
       if (!shiftDate || !isWithinLastSevenDays(shiftDate)) {
          return total;
       }
 
-      const fuelTotal =
-         shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const washTotal =
-         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const snackTotal =
-         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const otherTotal =
-         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(
-         0,
-         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
-      );
-      return total + netIncome;
+      return total + shift.incomeTotal;
    }, 0);
 
-   const lastThirtyNetIncome = shifts.reduce((total, shift) => {
+   const lastThirtyGrossIncome = shifts.reduce((total, shift) => {
       const shiftDate = parseDateLocal(shift.date);
       if (!shiftDate || !isWithinLastDays(shiftDate, 30)) {
          return total;
       }
 
-      const fuelTotal =
-         shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const washTotal =
-         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const snackTotal =
-         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const otherTotal =
-         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(
-         0,
-         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
-      );
-      return total + netIncome;
+      return total + shift.incomeTotal;
    }, 0);
 
    const monthLabel = new Intl.DateTimeFormat("ru-RU", {
       month: "long",
    }).format(new Date());
 
-   const monthlyNetIncome = shifts.reduce((total, shift) => {
+   const monthlyGrossIncome = shifts.reduce((total, shift) => {
       const shiftDate = parseDateLocal(shift.date);
       if (!shiftDate) {
          return total;
@@ -188,19 +152,7 @@ export function HistoryPage() {
          return total;
       }
 
-      const fuelTotal =
-         shift.fuelings?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const washTotal =
-         shift.washes?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const snackTotal =
-         shift.snacks?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const otherTotal =
-         shift.others?.reduce((sum, item) => sum + item.costTotal, 0) ?? 0;
-      const netIncome = Math.max(
-         0,
-         shift.incomeTotal - fuelTotal - washTotal - snackTotal - otherTotal,
-      );
-      return total + netIncome;
+      return total + shift.incomeTotal;
    }, 0);
 
    useEffect(() => {
@@ -243,7 +195,7 @@ export function HistoryPage() {
                         Итого за 7 дней
                      </span>
                      <span className={styles.page__summaryValue}>
-                        {formatMoneyWhole(weeklyNetIncome)} ₽
+                        {formatMoneyWhole(weeklyGrossIncome)} ₽
                      </span>
                   </div>
                   <div className={styles.page__summaryRow}>
@@ -251,7 +203,7 @@ export function HistoryPage() {
                         Итого за 30 дней
                      </span>
                      <span className={styles.page__summaryValue}>
-                        {formatMoneyWhole(lastThirtyNetIncome)} ₽
+                        {formatMoneyWhole(lastThirtyGrossIncome)} ₽
                      </span>
                   </div>
                   <div className={styles.page__summaryRow}>
@@ -259,7 +211,7 @@ export function HistoryPage() {
                         Итого за {monthLabel}
                      </span>
                      <span className={styles.page__summaryValue}>
-                        {formatMoneyWhole(monthlyNetIncome)} ₽
+                        {formatMoneyWhole(monthlyGrossIncome)} ₽
                      </span>
                   </div>
                </div>
@@ -311,7 +263,7 @@ export function HistoryPage() {
                   <HistoryChart
                      points={chartPoints}
                      rangeLabel={`График за ${rangeDays} дней`}
-                     averageValue={averageNetIncome}
+                     averageValue={averageGrossIncome}
                      targetValue={targetDailyIncome}
                   />
                   <ShiftList shifts={shifts} />

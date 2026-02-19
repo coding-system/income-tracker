@@ -145,4 +145,23 @@ export class ShiftsService {
          },
       });
    }
+
+   async deleteShift(userId: string, shiftId: string) {
+      const existing = await this.prisma.day.findFirst({
+         where: {
+            id: shiftId,
+            userId,
+         },
+      });
+
+      if (!existing) {
+         return null;
+      }
+
+      return this.prisma.day.delete({
+         where: {
+            id: shiftId,
+         },
+      });
+   }
 }

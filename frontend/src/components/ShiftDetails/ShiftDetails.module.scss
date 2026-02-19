@@ -82,6 +82,7 @@
 
 .details__actions {
    display: flex;
+   gap: 0.6em;
 }
 
 .details__editButton {
@@ -98,9 +99,32 @@
    font-weight: 600;
    text-decoration: none;
    font-size: 1.4em;
-   
 }
 
 .details__editIcon {
+   font-size: 1.1em;
+}
+
+.details__deleteButton {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 0.4em;
+   border: 0.08em solid rgba(230, 72, 72, 0.5);
+   background: rgba(230, 72, 72, 0.1);
+   color: rgb(230, 72, 72);
+   padding: 0.4em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+   font-size: 1.4em;
+}
+
+.details__deleteButton:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
+}
+
+.details__deleteIcon {
    font-size: 1.1em;
 }
