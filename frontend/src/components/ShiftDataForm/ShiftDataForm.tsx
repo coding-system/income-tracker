@@ -5,7 +5,7 @@ const toNumberArray = (values: string[]) =>
    values
       .map((value) => value.trim())
       .filter((value) => value.length > 0)
-      .map((value) => Number(value))
+      .map((value) => Math.round(Number(value)))
       .filter((value) => Number.isFinite(value) && value >= 0);
 
 const toIsoDate = (value: Date) => {
@@ -180,21 +180,21 @@ export function ShiftDataForm({
             return;
          }
 
-         const incomeValue = Number(incomeTotal);
+         const incomeValue = Math.round(Number(incomeTotal));
          if (!Number.isFinite(incomeValue) || incomeValue <= 0) {
             setStatus({ type: "error", text: "Введите заработок больше 0" });
             setIsLoading(false);
             return;
          }
 
-         const mileageValue = Number(mileageKm);
+         const mileageValue = Math.round(Number(mileageKm));
          if (!Number.isFinite(mileageValue) || mileageValue <= 0) {
             setStatus({ type: "error", text: "Введите пробег больше 0" });
             setIsLoading(false);
             return;
          }
 
-         const tripsValue = Number(tripsCount);
+         const tripsValue = Math.round(Number(tripsCount));
          if (!Number.isFinite(tripsValue) || tripsValue <= 0) {
             setStatus({
                type: "error",
@@ -302,7 +302,7 @@ export function ShiftDataForm({
                      className={styles.form__input}
                      type="number"
                      min="1"
-                     step="0.01"
+                     step="1"
                      value={incomeTotal}
                      onChange={(event) => setIncomeTotal(event.target.value)}
                      required
@@ -411,7 +411,7 @@ export function ShiftDataForm({
                               className={styles.form__input}
                               type="number"
                               min="0"
-                              step="0.01"
+                              step="1"
                               placeholder="Сумма"
                               value={value}
                               onChange={(event) =>
@@ -459,7 +459,7 @@ export function ShiftDataForm({
                               className={styles.form__input}
                               type="number"
                               min="0"
-                              step="0.01"
+                              step="1"
                               placeholder="Сумма"
                               value={value}
                               onChange={(event) =>
@@ -507,7 +507,7 @@ export function ShiftDataForm({
                               className={styles.form__input}
                               type="number"
                               min="0"
-                              step="0.01"
+                              step="1"
                               placeholder="Сумма"
                               value={value}
                               onChange={(event) =>
@@ -555,7 +555,7 @@ export function ShiftDataForm({
                               className={styles.form__input}
                               type="number"
                               min="0"
-                              step="0.01"
+                              step="1"
                               placeholder="Сумма"
                               value={value}
                               onChange={(event) =>

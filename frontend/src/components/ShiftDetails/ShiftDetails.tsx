@@ -27,15 +27,19 @@ const formatMoneyWhole = (value: number) =>
 const formatDateLong = (value: string) => {
    const parsed = new Date(value);
    if (Number.isNaN(parsed.getTime())) {
-      return value;
+      return { weekday: "", dateLabel: value };
    }
 
-   return parsed.toLocaleDateString("ru-RU", {
+   const weekday = parsed.toLocaleDateString("ru-RU", {
       weekday: "short",
+   });
+   const dateLabel = parsed.toLocaleDateString("ru-RU", {
       day: "2-digit",
       month: "long",
       year: "numeric",
    });
+
+   return { weekday, dateLabel };
 };
 
 const sumCosts = (items?: ShiftCost[]) =>
@@ -73,11 +77,18 @@ export function ShiftDetails({
          ? grossIncome / shift.engineHours
          : 0;
 
+   const dateParts = formatDateLong(shift.date);
+
    return (
       <section className={styles.details}>
          <header className={styles.details__header}>
             <h1 className={styles.details__title}>
-               {formatDateLong(shift.date)}
+               <span className={styles.details__weekday}>
+                  {dateParts.weekday}
+               </span>
+               <span className={styles.details__dateLabel}>
+                  {dateParts.dateLabel}
+               </span>
             </h1>
             <div className={styles.details__actions}>
                <Link

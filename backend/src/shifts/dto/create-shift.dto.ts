@@ -13,12 +13,12 @@ export class CreateShiftDto {
    date: string;
 
    @Type(() => Number)
-   @IsNumber()
+   @IsInt()
    @Min(0)
    incomeTotal: number;
 
    @Type(() => Number)
-   @IsNumber()
+   @IsInt()
    @Min(0)
    mileageKm: number;
 
@@ -35,28 +35,28 @@ export class CreateShiftDto {
    @IsOptional()
    @IsArray()
    @Type(() => Number)
-   @IsNumber({}, { each: true })
+   @IsInt({ each: true })
    @Min(0, { each: true })
    fuelings?: number[];
 
    @IsOptional()
    @IsArray()
    @Type(() => Number)
-   @IsNumber({}, { each: true })
+   @IsInt({ each: true })
    @Min(0, { each: true })
    washes?: number[];
 
    @IsOptional()
    @IsArray()
    @Type(() => Number)
-   @IsNumber({}, { each: true })
+   @IsInt({ each: true })
    @Min(0, { each: true })
    snacks?: number[];
 
    @IsOptional()
    @IsArray()
    @Type(() => Number)
-   @IsNumber({}, { each: true })
+   @IsInt({ each: true })
    @Min(0, { each: true })
    others?: number[];
 }

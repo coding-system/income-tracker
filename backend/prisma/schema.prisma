@@ -28,7 +28,7 @@ model Day {
   note      String?
   mileageKm Int?
   engineHours Float?
-  incomeTotal Float @default(0)
+  incomeTotal Int @default(0)
   tripsCount  Int   @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,7 +45,7 @@ model Day {
 model Fueling {
   id           String   @id @default(cuid())
   dayId        String
-  costTotal    Float
+  costTotal    Int
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -55,7 +55,7 @@ model Fueling {
 model Wash {
   id        String   @id @default(cuid())
   dayId     String
-  costTotal Float
+  costTotal Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -65,7 +65,7 @@ model Wash {
 model Snack {
   id        String   @id @default(cuid())
   dayId     String
-  costTotal Float
+  costTotal Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -75,7 +75,7 @@ model Snack {
 model Other {
   id        String   @id @default(cuid())
   dayId     String
-  costTotal Float
+  costTotal Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
