@@ -78,3 +78,25 @@
    border: 0.08em solid var(--color-border);
    background: var(--color-surface);
 }
+
+.details__actions {
+   display: flex;
+   justify-content: flex-end;
+}
+
+.details__editButton {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.4em;
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.6em 1.4em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.details__editIcon {
+   font-size: 1.1em;
+}

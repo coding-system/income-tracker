@@ -67,7 +67,6 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
    return (
       <section className={styles.details}>
          <header className={styles.details__header}>
-            <p className={styles.details__eyebrow}>Смена</p>
             <h1 className={styles.details__title}>
                {formatDateLong(shift.date)}
             </h1>
@@ -160,6 +159,17 @@ export function ShiftDetails({ shift }: { shift: ShiftDetailsData }) {
                </div>
             </div>
          </section>
+
+         <div className={styles.details__actions}>
+            <button className={styles.details__editButton} type="button">
+               <span
+                  className={`material-symbols-outlined ${styles.details__editIcon}`}
+               >
+                  edit
+               </span>
+               Изменить
+            </button>
+         </div>
       </section>
    );
 }
