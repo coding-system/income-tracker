@@ -31,14 +31,14 @@
    // border: 0.1em solid #fff;
    display: flex;
    align-items: center;
-   gap: 0.3em;
+   gap: 0.5em;
 }
 
 .card__dateBadge {
    display: inline-flex;
    align-items: center;
    justify-content: center;
-   // min-width: 2.4em;
+   min-width: 2.8em;
    padding: 0.1em 0.6em;
    border-radius: 0.3em;
    background: var(--color-text-tertiary);
