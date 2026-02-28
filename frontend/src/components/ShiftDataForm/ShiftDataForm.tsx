@@ -15,9 +15,6 @@ const toIsoDate = (value: Date) => {
    return `${year}-${month}-${day}`;
 };
 
-const toLabelDate = (value: Date) =>
-   value.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
-
 export type ShiftFormData = {
    id?: string;
    date: string;
@@ -63,11 +60,7 @@ export function ShiftDataForm({
    successMessage = "Смена сохранена",
 }: ShiftDataFormProps) {
    const today = new Date();
-   const yesterday = new Date();
-   yesterday.setDate(today.getDate() - 1);
-
    const todayIso = toIsoDate(today);
-   const yesterdayIso = toIsoDate(yesterday);
 
    const [date, setDate] = useState(initialData?.date ?? todayIso);
    const [incomeTotal, setIncomeTotal] = useState(
@@ -266,32 +259,15 @@ export function ShiftDataForm({
             <div className={styles.form__grid}>
                <div className={styles.form__field}>
                   <span className={styles.form__label}>Дата</span>
-                  <div className={styles.form__dateToggle}>
-                     <button
-                        className={`${styles.form__dateButton} ${
-                           date === yesterdayIso
-                              ? styles["form__dateButton--active"]
-                              : ""
-                        }`}
-                        type="button"
-                        aria-pressed={date === yesterdayIso}
-                        onClick={() => setDate(yesterdayIso)}
-                     >
-                        {toLabelDate(yesterday)}
-                     </button>
-                     <button
-                        className={`${styles.form__dateButton} ${
-                           date === todayIso
-                              ? styles["form__dateButton--active"]
-                              : ""
-                        }`}
-                        type="button"
-                        aria-pressed={date === todayIso}
-                        onClick={() => setDate(todayIso)}
-                     >
-                        {toLabelDate(today)}
-                     </button>
-                  </div>
+                  <input
+                     id="shift-date"
+                     className={styles.form__input}
+                     type="date"
+                     value={date}
+                     max={todayIso}
+                     onChange={(event) => setDate(event.target.value)}
+                     required
+                  />
                </div>
                <div className={styles.form__field}>
                   <label className={styles.form__label} htmlFor="shift-income">
