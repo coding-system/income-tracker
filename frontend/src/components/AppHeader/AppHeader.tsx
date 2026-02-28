@@ -22,7 +22,7 @@ export function AppHeader() {
             <div className={styles.header__actions}>
                <HeaderAuth />
                <Link className={styles.header__brand} to="/">
-                  <span className={styles.header__title}>$</span>
+                  <span className={styles.header__title}>HI</span>
                </Link>
                <BurgerButton isOpen={isMenuOpen} onClick={handleToggleMenu} />
             </div>
