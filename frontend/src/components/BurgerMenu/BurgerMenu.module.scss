@@ -102,7 +102,7 @@
    color: var(--color-text);
    padding: 0.5em 0.8em;
    border-radius: 0.5em;
-   font-size: 1.2em;
+   font-size: 1.4em;
    background: transparent;
    border: none;
    cursor: pointer;
@@ -115,6 +115,14 @@
    background-color: var(--color-border);
 }
 
+.menu__logout {
+   color: var(--color-error);
+}
+
+.menu__logout:hover {
+   background: rgba(220, 53, 69, 0.12);
+}
+
 .menu__themeToggle {
    display: inline-flex;
    align-items: center;
@@ -122,7 +130,7 @@
    position: relative;
    width: 2.2em;
    height: 2.2em;
-   padding: 0.35em;
+   padding: 0.5em 1.4em;
 }
 
 .menu__themeIcon {

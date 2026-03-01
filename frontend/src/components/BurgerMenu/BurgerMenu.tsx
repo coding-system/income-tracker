@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { clearAuth } from "../../api/authClient";
 import { useAuthStatus } from "../../hooks/useAuthStatus";
 import { applyTheme, getInitialTheme, setStoredTheme } from "../../utils/theme";
 import styles from "./BurgerMenu.module.scss";
@@ -26,6 +27,11 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
       window.setTimeout(() => setIsAnimating(false), 300);
    };
 
+   const handleLogout = () => {
+      clearAuth();
+      onClose();
+   };
+
    return (
       <>
          <div
@@ -49,35 +55,48 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             </div>
             <nav className={styles.menu__nav}>
                <Link to="/" className={styles.menu__link} onClick={onClose}>
-                  <span className="material-symbols-outlined">home</span>Главная
+                  <span className="material-symbols-outlined">home</span>
+                  Главная
                </Link>
-               <Link
-                  to="/profile"
-                  className={styles.menu__link}
-                  onClick={onClose}
-               >
-                  <span className="material-symbols-outlined">person</span>
-                  Профиль
-               </Link>
-               <Link
-                  to="/shift/new"
-                  className={styles.menu__link}
-                  onClick={onClose}
-               >
-                  <span className="material-symbols-outlined">local_taxi</span>
-                  Новая смена
-               </Link>
-               <Link
-                  to="/history"
-                  className={styles.menu__link}
-                  onClick={onClose}
-               >
-                  <span className="material-symbols-outlined">
-                     import_contacts
-                  </span>
-                  История
-               </Link>
-               {!isAuthenticated ? (
+
+               {isAuthenticated ? (
+                  <>
+                     <Link
+                        to="/profile"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        <span className="material-symbols-outlined">person</span>
+                        Профиль
+                     </Link>
+                     <Link
+                        to="/shift/new"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        <span className="material-symbols-outlined">local_taxi</span>
+                        Новая смена
+                     </Link>
+                     <Link
+                        to="/history"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        <span className="material-symbols-outlined">
+                           import_contacts
+                        </span>
+                        История
+                     </Link>
+                     <button
+                        type="button"
+                        className={`${styles.menu__link} ${styles.menu__logout}`}
+                        onClick={handleLogout}
+                     >
+                        <span className="material-symbols-outlined">logout</span>
+                        Выйти
+                     </button>
+                  </>
+               ) : (
                   <>
                      <Link
                         to="/login"
@@ -98,7 +117,7 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         Регистрация
                      </Link>
                   </>
-               ) : null}
+               )}
 
                <button
                   type="button"

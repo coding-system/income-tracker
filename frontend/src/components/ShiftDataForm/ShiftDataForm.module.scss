@@ -1,10 +1,10 @@
 .panel {
    width: min(58em, 100%);
-   background: var(--color-surface);
+   // background: var(--color-surface);
    border-radius: 1.6em;
-   padding: 2.4em;
-   border: 0.08em solid var(--color-border);
-   box-shadow: 0 1.4em 2.6em rgba(0, 0, 0, 0.08);
+   // padding: 2.4em;
+   // border: 0.08em solid var(--color-border);
+   // box-shadow: 0 1.4em 2.6em rgba(0, 0, 0, 0.08);
    display: flex;
    flex-direction: column;
    gap: 2em;
@@ -51,8 +51,8 @@
 }
 
 .form__grid {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+   display: flex;
+   flex-direction: column;
    gap: 1.2em;
 }
 
@@ -80,7 +80,7 @@
 }
 
 .form__label {
-   font-size: 0.95em;
+   font-size: 1.2em;
    color: var(--color-text-secondary);
 }
 
@@ -229,15 +229,4 @@
    border-radius: 2em;
    cursor: pointer;
    font-weight: 600;
-}
-
-@media (max-width: 40em) {
-   .panel {
-      padding: 1.6em;
-   }
-
-   .form__submit {
-      width: 100%;
-      text-align: center;
-   }
 }

@@ -1,7 +1,7 @@
 .profile {
    font-size: 1rem;
    // min-height: 100vh;
-   padding: 7.5em 2em 2em;
+   padding: 1em 1.5em 1.5em;
    display: flex;
    justify-content: center;
    color: var(--color-text);
@@ -221,10 +221,6 @@
 }
 
 @media (max-width: 40em) {
-   .profile {
-      padding: 6.5em 1.2em 1.8em;
-   }
-
    .profile__card {
       padding: 1.6em;
    }
