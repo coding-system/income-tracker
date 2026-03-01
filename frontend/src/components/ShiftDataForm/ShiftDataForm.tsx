@@ -128,7 +128,7 @@ export function ShiftDataForm({
    const handleArrayAdd = (
       setter: React.Dispatch<React.SetStateAction<string[]>>,
    ) => {
-      setter((prev) => [...prev, ""]);
+      setter((prev) => ["", ...prev]);
    };
 
    const handleArrayRemove = (
@@ -137,6 +137,93 @@ export function ShiftDataForm({
    ) => {
       setter((prev) => prev.filter((_, i) => i !== index));
    };
+
+   const expenseTotal = (values: string[]) =>
+      toNumberArray(values).reduce((sum, value) => sum + value, 0);
+
+   const renderExpenseSection = (
+      title: string,
+      values: string[],
+      setter: React.Dispatch<React.SetStateAction<string[]>>,
+      keyPrefix: string,
+   ) => (
+      <section className={styles.expenseCard}>
+         <header className={styles.expenseCard__header}>
+            <div className={styles.expenseCard__headMain}>
+               <h2 className={styles.expenseCard__title}>{title}</h2>
+               <div className={styles.expenseCard__meta}>
+                  <span className={styles.expenseCard__badge}>
+                     {values.length} поз.
+                  </span>
+                  <span
+                     className={`${styles.expenseCard__badge} ${styles["expenseCard__badge--total"]}`}
+                  >
+                     {expenseTotal(values)} ₽
+                  </span>
+               </div>
+            </div>
+            <button
+               className={styles.form__addButton}
+               type="button"
+               onClick={() => handleArrayAdd(setter)}
+            >
+               + Добавить
+            </button>
+         </header>
+
+         {values.length > 0 ? (
+            <div className={styles.expenseCard__list}>
+               {values.map((value, index) => (
+                  <div
+                     className={styles.expenseCard__item}
+                     key={`${keyPrefix}-${index}`}
+                  >
+                     <label
+                        className={styles.expenseCard__itemLabel}
+                        htmlFor={`${keyPrefix}-${index}`}
+                     >
+                        Позиция {index + 1}
+                     </label>
+                     <div className={styles.expenseCard__itemRow}>
+                        <input
+                           id={`${keyPrefix}-${index}`}
+                           className={styles.form__input}
+                           type="number"
+                           min="0"
+                           step="1"
+                           placeholder="Сумма"
+                           value={value}
+                           onChange={(event) =>
+                              handleArrayChange(
+                                 setter,
+                                 index,
+                                 event.target.value,
+                              )
+                           }
+                        />
+                        <button
+                           className={styles.form__removeButton}
+                           type="button"
+                           aria-label={`Удалить позицию ${index + 1}`}
+                           onClick={() => handleArrayRemove(setter, index)}
+                        >
+                           <span
+                              className={`material-symbols-outlined ${styles.form__removeIcon}`}
+                           >
+                              delete
+                           </span>
+                        </button>
+                     </div>
+                  </div>
+               ))}
+            </div>
+         ) : (
+            <p className={styles.expenseCard__empty}>
+               Пока пусто. Нажмите «Добавить», если были расходы.
+            </p>
+         )}
+      </section>
+   );
 
    const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
@@ -336,7 +423,7 @@ export function ShiftDataForm({
                            id="shift-minutes"
                            className={styles.form__input}
                            type="number"
-                           min="1"
+                           min="0"
                            max="59"
                            step="1"
                            value={engineHoursMinutes}
@@ -365,196 +452,16 @@ export function ShiftDataForm({
                </div>
             </div>
 
-            <div className={styles.form__section}>
-               <div className={styles.form__sectionHeader}>
-                  <h2 className={styles.form__sectionTitle}>Заправки</h2>
-                  <button
-                     className={styles.form__addButton}
-                     type="button"
-                     onClick={() => handleArrayAdd(setFuelings)}
-                  >
-                     + Добавить
-                  </button>
-               </div>
-               {fuelings.length > 0 ? (
-                  <div className={styles.form__list}>
-                     {fuelings.map((value, index) => (
-                        <div
-                           className={styles.form__listItem}
-                           key={`fueling-${index}`}
-                        >
-                           <input
-                              className={styles.form__input}
-                              type="number"
-                              min="0"
-                              step="1"
-                              placeholder="Сумма"
-                              value={value}
-                              onChange={(event) =>
-                                 handleArrayChange(
-                                    setFuelings,
-                                    index,
-                                    event.target.value,
-                                 )
-                              }
-                           />
-                           <button
-                              className={styles.form__removeButton}
-                              type="button"
-                              onClick={() =>
-                                 handleArrayRemove(setFuelings, index)
-                              }
-                           >
-                              Удалить
-                           </button>
-                        </div>
-                     ))}
-                  </div>
-               ) : null}
-            </div>
-
-            <div className={styles.form__section}>
-               <div className={styles.form__sectionHeader}>
-                  <h2 className={styles.form__sectionTitle}>Мойки</h2>
-                  <button
-                     className={styles.form__addButton}
-                     type="button"
-                     onClick={() => handleArrayAdd(setWashes)}
-                  >
-                     + Добавить
-                  </button>
-               </div>
-               {washes.length > 0 ? (
-                  <div className={styles.form__list}>
-                     {washes.map((value, index) => (
-                        <div
-                           className={styles.form__listItem}
-                           key={`wash-${index}`}
-                        >
-                           <input
-                              className={styles.form__input}
-                              type="number"
-                              min="0"
-                              step="1"
-                              placeholder="Сумма"
-                              value={value}
-                              onChange={(event) =>
-                                 handleArrayChange(
-                                    setWashes,
-                                    index,
-                                    event.target.value,
-                                 )
-                              }
-                           />
-                           <button
-                              className={styles.form__removeButton}
-                              type="button"
-                              onClick={() =>
-                                 handleArrayRemove(setWashes, index)
-                              }
-                           >
-                              Удалить
-                           </button>
-                        </div>
-                     ))}
-                  </div>
-               ) : null}
-            </div>
-
-            <div className={styles.form__section}>
-               <div className={styles.form__sectionHeader}>
-                  <h2 className={styles.form__sectionTitle}>Перекусы</h2>
-                  <button
-                     className={styles.form__addButton}
-                     type="button"
-                     onClick={() => handleArrayAdd(setSnacks)}
-                  >
-                     + Добавить
-                  </button>
-               </div>
-               {snacks.length > 0 ? (
-                  <div className={styles.form__list}>
-                     {snacks.map((value, index) => (
-                        <div
-                           className={styles.form__listItem}
-                           key={`snack-${index}`}
-                        >
-                           <input
-                              className={styles.form__input}
-                              type="number"
-                              min="0"
-                              step="1"
-                              placeholder="Сумма"
-                              value={value}
-                              onChange={(event) =>
-                                 handleArrayChange(
-                                    setSnacks,
-                                    index,
-                                    event.target.value,
-                                 )
-                              }
-                           />
-                           <button
-                              className={styles.form__removeButton}
-                              type="button"
-                              onClick={() =>
-                                 handleArrayRemove(setSnacks, index)
-                              }
-                           >
-                              Удалить
-                           </button>
-                        </div>
-                     ))}
-                  </div>
-               ) : null}
-            </div>
-
-            <div className={styles.form__section}>
-               <div className={styles.form__sectionHeader}>
-                  <h2 className={styles.form__sectionTitle}>Другое</h2>
-                  <button
-                     className={styles.form__addButton}
-                     type="button"
-                     onClick={() => handleArrayAdd(setOthers)}
-                  >
-                     + Добавить
-                  </button>
-               </div>
-               {others.length > 0 ? (
-                  <div className={styles.form__list}>
-                     {others.map((value, index) => (
-                        <div
-                           className={styles.form__listItem}
-                           key={`other-${index}`}
-                        >
-                           <input
-                              className={styles.form__input}
-                              type="number"
-                              min="0"
-                              step="1"
-                              placeholder="Сумма"
-                              value={value}
-                              onChange={(event) =>
-                                 handleArrayChange(
-                                    setOthers,
-                                    index,
-                                    event.target.value,
-                                 )
-                              }
-                           />
-                           <button
-                              className={styles.form__removeButton}
-                              type="button"
-                              onClick={() =>
-                                 handleArrayRemove(setOthers, index)
-                              }
-                           >
-                              Удалить
-                           </button>
-                        </div>
-                     ))}
-                  </div>
-               ) : null}
+            <div className={styles.expenseGrid}>
+               {renderExpenseSection(
+                  "Заправки",
+                  fuelings,
+                  setFuelings,
+                  "fueling",
+               )}
+               {renderExpenseSection("Мойки", washes, setWashes, "wash")}
+               {renderExpenseSection("Перекусы", snacks, setSnacks, "snack")}
+               {renderExpenseSection("Другое", others, setOthers, "other")}
             </div>
 
             <button

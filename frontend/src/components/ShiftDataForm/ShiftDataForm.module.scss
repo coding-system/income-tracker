@@ -29,7 +29,7 @@
 .form {
    display: flex;
    flex-direction: column;
-   gap: 2em;
+   gap: 1.6em;
 }
 
 .form__status {
@@ -84,75 +84,110 @@
    color: var(--color-text-secondary);
 }
 
-.form__dateToggle {
-   display: grid;
-   grid-template-columns: repeat(2, minmax(0, 1fr));
-   gap: 0.6em;
-}
-
-.form__dateButton {
-   border-radius: 0.9em;
-   padding: 0.7em 1em;
-   border: 0.08em solid var(--color-border);
-   background: var(--color-surface-secondary);
-   color: var(--color-text);
-   font-size: 0.95em;
-   cursor: pointer;
-   text-transform: capitalize;
-}
-
-.form__dateButton--active {
-   border-color: var(--color-primary);
-   background: rgba(var(--color-primary-rgb), 0.12);
-   color: var(--color-primary);
-   font-weight: 600;
-}
-
 .form__input {
    border-radius: 0.8em;
-   padding: 0.6em 0.8em;
+   padding: 0.62em 0.8em;
    border: 0.08em solid var(--color-border);
    font-size: 1em;
    background: var(--color-surface);
    color: var(--color-text);
 }
 
-.form__section {
-   display: flex;
-   flex-direction: column;
+.expenseGrid {
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(17em, 1fr));
    gap: 1em;
 }
 
-.form__sectionHeader {
+.expenseCard {
    display: flex;
-   align-items: center;
-   justify-content: space-between;
+   flex-direction: column;
+   gap: 0.8em;
+   border: 0.08em solid var(--color-border);
+   border-radius: 1em;
+   background: linear-gradient(
+      180deg,
+      var(--color-surface),
+      var(--color-surface-secondary)
+   );
+   padding: 1em;
 }
 
-.form__sectionTitle {
+.expenseCard__header {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 0.7em;
+}
+
+.expenseCard__headMain {
+   display: flex;
+   flex-direction: column;
+   gap: 0.45em;
+}
+
+.expenseCard__title {
    margin: 0;
-   font-size: 1.2em;
+   font-size: 1.05em;
+}
+
+.expenseCard__meta {
+   display: flex;
+   gap: 0.45em;
+   flex-wrap: wrap;
+}
+
+.expenseCard__badge {
+   font-size: 0.78em;
+   color: var(--color-text-secondary);
+   background: var(--color-surface);
+   border: 0.08em solid var(--color-border);
+   border-radius: 999px;
+   padding: 0.2em 0.6em;
+}
+
+.expenseCard__badge--total {
+   color: var(--color-primary);
+   border-color: rgba(var(--color-primary-rgb), 0.35);
+   background: rgba(var(--color-primary-rgb), 0.08);
 }
 
 .form__addButton {
    border: none;
    background: var(--color-primary);
    color: var(--color-text-special);
-   padding: 0.4em 1em;
+   padding: 0.45em 0.9em;
    border-radius: 1.6em;
    cursor: pointer;
    font-weight: 600;
+   white-space: nowrap;
 }
 
-.form__list {
+.expenseCard__list {
    display: flex;
    flex-direction: column;
-   gap: 0.8em;
+   gap: 0.65em;
 }
 
-.form__listItem {
+.expenseCard__item {
+   padding: 0.6em;
+   border-radius: 0.75em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
    display: flex;
-   gap: 0.8em;
+   flex-direction: column;
+   gap: 0.45em;
+}
+
+.expenseCard__itemLabel {
+   font-size: 0.8em;
+   color: var(--color-text-tertiary);
+}
+
+.expenseCard__itemRow {
+   display: grid;
+   grid-template-columns: 1fr auto;
+   gap: 0.5em;
    align-items: center;
 }
 
@@ -160,9 +195,29 @@
    border: 0.08em solid var(--color-border);
    background: transparent;
    color: var(--color-text-secondary);
-   padding: 0.5em 0.9em;
-   border-radius: 0.8em;
+   width: 2.5em;
+   height: 2.5em;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   padding: 0;
+   border-radius: 0.7em;
    cursor: pointer;
+}
+
+.form__removeIcon {
+   font-size: 1.2em;
+   line-height: 1;
+}
+
+.expenseCard__empty {
+   margin: 0;
+   color: var(--color-text-tertiary);
+   font-size: 0.88em;
+   background: var(--color-surface);
+   border: 0.08em dashed var(--color-border);
+   border-radius: 0.8em;
+   padding: 0.8em;
 }
 
 .form__submit {
@@ -179,10 +234,6 @@
 @media (max-width: 40em) {
    .panel {
       padding: 1.6em;
-   }
-
-   .form__listItem {
-      grid-template-columns: 1fr;
    }
 
    .form__submit {
