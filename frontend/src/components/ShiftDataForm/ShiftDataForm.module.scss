@@ -1,277 +1,277 @@
 .panel {
-	width: min(58em, 100%);
-	border-radius: 1.6em;
-	display: flex;
-	flex-direction: column;
-	gap: 1.4em;
+   width: min(58em, 100%);
+   border-radius: 1.6em;
+   display: flex;
+   flex-direction: column;
+   gap: 1.4em;
 }
 
 .header {
-	display: flex;
-	flex-direction: column;
-	gap: 0.35em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.35em;
 }
 
 .title {
-	margin: 0;
-	font-size: 2em;
+   margin: 0;
+   font-size: 2em;
 }
 
 .subtitle {
-	margin: 0;
-	color: var(--color-text-secondary);
+   margin: 0;
+   color: var(--color-text-secondary);
 }
 
 .form {
-	display: flex;
-	flex-direction: column;
-	gap: 1.4em;
+   display: flex;
+   flex-direction: column;
+   gap: 1.4em;
 }
 
 .form__status {
-	font-size: 0.95em;
-	padding: 0.8em 1em;
-	border-radius: 0.8em;
-	border: 0.08em solid var(--color-border);
-	background: var(--color-surface-secondary);
+   font-size: 0.95em;
+   padding: 0.8em 1em;
+   border-radius: 0.8em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
 }
 
 .form__status--error {
-	border-color: var(--color-error);
-	color: var(--color-error);
+   border-color: var(--color-error);
+   color: var(--color-error);
 }
 
 .form__status--success {
-	border-color: var(--color-success);
-	color: var(--color-success);
+   border-color: var(--color-success);
+   color: var(--color-success);
 }
 
 .form__grid {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.9em;
-	padding: 0.9em;
-	border: 0.08em solid var(--color-border);
-	border-radius: 1em;
-	background: var(--color-surface-secondary);
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 0.9em;
+   padding: 0.9em;
+   border: 0.08em solid var(--color-border);
+   border-radius: 1em;
+   background: var(--color-surface-secondary);
 }
 
 .form__field {
-	display: flex;
-	flex-direction: column;
-	gap: 0.35em;
-	min-width: 0;
+   display: flex;
+   flex-direction: column;
+   gap: 0.35em;
+   min-width: 0;
 }
 
 .form__field--wide {
-	grid-column: span 2;
+   grid-column: span 2;
 }
 
 .form__field--compact {
-	max-width: 16em;
+   max-width: 16em;
 }
 
 .form__inlineInputs {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 0.55em;
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 0.55em;
 }
 
 .form__inlineField {
-	display: flex;
-	flex-direction: column;
-	gap: 0.3em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.3em;
 }
 
 .form__inlineLabel {
-	font-size: 0.78em;
-	color: var(--color-text-tertiary);
+   font-size: 0.78em;
+   color: var(--color-text-tertiary);
 }
 
 .form__label {
-	font-size: 1em;
-	color: var(--color-text-secondary);
+   font-size: 1em;
+   color: var(--color-text-secondary);
 }
 
 .form__input {
-	border-radius: 0.75em;
-	padding: 0.58em 0.75em;
-	border: 0.08em solid var(--color-border);
-	font-size: 0.98em;
-	background: var(--color-surface);
-	color: var(--color-text);
+   border-radius: 0.75em;
+   padding: 0.58em 0.75em;
+   border: 0.08em solid var(--color-border);
+   font-size: 0.98em;
+   background: var(--color-surface);
+   color: var(--color-text);
 }
 
 .form__input--short {
-	max-width: 8.2em;
-	text-align: center;
+   max-width: 8.2em;
+   text-align: center;
 }
 
 .expenseGrid {
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(17em, 1fr));
-	gap: 1em;
+   display: grid;
+   grid-template-columns: repeat(auto-fit, minmax(17em, 1fr));
+   gap: 1em;
 }
 
 .expenseCard {
-	display: flex;
-	flex-direction: column;
-	gap: 0.8em;
-	border: 0.08em solid var(--color-border);
-	border-radius: 1em;
-	background: linear-gradient(
-		180deg,
-		var(--color-surface),
-		var(--color-surface-secondary)
-	);
-	padding: 1em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.8em;
+   border: 0.08em solid var(--color-border);
+   border-radius: 1em;
+   background: linear-gradient(
+      180deg,
+      var(--color-surface),
+      var(--color-surface-secondary)
+   );
+   padding: 1em;
 }
 
 .expenseCard__header {
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	gap: 0.7em;
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 0.7em;
 }
 
 .expenseCard__headMain {
-	display: flex;
-	flex-direction: column;
-	gap: 0.45em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.45em;
 }
 
 .expenseCard__title {
-	margin: 0;
-	font-size: 1.05em;
+   margin: 0;
+   font-size: 1.05em;
 }
 
 .expenseCard__meta {
-	display: flex;
-	gap: 0.45em;
-	flex-wrap: wrap;
+   display: flex;
+   gap: 0.45em;
+   flex-wrap: wrap;
 }
 
 .expenseCard__badge {
-	font-size: 0.78em;
-	color: var(--color-text-secondary);
-	background: var(--color-surface);
-	border: 0.08em solid var(--color-border);
-	border-radius: 999px;
-	padding: 0.2em 0.6em;
+   font-size: 0.78em;
+   color: var(--color-text-secondary);
+   background: var(--color-surface);
+   border: 0.08em solid var(--color-border);
+   border-radius: 999px;
+   padding: 0.2em 0.6em;
 }
 
 .expenseCard__badge--total {
-	color: var(--color-primary);
-	border-color: rgba(var(--color-primary-rgb), 0.35);
-	background: rgba(var(--color-primary-rgb), 0.08);
+   color: var(--color-primary);
+   border-color: rgba(var(--color-primary-rgb), 0.35);
+   background: rgba(var(--color-primary-rgb), 0.08);
 }
 
 .form__addButton {
-	border: none;
-	background: var(--color-primary);
-	color: var(--color-text-special);
-	padding: 0.45em 0.9em;
-	border-radius: 1.6em;
-	cursor: pointer;
-	font-weight: 600;
-	white-space: nowrap;
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.45em 0.9em;
+   border-radius: 1.6em;
+   cursor: pointer;
+   font-weight: 600;
+   white-space: nowrap;
 }
 
 .expenseCard__list {
-	display: flex;
-	flex-direction: column;
-	gap: 0.65em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.65em;
 }
 
 .expenseCard__item {
-	padding: 0.6em;
-	border-radius: 0.75em;
-	border: 0.08em solid var(--color-border);
-	background: var(--color-surface);
-	display: flex;
-	flex-direction: column;
-	gap: 0.45em;
+   padding: 0.6em;
+   border-radius: 0.75em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
+   display: flex;
+   flex-direction: column;
+   gap: 0.45em;
 }
 
 .expenseCard__itemLabel {
-	font-size: 0.8em;
-	color: var(--color-text-tertiary);
+   font-size: 0.8em;
+   color: var(--color-text-tertiary);
 }
 
 .expenseCard__itemRow {
-	display: grid;
-	grid-template-columns: 1fr auto;
-	gap: 0.5em;
-	align-items: center;
+   display: grid;
+   grid-template-columns: 1fr auto;
+   gap: 0.5em;
+   align-items: center;
 }
 
 .form__removeButton {
-	border: 0.08em solid var(--color-border);
-	background: transparent;
-	color: var(--color-text-secondary);
-	width: 2.5em;
-	height: 2.5em;
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0;
-	border-radius: 0.7em;
-	cursor: pointer;
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   width: 2.5em;
+   height: 2.5em;
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   padding: 0;
+   border-radius: 0.7em;
+   cursor: pointer;
 }
 
 .form__removeIcon {
-	font-size: 1.2em;
-	line-height: 1;
+   font-size: 1.2em;
+   line-height: 1;
 }
 
 .expenseCard__empty {
-	margin: 0;
-	color: var(--color-text-tertiary);
-	font-size: 0.88em;
-	background: var(--color-surface);
-	border: 0.08em dashed var(--color-border);
-	border-radius: 0.8em;
-	padding: 0.8em;
+   margin: 0;
+   color: var(--color-text-tertiary);
+   font-size: 0.88em;
+   background: var(--color-surface);
+   border: 0.08em dashed var(--color-border);
+   border-radius: 0.8em;
+   padding: 0.8em;
 }
 
 .form__submit {
-	align-self: flex-start;
-	border: none;
-	background: var(--color-primary);
-	color: var(--color-text-special);
-	padding: 0.8em 2em;
-	border-radius: 2em;
-	cursor: pointer;
-	font-weight: 600;
+   align-self: flex-start;
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.8em 2em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
 }
 
 @media (max-width: 42em) {
-	.form__grid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		padding: 0.75em;
-	}
+   .form__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 0.75em;
+   }
 
-	.form__field--wide {
-		grid-column: span 2;
-	}
+   .form__field--wide {
+      grid-column: span 2;
+   }
 
-	.form__field--compact {
-		max-width: 100%;
-		align-items: flex-start;
-	}
+   .form__field--compact {
+      max-width: 100%;
+      align-items: flex-start;
+   }
 
-	.form__input--short {
-		max-width: 8.2em;
-		text-align: center;
-	}
+   .form__input--short {
+      max-width: 8.2em;
+      text-align: center;
+   }
 }
 
 @media (max-width: 30em) {
-	.form__grid {
-		grid-template-columns: 1fr;
-	}
+   .form__grid {
+      grid-template-columns: 1fr;
+   }
 
-	.form__field--wide {
-		grid-column: auto;
-	}
+   .form__field--wide {
+      grid-column: auto;
+   }
 }
