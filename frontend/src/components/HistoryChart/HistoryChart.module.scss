@@ -14,8 +14,8 @@
 .chart__bars {
    flex: 1;
    display: grid;
-   grid-template-columns: repeat(var(--chart-columns, 15), minmax(0, 1fr));
-   gap: 0.4em;
+   grid-template-columns: repeat(var(--chart-columns, 7), minmax(0, 1fr));
+   gap: 0.6em;
    align-items: end;
    position: relative;
 }
@@ -42,6 +42,7 @@
 }
 
 .chart__bar {
+   display: block;
    z-index: 1;
    width: 100%;
    border-radius: 0.2em 0.2em 0.1em 0.1em;
@@ -50,10 +51,53 @@
    min-height: 0.2em;
 }
 
+.chart__column {
+   border: none;
+   background: transparent;
+   padding: 0;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: flex-end;
+   gap: 0;
+   cursor: pointer;
+   align-self: stretch;
+   min-height: 0;
+}
+
+.chart__barWrap {
+   width: 100%;
+   flex: 1;
+   min-height: 0;
+   display: flex;
+   align-items: flex-end;
+   position: relative;
+}
+
+.chart__column--active .chart__bar {
+   opacity: 1;
+   box-shadow: 0 0 0 0.08em rgba(var(--color-primary-rgb), 0.35);
+}
+
+.chart__column--active .chart__value {
+   color: var(--color-primary);
+}
+
+.chart__value {
+   position: absolute;
+   left: 50%;
+   transform: translateX(-50%);
+   font-size: 0.68em;
+   color: var(--color-text-secondary);
+   line-height: 1;
+   white-space: nowrap;
+   pointer-events: none;
+}
+
 .chart__labels {
    display: grid;
-   grid-template-columns: repeat(var(--chart-columns, 15), minmax(0, 1fr));
-   gap: 0.4em;
+   grid-template-columns: repeat(var(--chart-columns, 7), minmax(0, 1fr));
+   gap: 0.6em;
    font-size: 0.7em;
    color: var(--color-text-secondary);
    text-align: center;

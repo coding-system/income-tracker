@@ -66,25 +66,24 @@
    font-weight: 600;
 }
 
-.page__chartToggle {
+.page__modeLabel {
    display: flex;
-   gap: 0.6em;
+   align-items: center;
+   gap: 0.55em;
 }
 
-.page__chartButton {
-   border: 0.08em solid var(--color-border);
-   background: transparent;
+.page__modeText {
+   font-size: 0.95em;
    color: var(--color-text-secondary);
-   padding: 0.35em 0.9em;
-   border-radius: 1.6em;
-   cursor: pointer;
-   font-weight: 600;
 }
 
-.page__chartButton--active {
-   background: var(--color-primary);
-   color: var(--color-text-special);
-   border-color: var(--color-primary);
+.page__modeSelect {
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
+   color: var(--color-text);
+   padding: 0.35em 0.7em;
+   border-radius: 0.7em;
+   font: inherit;
 }
 
 .page__title {

@@ -1,13 +1,16 @@
 import styles from "./HistoryChart.module.scss";
 
 export type HistoryChartPoint = {
-   date: string;
+   key: string;
+   label: string;
    value: number;
 };
 
 type HistoryChartProps = {
    points: HistoryChartPoint[];
    rangeLabel: string;
+   selectedKey: string | null;
+   onSelect: (key: string) => void;
    averageValue?: number | null;
    targetValue?: number | null;
 };
@@ -15,6 +18,8 @@ type HistoryChartProps = {
 export function HistoryChart({
    points,
    rangeLabel,
+   selectedKey,
+   onSelect,
    averageValue,
    targetValue,
 }: HistoryChartProps) {
@@ -27,14 +32,6 @@ export function HistoryChart({
       averageValue && maxValue > 0 ? (averageValue / maxValue) * 100 : null;
    const targetHeight =
       targetValue && maxValue > 0 ? (targetValue / maxValue) * 100 : null;
-   const labels = points.map((item, index) => {
-      const dayValue = Number(item.date.slice(8, 10));
-      const fallback = Number.isNaN(dayValue) ? "" : String(dayValue);
-      if (points.length === 30) {
-         return index % 2 === 0 ? fallback : "•";
-      }
-      return fallback;
-   });
    const chartStyle = {
       "--chart-columns": points.length,
    } as React.CSSProperties;
@@ -63,19 +60,39 @@ export function HistoryChart({
             {points.map((item) => {
                const height = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
                return (
-                  <span
-                     key={item.date}
-                     className={styles.chart__bar}
-                     style={{ height: `${height}%` }}
-                     title={item.date}
-                  />
+                  <button
+                     key={item.key}
+                     className={`${styles.chart__column} ${
+                        selectedKey === item.key
+                           ? styles["chart__column--active"]
+                           : ""
+                     }`}
+                     type="button"
+                     onClick={() => onSelect(item.key)}
+                     title={item.label}
+                  >
+                     <span className={styles.chart__barWrap}>
+                        <span
+                           className={styles.chart__value}
+                           style={{ bottom: `calc(${height}% + 0.25em)` }}
+                        >
+                           {new Intl.NumberFormat("ru-RU", {
+                              maximumFractionDigits: 0,
+                           }).format(item.value)}
+                        </span>
+                        <span
+                           className={styles.chart__bar}
+                           style={{ height: `${height}%` }}
+                        />
+                     </span>
+                  </button>
                );
             })}
          </div>
          <div className={styles.chart__labels}>
-            {labels.map((label, index) => (
-               <span key={`${points[index]?.date ?? index}-label`}>
-                  {label}
+            {points.map((item) => (
+               <span key={`${item.key}-label`}>
+                  {item.label}
                </span>
             ))}
          </div>
