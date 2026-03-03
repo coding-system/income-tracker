@@ -8,7 +8,7 @@ export function HomePage() {
             <div className={styles.home__heroContent}>
                <p className={styles.home__eyebrow}>Деньги под контролем</p>
                <h1 className={styles.home__title}>
-                  Приведите доход в порядок и держите цель в фокусе
+                  Приведите доходы в порядок и держите цель в фокусе
                </h1>
                <p className={styles.home__subtitle}>
                   Простой трекер доходов, расходов и целей. Записывайте операции
