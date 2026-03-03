@@ -48,7 +48,6 @@
    border-radius: 0.2em 0.2em 0.1em 0.1em;
    background: var(--color-primary);
    opacity: 0.7;
-   min-height: 0.2em;
 }
 
 .chart__column {
@@ -87,7 +86,7 @@
    position: absolute;
    left: 50%;
    transform: translateX(-50%);
-   font-size: 0.68em;
+   font-size: 0.8em;
    color: var(--color-text-secondary);
    line-height: 1;
    white-space: nowrap;

@@ -28,10 +28,15 @@ export function HistoryChart({
       0,
    );
    const maxValue = Math.max(maxValueBase, averageValue ?? 0, targetValue ?? 0);
+   const scaleMaxValue = maxValue > 0 ? maxValue * 1.12 : 0;
    const averageHeight =
-      averageValue && maxValue > 0 ? (averageValue / maxValue) * 100 : null;
+      averageValue && scaleMaxValue > 0
+         ? (averageValue / scaleMaxValue) * 100
+         : null;
    const targetHeight =
-      targetValue && maxValue > 0 ? (targetValue / maxValue) * 100 : null;
+      targetValue && scaleMaxValue > 0
+         ? (targetValue / scaleMaxValue) * 100
+         : null;
    const chartStyle = {
       "--chart-columns": points.length,
    } as React.CSSProperties;
@@ -58,7 +63,11 @@ export function HistoryChart({
                />
             ) : null}
             {points.map((item) => {
-               const height = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
+               const height =
+                  scaleMaxValue > 0 ? (item.value / scaleMaxValue) * 100 : 0;
+               const barHeight =
+                  item.value > 0 ? `max(${height}%, 0.24em)` : "0.24em";
+               const valueBottom = `calc(${barHeight} + 0.25em)`;
                return (
                   <button
                      key={item.key}
@@ -74,7 +83,7 @@ export function HistoryChart({
                      <span className={styles.chart__barWrap}>
                         <span
                            className={styles.chart__value}
-                           style={{ bottom: `calc(${height}% + 0.25em)` }}
+                           style={{ bottom: valueBottom }}
                         >
                            {new Intl.NumberFormat("ru-RU", {
                               maximumFractionDigits: 0,
@@ -82,7 +91,7 @@ export function HistoryChart({
                         </span>
                         <span
                            className={styles.chart__bar}
-                           style={{ height: `${height}%` }}
+                           style={{ height: barHeight }}
                         />
                      </span>
                   </button>
@@ -91,9 +100,7 @@ export function HistoryChart({
          </div>
          <div className={styles.chart__labels}>
             {points.map((item) => (
-               <span key={`${item.key}-label`}>
-                  {item.label}
-               </span>
+               <span key={`${item.key}-label`}>{item.label}</span>
             ))}
          </div>
       </section>

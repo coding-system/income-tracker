@@ -173,18 +173,6 @@ export function ProfilePage() {
             </div>
             <div className={styles.profile__infoGrid}>
                <div className={styles.profile__infoItem}>
-                  <p className={styles.profile__label}>Статус</p>
-                  <p className={styles.profile__value}>Активный пользователь</p>
-               </div>
-               <div className={styles.profile__infoItem}>
-                  <p className={styles.profile__label}>План</p>
-                  <p className={styles.profile__value}>Стандартный</p>
-               </div>
-               <div className={styles.profile__infoItem}>
-                  <p className={styles.profile__label}>Регион</p>
-                  <p className={styles.profile__value}>Россия</p>
-               </div>
-               <div className={styles.profile__infoItem}>
                   <p className={styles.profile__label}>Недельный план</p>
                   <p className={styles.profile__value}>
                      {hasWeeklyPlan && weeklyTarget !== null

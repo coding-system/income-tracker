@@ -8,13 +8,6 @@
    flex-direction: column;
    gap: 5em;
    color: var(--color-text);
-   background:
-      radial-gradient(
-         120% 120% at 10% 10%,
-         rgba(var(--color-primary-rgb), 0.12),
-         transparent 60%
-      ),
-      linear-gradient(120deg, var(--color-background), var(--color-surface));
    position: relative;
    overflow: hidden;
 }
