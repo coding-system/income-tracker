@@ -492,7 +492,7 @@ export function HistoryPage() {
                <div className={styles.page__titleRow}>
                   <h1 className={styles.page__title}>История смен</h1>
                   <label className={styles.page__incomeLabel}>
-                     <span className={styles.page__incomeText}>Показывать</span>
+                     <span className={styles.page__incomeText}>Доход</span>
                      <select
                         className={styles.page__incomeSelect}
                         value={incomeMode}
