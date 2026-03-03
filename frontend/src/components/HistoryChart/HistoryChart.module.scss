@@ -17,8 +17,16 @@
 }
 
 .chart__content {
+   --chart-gap: 0.6em;
    min-width: 100%;
-   width: max(100%, calc(var(--chart-columns, 7) * 5.2em));
+   width: max(
+      100%,
+      calc(
+         (100% * var(--chart-columns, 7) / var(--chart-visible-columns, 7)) +
+            ((var(--chart-columns, 7) / var(--chart-visible-columns, 7)) - 1) *
+            var(--chart-gap)
+      )
+   );
    height: 100%;
    display: flex;
    flex-direction: column;
@@ -29,7 +37,7 @@
    flex: 1;
    display: grid;
    grid-template-columns: repeat(var(--chart-columns, 7), minmax(0, 1fr));
-   gap: 0.6em;
+   gap: var(--chart-gap);
    align-items: end;
    position: relative;
 }
@@ -110,7 +118,7 @@
 .chart__labels {
    display: grid;
    grid-template-columns: repeat(var(--chart-columns, 7), minmax(0, 1fr));
-   gap: 0.6em;
+   gap: var(--chart-gap);
    font-size: 0.7em;
    color: var(--color-text-secondary);
    text-align: center;

@@ -2,10 +2,14 @@ import { useEffect, useState } from "react";
 import { fetchWithAuth } from "../../api/authClient";
 import { HistoryChart } from "../../components/HistoryChart/HistoryChart";
 import { ShiftList } from "../../components/ShiftList/ShiftList";
+import {
+   getStoredIncomeMode,
+   setStoredIncomeMode,
+   type IncomeMode,
+} from "../../utils/incomeMode";
 import styles from "./HistoryPage.module.scss";
 
 type PeriodMode = "day" | "week" | "month";
-type IncomeMode = "gross" | "net";
 
 type ShiftCost = {
    costTotal: number;
@@ -87,6 +91,25 @@ const toIsoDate = (value: Date) => {
    const day = String(value.getDate()).padStart(2, "0");
    return `${year}-${month}-${day}`;
 };
+
+const buildDaysBetween = (start: Date, end: Date) => {
+   const result: Date[] = [];
+   const current = new Date(start);
+   current.setHours(0, 0, 0, 0);
+
+   const finish = new Date(end);
+   finish.setHours(0, 0, 0, 0);
+
+   while (current <= finish) {
+      result.push(new Date(current));
+      current.setDate(current.getDate() + 1);
+   }
+
+   return result;
+};
+
+const MONTH_BUCKETS_START = new Date(2025, 10, 1);
+const WEEK_BUCKETS_START = new Date(2026, 0, 5);
 
 const startOfDay = (value: Date) => {
    const date = new Date(value);
@@ -208,7 +231,9 @@ export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
    const [periodMode, setPeriodMode] = useState<PeriodMode>("day");
-   const [incomeMode, setIncomeMode] = useState<IncomeMode>("gross");
+   const [incomeMode, setIncomeMode] = useState<IncomeMode>(() => {
+      return getStoredIncomeMode() ?? "gross";
+   });
    const [selectedBucketKey, setSelectedBucketKey] = useState<string | null>(
       null,
    );
@@ -227,51 +252,69 @@ export function HistoryPage() {
 
    const buildDayBuckets = () => {
       const now = startOfDay(new Date());
-      const result: ChartBucket[] = [];
+      const incomeByDate = shiftsWithDate.reduce<Record<string, number>>(
+         (acc, shift) => {
+            const key = toIsoDate(shift.parsedDate);
+            acc[key] = (acc[key] ?? 0) + getShiftIncome(shift, incomeMode);
+            return acc;
+         },
+         {},
+      );
 
-      for (let index = 6; index >= 0; index -= 1) {
-         const date = new Date(now);
-         date.setDate(now.getDate() - index);
-         const dayStart = startOfDay(date);
-         const dayEnd = endOfDay(date);
-         const value = shiftsWithDate.reduce((sum, shift) => {
-            return isInPeriod(shift.parsedDate, dayStart, dayEnd)
-               ? sum + getShiftIncome(shift, incomeMode)
-               : sum;
-         }, 0);
+      const oldestShiftDate =
+         shiftsWithDate.length > 0
+            ? startOfDay(
+                 new Date(
+                    Math.min(
+                       ...shiftsWithDate.map((shift) =>
+                          shift.parsedDate.getTime(),
+                       ),
+                    ),
+                 ),
+              )
+            : (() => {
+                 const fallback = new Date(now);
+                 fallback.setDate(now.getDate() - 6);
+                 return fallback;
+              })();
 
-         result.push({
-            key: `day-${toIsoDate(dayStart)}`,
+      return buildDaysBetween(oldestShiftDate, now).map((dayStart) => {
+         const dayEnd = endOfDay(dayStart);
+         const key = toIsoDate(dayStart);
+         return {
+            key: `day-${key}`,
             label: formatDayLabel(dayStart),
-            value,
+            value: incomeByDate[key] ?? 0,
             start: dayStart,
             end: dayEnd,
-         });
-      }
-
-      return result;
+         };
+      });
    };
 
    const buildWeekBuckets = () => {
       const now = new Date();
       const currentWeekStart = startOfWeekMonday(now);
+      const oldestWeekStart = startOfWeekMonday(WEEK_BUCKETS_START);
       const result: ChartBucket[] = [];
 
-      for (let index = 3; index >= 0; index -= 1) {
-         const weekStart = new Date(currentWeekStart);
-         weekStart.setDate(currentWeekStart.getDate() - index * 7);
+      for (
+         let weekStart = new Date(oldestWeekStart);
+         weekStart <= currentWeekStart;
+         weekStart.setDate(weekStart.getDate() + 7)
+      ) {
+         const periodStart = new Date(weekStart);
          const weekEnd = endOfWeekMonday(weekStart);
          const value = shiftsWithDate.reduce((sum, shift) => {
-            return isInPeriod(shift.parsedDate, weekStart, weekEnd)
+            return isInPeriod(shift.parsedDate, periodStart, weekEnd)
                ? sum + getShiftIncome(shift, incomeMode)
                : sum;
          }, 0);
 
          result.push({
-            key: `week-${toIsoDate(weekStart)}`,
-            label: formatWeekLabel(weekStart, weekEnd),
+            key: `week-${toIsoDate(periodStart)}`,
+            label: formatWeekLabel(periodStart, weekEnd),
             value,
-            start: weekStart,
+            start: periodStart,
             end: weekEnd,
          });
       }
@@ -282,12 +325,15 @@ export function HistoryPage() {
    const buildMonthBuckets = () => {
       const now = new Date();
       const currentMonthStart = startOfMonth(now);
+      const oldestMonthStart = startOfMonth(MONTH_BUCKETS_START);
       const result: ChartBucket[] = [];
 
-      for (let index = 3; index >= 0; index -= 1) {
-         const monthStart = new Date(currentMonthStart);
-         monthStart.setMonth(currentMonthStart.getMonth() - index);
-         const periodStart = startOfMonth(monthStart);
+      for (
+         let periodStart = new Date(oldestMonthStart);
+         periodStart <= currentMonthStart;
+         periodStart.setMonth(periodStart.getMonth() + 1)
+      ) {
+         const monthStart = new Date(periodStart);
          const periodEnd = endOfMonth(monthStart);
          const value = shiftsWithDate.reduce((sum, shift) => {
             return isInPeriod(shift.parsedDate, periodStart, periodEnd)
@@ -299,7 +345,7 @@ export function HistoryPage() {
             key: `month-${periodStart.getFullYear()}-${periodStart.getMonth() + 1}`,
             label: formatMonthLabel(periodStart),
             value,
-            start: periodStart,
+            start: monthStart,
             end: periodEnd,
          });
       }
@@ -435,6 +481,10 @@ export function HistoryPage() {
       }
    }, [periodMode, shifts.length]);
 
+   useEffect(() => {
+      setStoredIncomeMode(incomeMode);
+   }, [incomeMode]);
+
    return (
       <main className={styles.page}>
          <section className={styles.page__panel}>
@@ -514,6 +564,7 @@ export function HistoryPage() {
                      targetValue={
                         periodMode === "day" ? targetDailyIncome : null
                      }
+                     visibleColumns={periodMode === "day" ? 7 : 4}
                   />
                   {filteredShifts.length === 0 ? (
                      <p className={styles.page__empty}>

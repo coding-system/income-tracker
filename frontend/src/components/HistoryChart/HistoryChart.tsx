@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import styles from "./HistoryChart.module.scss";
 
 export type HistoryChartPoint = {
@@ -13,6 +14,7 @@ type HistoryChartProps = {
    onSelect: (key: string) => void;
    averageValue?: number | null;
    targetValue?: number | null;
+   visibleColumns?: number;
 };
 
 export function HistoryChart({
@@ -22,7 +24,9 @@ export function HistoryChart({
    onSelect,
    averageValue,
    targetValue,
+   visibleColumns = 7,
 }: HistoryChartProps) {
+   const chartRef = useRef<HTMLElement | null>(null);
    const maxValueBase = points.reduce(
       (max, item) => Math.max(max, item.value),
       0,
@@ -37,12 +41,28 @@ export function HistoryChart({
       targetValue && scaleMaxValue > 0
          ? (targetValue / scaleMaxValue) * 100
          : null;
+   const maxVisibleColumns = Math.max(1, visibleColumns);
+   const chartColumns = Math.max(points.length, 1);
+   const visibleColumnsCount = Math.min(chartColumns, maxVisibleColumns);
    const chartStyle = {
-      "--chart-columns": points.length,
+      "--chart-columns": chartColumns,
+      "--chart-visible-columns": visibleColumnsCount,
    } as React.CSSProperties;
+
+   useEffect(() => {
+      const element = chartRef.current;
+      if (!element) {
+         return;
+      }
+
+      if (points.length > visibleColumnsCount) {
+         element.scrollLeft = element.scrollWidth;
+      }
+   }, [points.length, visibleColumnsCount]);
 
    return (
       <section
+         ref={chartRef}
          className={styles.chart}
          aria-label={rangeLabel}
          style={chartStyle}
