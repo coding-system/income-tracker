@@ -206,27 +206,6 @@ const isWithinLastDays = (date: Date, days: number) => {
    return date >= start && date <= end;
 };
 
-const buildLastDays = (count: number) => {
-   const days: string[] = [];
-   const today = new Date();
-   today.setHours(0, 0, 0, 0);
-
-   const toLocalIso = (value: Date) => {
-      const year = value.getFullYear();
-      const month = String(value.getMonth() + 1).padStart(2, "0");
-      const day = String(value.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
-   };
-
-   for (let offset = count - 1; offset >= 0; offset -= 1) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - offset);
-      days.push(toLocalIso(date));
-   }
-
-   return days;
-};
-
 export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
@@ -392,10 +371,17 @@ export function HistoryPage() {
                  selectedBucket.end,
               ),
            )
-           .map((shift) => {
-              const { parsedDate: _parsedDate, ...rest } = shift;
-              return rest;
-           })
+           .map((shift) => ({
+              id: shift.id,
+              date: shift.date,
+              incomeTotal: shift.incomeTotal,
+              engineHours: shift.engineHours,
+              mileageKm: shift.mileageKm,
+              fuelings: shift.fuelings,
+              washes: shift.washes,
+              snacks: shift.snacks,
+              others: shift.others,
+           }))
       : shifts;
 
    const weeklyGrossIncome = shifts.reduce((total, shift) => {
@@ -479,7 +465,7 @@ export function HistoryPage() {
       ) {
          setSelectedBucketKey(latestBucket.key);
       }
-   }, [periodMode, shifts.length]);
+   }, [chartBuckets, selectedBucketKey]);
 
    useEffect(() => {
       setStoredIncomeMode(incomeMode);

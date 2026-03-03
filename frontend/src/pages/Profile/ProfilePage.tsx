@@ -79,7 +79,7 @@ export function ProfilePage() {
       };
 
       void loadProfile();
-   }, []);
+   }, [navigate]);
 
    const handleLogout = async () => {
       try {
