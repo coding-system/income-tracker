@@ -47,61 +47,63 @@ export function HistoryChart({
          aria-label={rangeLabel}
          style={chartStyle}
       >
-         <div className={styles.chart__bars}>
-            {targetHeight !== null ? (
-               <span
-                  className={styles.chart__targetLine}
-                  style={{ bottom: `${targetHeight}%` }}
-                  aria-hidden="true"
-               />
-            ) : null}
-            {averageHeight !== null ? (
-               <span
-                  className={styles.chart__avgLine}
-                  style={{ bottom: `${averageHeight}%` }}
-                  aria-hidden="true"
-               />
-            ) : null}
-            {points.map((item) => {
-               const height =
-                  scaleMaxValue > 0 ? (item.value / scaleMaxValue) * 100 : 0;
-               const barHeight =
-                  item.value > 0 ? `max(${height}%, 0.24em)` : "0.24em";
-               const valueBottom = `calc(${barHeight} + 0.25em)`;
-               return (
-                  <button
-                     key={item.key}
-                     className={`${styles.chart__column} ${
-                        selectedKey === item.key
-                           ? styles["chart__column--active"]
-                           : ""
-                     }`}
-                     type="button"
-                     onClick={() => onSelect(item.key)}
-                     title={item.label}
-                  >
-                     <span className={styles.chart__barWrap}>
-                        <span
-                           className={styles.chart__value}
-                           style={{ bottom: valueBottom }}
-                        >
-                           {new Intl.NumberFormat("ru-RU", {
-                              maximumFractionDigits: 0,
-                           }).format(item.value)}
+         <div className={styles.chart__content}>
+            <div className={styles.chart__bars}>
+               {targetHeight !== null ? (
+                  <span
+                     className={styles.chart__targetLine}
+                     style={{ bottom: `${targetHeight}%` }}
+                     aria-hidden="true"
+                  />
+               ) : null}
+               {averageHeight !== null ? (
+                  <span
+                     className={styles.chart__avgLine}
+                     style={{ bottom: `${averageHeight}%` }}
+                     aria-hidden="true"
+                  />
+               ) : null}
+               {points.map((item) => {
+                  const height =
+                     scaleMaxValue > 0 ? (item.value / scaleMaxValue) * 100 : 0;
+                  const barHeight =
+                     item.value > 0 ? `max(${height}%, 0.24em)` : "0.24em";
+                  const valueBottom = `calc(${barHeight} + 0.25em)`;
+                  return (
+                     <button
+                        key={item.key}
+                        className={`${styles.chart__column} ${
+                           selectedKey === item.key
+                              ? styles["chart__column--active"]
+                              : ""
+                        }`}
+                        type="button"
+                        onClick={() => onSelect(item.key)}
+                        title={item.label}
+                     >
+                        <span className={styles.chart__barWrap}>
+                           <span
+                              className={styles.chart__value}
+                              style={{ bottom: valueBottom }}
+                           >
+                              {new Intl.NumberFormat("ru-RU", {
+                                 maximumFractionDigits: 0,
+                              }).format(item.value)}
+                           </span>
+                           <span
+                              className={styles.chart__bar}
+                              style={{ height: barHeight }}
+                           />
                         </span>
-                        <span
-                           className={styles.chart__bar}
-                           style={{ height: barHeight }}
-                        />
-                     </span>
-                  </button>
-               );
-            })}
-         </div>
-         <div className={styles.chart__labels}>
-            {points.map((item) => (
-               <span key={`${item.key}-label`}>{item.label}</span>
-            ))}
+                     </button>
+                  );
+               })}
+            </div>
+            <div className={styles.chart__labels}>
+               {points.map((item) => (
+                  <span key={`${item.key}-label`}>{item.label}</span>
+               ))}
+            </div>
          </div>
       </section>
    );
