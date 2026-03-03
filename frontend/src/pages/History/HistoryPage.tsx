@@ -5,6 +5,7 @@ import { ShiftList } from "../../components/ShiftList/ShiftList";
 import styles from "./HistoryPage.module.scss";
 
 type PeriodMode = "day" | "week" | "month";
+type IncomeMode = "gross" | "net";
 
 type ShiftCost = {
    costTotal: number;
@@ -40,6 +41,35 @@ const formatMoneyWhole = (value: number) =>
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
    }).format(value);
+
+const getCostsTotal = (shift: ShiftData) => {
+   const totalFueling = (shift.fuelings ?? []).reduce(
+      (sum, item) => sum + item.costTotal,
+      0,
+   );
+   const totalWashes = (shift.washes ?? []).reduce(
+      (sum, item) => sum + item.costTotal,
+      0,
+   );
+   const totalSnacks = (shift.snacks ?? []).reduce(
+      (sum, item) => sum + item.costTotal,
+      0,
+   );
+   const totalOthers = (shift.others ?? []).reduce(
+      (sum, item) => sum + item.costTotal,
+      0,
+   );
+
+   return totalFueling + totalWashes + totalSnacks + totalOthers;
+};
+
+const getShiftIncome = (shift: ShiftData, mode: IncomeMode) => {
+   if (mode === "gross") {
+      return shift.incomeTotal;
+   }
+
+   return shift.incomeTotal - getCostsTotal(shift);
+};
 
 const parseDateLocal = (value: string) => {
    const parts = value.split("-").map(Number);
@@ -89,11 +119,21 @@ const startOfMonth = (value: Date) => {
 };
 
 const endOfMonth = (value: Date) => {
-   return new Date(value.getFullYear(), value.getMonth() + 1, 0, 23, 59, 59, 999);
+   return new Date(
+      value.getFullYear(),
+      value.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999,
+   );
 };
 
 const isInPeriod = (value: Date, start: Date, end: Date) => {
-   return value.getTime() >= start.getTime() && value.getTime() <= end.getTime();
+   return (
+      value.getTime() >= start.getTime() && value.getTime() <= end.getTime()
+   );
 };
 
 const formatDayLabel = (value: Date) => {
@@ -104,8 +144,14 @@ const formatDayLabel = (value: Date) => {
 };
 
 const formatWeekLabel = (start: Date, end: Date) => {
-   const startLabel = new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit" }).format(start);
-   const endLabel = new Intl.DateTimeFormat("ru-RU", { day: "2-digit", month: "2-digit" }).format(end);
+   const startLabel = new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+   }).format(start);
+   const endLabel = new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+   }).format(end);
    return `${startLabel}–${endLabel}`;
 };
 
@@ -162,7 +208,10 @@ export function HistoryPage() {
    const [shifts, setShifts] = useState<ShiftData[]>([]);
    const [isLoading, setIsLoading] = useState(true);
    const [periodMode, setPeriodMode] = useState<PeriodMode>("day");
-   const [selectedBucketKey, setSelectedBucketKey] = useState<string | null>(null);
+   const [incomeMode, setIncomeMode] = useState<IncomeMode>("gross");
+   const [selectedBucketKey, setSelectedBucketKey] = useState<string | null>(
+      null,
+   );
    const [dailyTargetNet, setDailyTargetNet] = useState<number | null>(null);
    const [hasWeeklyPlan, setHasWeeklyPlan] = useState(false);
 
@@ -171,7 +220,10 @@ export function HistoryPage() {
          ...shift,
          parsedDate: parseDateLocal(shift.date),
       }))
-      .filter((shift): shift is ShiftData & { parsedDate: Date } => shift.parsedDate !== null);
+      .filter(
+         (shift): shift is ShiftData & { parsedDate: Date } =>
+            shift.parsedDate !== null,
+      );
 
    const buildDayBuckets = () => {
       const now = startOfDay(new Date());
@@ -184,7 +236,7 @@ export function HistoryPage() {
          const dayEnd = endOfDay(date);
          const value = shiftsWithDate.reduce((sum, shift) => {
             return isInPeriod(shift.parsedDate, dayStart, dayEnd)
-               ? sum + shift.incomeTotal
+               ? sum + getShiftIncome(shift, incomeMode)
                : sum;
          }, 0);
 
@@ -211,7 +263,7 @@ export function HistoryPage() {
          const weekEnd = endOfWeekMonday(weekStart);
          const value = shiftsWithDate.reduce((sum, shift) => {
             return isInPeriod(shift.parsedDate, weekStart, weekEnd)
-               ? sum + shift.incomeTotal
+               ? sum + getShiftIncome(shift, incomeMode)
                : sum;
          }, 0);
 
@@ -239,7 +291,7 @@ export function HistoryPage() {
          const periodEnd = endOfMonth(monthStart);
          const value = shiftsWithDate.reduce((sum, shift) => {
             return isInPeriod(shift.parsedDate, periodStart, periodEnd)
-               ? sum + shift.incomeTotal
+               ? sum + getShiftIncome(shift, incomeMode)
                : sum;
          }, 0);
 
@@ -288,7 +340,11 @@ export function HistoryPage() {
    const filteredShifts = selectedBucket
       ? shiftsWithDate
            .filter((shift) =>
-              isInPeriod(shift.parsedDate, selectedBucket.start, selectedBucket.end),
+              isInPeriod(
+                 shift.parsedDate,
+                 selectedBucket.start,
+                 selectedBucket.end,
+              ),
            )
            .map((shift) => {
               const { parsedDate: _parsedDate, ...rest } = shift;
@@ -302,7 +358,7 @@ export function HistoryPage() {
          return total;
       }
 
-      return total + shift.incomeTotal;
+      return total + getShiftIncome(shift, incomeMode);
    }, 0);
 
    const lastThirtyGrossIncome = shifts.reduce((total, shift) => {
@@ -311,7 +367,7 @@ export function HistoryPage() {
          return total;
       }
 
-      return total + shift.incomeTotal;
+      return total + getShiftIncome(shift, incomeMode);
    }, 0);
 
    const monthLabel = new Intl.DateTimeFormat("ru-RU", {
@@ -332,7 +388,7 @@ export function HistoryPage() {
          return total;
       }
 
-      return total + shift.incomeTotal;
+      return total + getShiftIncome(shift, incomeMode);
    }, 0);
 
    useEffect(() => {
@@ -371,7 +427,10 @@ export function HistoryPage() {
          return;
       }
 
-      if (!selectedBucketKey || !chartBuckets.some((item) => item.key === selectedBucketKey)) {
+      if (
+         !selectedBucketKey ||
+         !chartBuckets.some((item) => item.key === selectedBucketKey)
+      ) {
          setSelectedBucketKey(latestBucket.key);
       }
    }, [periodMode, shifts.length]);
@@ -380,7 +439,22 @@ export function HistoryPage() {
       <main className={styles.page}>
          <section className={styles.page__panel}>
             <header className={styles.page__header}>
-               <h1 className={styles.page__title}>История смен</h1>
+               <div className={styles.page__titleRow}>
+                  <h1 className={styles.page__title}>История смен</h1>
+                  <label className={styles.page__incomeLabel}>
+                     <span className={styles.page__incomeText}>Показывать</span>
+                     <select
+                        className={styles.page__incomeSelect}
+                        value={incomeMode}
+                        onChange={(event) =>
+                           setIncomeMode(event.target.value as IncomeMode)
+                        }
+                     >
+                        <option value="gross">Общий доход</option>
+                        <option value="net">Чистый доход</option>
+                     </select>
+                  </label>
+               </div>
                <div className={styles.page__summary}>
                   <div className={styles.page__summaryRow}>
                      <span className={styles.page__summaryLabel}>
@@ -437,7 +511,9 @@ export function HistoryPage() {
                      selectedKey={selectedBucket?.key ?? null}
                      onSelect={setSelectedBucketKey}
                      averageValue={averageGrossIncome}
-                     targetValue={periodMode === "day" ? targetDailyIncome : null}
+                     targetValue={
+                        periodMode === "day" ? targetDailyIncome : null
+                     }
                   />
                   {filteredShifts.length === 0 ? (
                      <p className={styles.page__empty}>

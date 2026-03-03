@@ -3,7 +3,7 @@
    // min-height: 100vh;
    // padding: 1.5em 2em 2.5em;
    // padding-top: 6em;
-   
+
    padding: 0.5em 0.8em;
    display: flex;
    justify-content: center;
@@ -29,6 +29,34 @@
    display: flex;
    flex-direction: column;
    gap: 0.4em;
+}
+
+.page__titleRow {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 1em;
+   flex-wrap: wrap;
+}
+
+.page__incomeLabel {
+   display: inline-flex;
+   align-items: center;
+   gap: 0.5em;
+}
+
+.page__incomeText {
+   font-size: 0.95em;
+   color: var(--color-text-secondary);
+}
+
+.page__incomeSelect {
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface);
+   color: var(--color-text);
+   padding: 0.35em 0.7em;
+   border-radius: 0.7em;
+   font: inherit;
 }
 
 .page__summary {
