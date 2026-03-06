@@ -8,6 +8,8 @@ const toNumberArray = (values: string[]) =>
       .map((value) => Math.round(Number(value)))
       .filter((value) => Number.isFinite(value) && value >= 0);
 
+   const toDigitsOnly = (value: string) => value.replace(/\D+/g, "");
+
 const toIsoDate = (value: Date) => {
    const year = value.getFullYear();
    const month = String(value.getMonth() + 1).padStart(2, "0");
@@ -96,6 +98,15 @@ export function ShiftDataForm({
       text: string;
    } | null>(null);
    const [isLoading, setIsLoading] = useState(false);
+   const [step, setStep] = useState(0);
+
+   const steps = [
+      { title: "Дата смены", hint: "Выберите день, за который сохраняете данные." },
+      { title: "Заработок", hint: "Укажите общий заработок за смену." },
+      { title: "Пробег и поездки", hint: "Добавьте километры и количество заказов." },
+      { title: "Моточасы", hint: "Введите часы и минуты работы." },
+      { title: "Расходы", hint: "Заполните категории расходов и сохраните." },
+   ];
 
    useEffect(() => {
       if (!initialData) {
@@ -122,7 +133,10 @@ export function ShiftDataForm({
       index: number,
       value: string,
    ) => {
-      setter((prev) => prev.map((item, i) => (i === index ? value : item)));
+      const sanitized = toDigitsOnly(value);
+      setter((prev) =>
+         prev.map((item, i) => (i === index ? sanitized : item)),
+      );
    };
 
    const handleArrayAdd = (
@@ -188,9 +202,9 @@ export function ShiftDataForm({
                         <input
                            id={`${keyPrefix}-${index}`}
                            className={styles.form__input}
-                           type="number"
-                           min="0"
-                           step="1"
+                           type="text"
+                           inputMode="numeric"
+                           pattern="[0-9]*"
                            placeholder="Сумма"
                            value={value}
                            onChange={(event) =>
@@ -225,6 +239,84 @@ export function ShiftDataForm({
       </section>
    );
 
+   const validateStep = (stepToValidate: number) => {
+      if (stepToValidate === 0) {
+         if (!date) {
+            setStatus({ type: "error", text: "Выберите дату смены" });
+            return false;
+         }
+         return true;
+      }
+
+      if (stepToValidate === 1) {
+         const incomeValue = Math.round(Number(incomeTotal));
+         if (!Number.isFinite(incomeValue) || incomeValue <= 0) {
+            setStatus({ type: "error", text: "Введите заработок больше 0" });
+            return false;
+         }
+         return true;
+      }
+
+      if (stepToValidate === 2) {
+         const mileageValue = Math.round(Number(mileageKm));
+         if (!Number.isFinite(mileageValue) || mileageValue <= 0) {
+            setStatus({ type: "error", text: "Введите пробег больше 0" });
+            return false;
+         }
+
+         const tripsValue = Math.round(Number(tripsCount));
+         if (!Number.isFinite(tripsValue) || tripsValue <= 0) {
+            setStatus({ type: "error", text: "Введите количество поездок больше 0" });
+            return false;
+         }
+
+         return true;
+      }
+
+      if (stepToValidate === 3) {
+         const hoursValue = Number(engineHoursHours);
+         const minutesValue = Number(engineHoursMinutes);
+
+         if (
+            !Number.isFinite(hoursValue) ||
+            hoursValue < 1 ||
+            hoursValue > 24
+         ) {
+            setStatus({ type: "error", text: "Часы должны быть от 1 до 24" });
+            return false;
+         }
+
+         if (
+            !Number.isFinite(minutesValue) ||
+            minutesValue < 0 ||
+            minutesValue > 59
+         ) {
+            setStatus({ type: "error", text: "Минуты должны быть от 0 до 59" });
+            return false;
+         }
+
+         return true;
+      }
+
+      return true;
+   };
+
+   const handleNextStep = () => {
+      setStatus(null);
+      if (!validateStep(step)) {
+         return;
+      }
+
+      const nextStep = Math.min(step + 1, steps.length - 1);
+      setStep(nextStep);
+   };
+
+   const handlePrevStep = () => {
+      setStatus(null);
+      const prevStep = Math.max(step - 1, 0);
+      setStep(prevStep);
+   };
+
    const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
       setStatus(null);
@@ -232,6 +324,10 @@ export function ShiftDataForm({
       const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) {
          setStatus({ type: "error", text: "Сначала войдите в аккаунт" });
+         return;
+      }
+
+      if (!validateStep(0) || !validateStep(1) || !validateStep(2) || !validateStep(3)) {
          return;
       }
 
@@ -314,6 +410,7 @@ export function ShiftDataForm({
             setWashes([]);
             setSnacks([]);
             setOthers([]);
+            setStep(0);
          }
       } catch (error) {
          const message =
@@ -330,6 +427,26 @@ export function ShiftDataForm({
             <h1 className={styles.title}>{title}</h1>
             <p className={styles.subtitle}>{subtitle}</p>
          </header>
+
+         <div className={styles.wizard__progress}>
+            {steps.map((item, index) => (
+               <button
+                  key={item.title}
+                  type="button"
+                  className={`${styles.wizard__dot} ${
+                     index <= step ? styles["wizard__dot--active"] : ""
+                  }`}
+                  onClick={() => {
+                     if (index < step) {
+                        setStatus(null);
+                        setStep(index);
+                     }
+                  }}
+                  aria-label={`Шаг ${index + 1}: ${item.title}`}
+               />
+            ))}
+         </div>
+
          <form className={styles.form} onSubmit={handleSubmit}>
             {status ? (
                <div
@@ -342,149 +459,196 @@ export function ShiftDataForm({
                   {status.text}
                </div>
             ) : null}
-
-            <div className={styles.form__grid}>
-               <div
-                  className={`${styles.form__field} ${styles["form__field--wide"]}`}
-               >
-                  <span className={styles.form__label}>Дата</span>
-                  <input
-                     id="shift-date"
-                     className={styles.form__input}
-                     type="date"
-                     value={date}
-                     max={todayIso}
-                     onChange={(event) => setDate(event.target.value)}
-                     required
-                  />
+            <div className={styles.wizard__card}>
+               <div className={styles.wizard__meta}>
+                  <span className={styles.wizard__stepLabel}>
+                     Шаг {step + 1} из {steps.length}
+                  </span>
+                  <h2 className={styles.wizard__stepTitle}>{steps[step].title}</h2>
+                  <p className={styles.wizard__stepHint}>{steps[step].hint}</p>
                </div>
 
-               <div
-                  className={`${styles.form__field} ${styles["form__field--wide"]}`}
-               >
-                  <label className={styles.form__label} htmlFor="shift-income">
-                     Заработали (₽)
-                  </label>
-                  <input
-                     id="shift-income"
-                     className={styles.form__input}
-                     type="number"
-                     min="1"
-                     step="1"
-                     value={incomeTotal}
-                     onChange={(event) => setIncomeTotal(event.target.value)}
-                     required
-                  />
-               </div>
-
-               <div
-                  className={`${styles.form__field} ${styles["form__field--compact"]}`}
-               >
-                  <label className={styles.form__label} htmlFor="shift-mileage">
-                     Пробег (км)
-                  </label>
-                  <input
-                     id="shift-mileage"
-                     className={`${styles.form__input} ${styles["form__input--short"]}`}
-                     type="number"
-                     min="1"
-                     step="1"
-                     value={mileageKm}
-                     onChange={(event) => setMileageKm(event.target.value)}
-                     required
-                  />
-               </div>
-
-               <div
-                  className={`${styles.form__field} ${styles["form__field--compact"]}`}
-               >
-                  <label className={styles.form__label} htmlFor="shift-trips">
-                     Поездки (шт)
-                  </label>
-                  <input
-                     id="shift-trips"
-                     className={`${styles.form__input} ${styles["form__input--short"]}`}
-                     type="number"
-                     min="1"
-                     step="1"
-                     value={tripsCount}
-                     onChange={(event) => setTripsCount(event.target.value)}
-                     required
-                  />
-               </div>
-
-               <div
-                  className={`${styles.form__field} ${styles["form__field--wide"]}`}
-               >
-                  <label className={styles.form__label} htmlFor="shift-hours">
-                     Моточасы
-                  </label>
-                  <div className={styles.form__inlineInputs}>
-                     <div className={styles.form__inlineField}>
-                        <label
-                           className={styles.form__inlineLabel}
-                           htmlFor="shift-hours"
-                        >
-                           Часы
+               <div key={step} className={styles.wizard__stage}>
+                  {step === 0 ? (
+                     <div className={styles.form__field}>
+                        <label className={styles.form__label} htmlFor="shift-date">
+                           Дата
                         </label>
                         <input
-                           id="shift-hours"
-                           className={`${styles.form__input} ${styles["form__input--short"]}`}
-                           type="number"
-                           min="1"
-                           max="24"
-                           step="1"
-                           value={engineHoursHours}
+                           id="shift-date"
+                           className={styles.form__input}
+                           type="date"
+                           value={date}
+                           max={todayIso}
+                           onChange={(event) => setDate(event.target.value)}
+                           required
+                        />
+                     </div>
+                  ) : null}
+
+                  {step === 1 ? (
+                     <div className={styles.form__field}>
+                        <label className={styles.form__label} htmlFor="shift-income">
+                           Заработали (₽)
+                        </label>
+                        <input
+                           id="shift-income"
+                           className={styles.form__input}
+                           type="text"
+                           inputMode="numeric"
+                           pattern="[0-9]*"
+                           placeholder="Например, 4800"
+                           value={incomeTotal}
                            onChange={(event) =>
-                              setEngineHoursHours(event.target.value)
+                              setIncomeTotal(toDigitsOnly(event.target.value))
                            }
                            required
                         />
                      </div>
-                     <div className={styles.form__inlineField}>
-                        <label
-                           className={styles.form__inlineLabel}
-                           htmlFor="shift-minutes"
-                        >
-                           Минуты
-                        </label>
-                        <input
-                           id="shift-minutes"
-                           className={`${styles.form__input} ${styles["form__input--short"]}`}
-                           type="number"
-                           min="0"
-                           max="59"
-                           step="1"
-                           value={engineHoursMinutes}
-                           onChange={(event) =>
-                              setEngineHoursMinutes(event.target.value)
-                           }
-                           required
-                        />
+                  ) : null}
+
+                  {step === 2 ? (
+                     <div className={styles.form__grid}>
+                        <div className={styles.form__field}>
+                           <label className={styles.form__label} htmlFor="shift-mileage">
+                              Пробег (км)
+                           </label>
+                           <input
+                              id="shift-mileage"
+                              className={styles.form__input}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              placeholder="Например, 180"
+                              value={mileageKm}
+                              onChange={(event) =>
+                                 setMileageKm(toDigitsOnly(event.target.value))
+                              }
+                              required
+                           />
+                        </div>
+
+                        <div className={styles.form__field}>
+                           <label className={styles.form__label} htmlFor="shift-trips">
+                              Поездки (шт)
+                           </label>
+                           <input
+                              id="shift-trips"
+                              className={styles.form__input}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              placeholder="Например, 14"
+                              value={tripsCount}
+                              onChange={(event) =>
+                                 setTripsCount(toDigitsOnly(event.target.value))
+                              }
+                              required
+                           />
+                        </div>
                      </div>
-                  </div>
+                  ) : null}
+
+                  {step === 3 ? (
+                     <div className={styles.form__inlineInputs}>
+                        <div className={styles.form__inlineField}>
+                           <label
+                              className={styles.form__inlineLabel}
+                              htmlFor="shift-hours"
+                           >
+                              Часы
+                           </label>
+                           <input
+                              id="shift-hours"
+                              className={styles.form__input}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              placeholder="1-24"
+                              value={engineHoursHours}
+                              onChange={(event) =>
+                                 setEngineHoursHours(
+                                    toDigitsOnly(event.target.value),
+                                 )
+                              }
+                              required
+                           />
+                        </div>
+                        <div className={styles.form__inlineField}>
+                           <label
+                              className={styles.form__inlineLabel}
+                              htmlFor="shift-minutes"
+                           >
+                              Минуты
+                           </label>
+                           <input
+                              id="shift-minutes"
+                              className={styles.form__input}
+                              type="text"
+                              inputMode="numeric"
+                              pattern="[0-9]*"
+                              placeholder="0-59"
+                              value={engineHoursMinutes}
+                              onChange={(event) =>
+                                 setEngineHoursMinutes(
+                                    toDigitsOnly(event.target.value),
+                                 )
+                              }
+                              required
+                           />
+                        </div>
+                     </div>
+                  ) : null}
+
+                  {step === 4 ? (
+                     <div className={styles.expenseGrid}>
+                        {renderExpenseSection(
+                           "Заправки",
+                           fuelings,
+                           setFuelings,
+                           "fueling",
+                        )}
+                        {renderExpenseSection("Мойки", washes, setWashes, "wash")}
+                        {renderExpenseSection("Перекусы", snacks, setSnacks, "snack")}
+                        {renderExpenseSection("Другое", others, setOthers, "other")}
+                     </div>
+                  ) : null}
                </div>
             </div>
 
-            <div className={styles.expenseGrid}>
-               {renderExpenseSection(
-                  "Заправки",
-                  fuelings,
-                  setFuelings,
-                  "fueling",
+            <div className={styles.wizard__actions}>
+               {step > 0 ? (
+                  <button
+                     className={`${styles.wizard__button} ${styles["wizard__button--ghost"]}`}
+                     type="button"
+                     onClick={handlePrevStep}
+                     disabled={isLoading}
+                  >
+                     Назад
+                  </button>
+               ) : (
+                  <span />
                )}
-               {renderExpenseSection("Мойки", washes, setWashes, "wash")}
-               {renderExpenseSection("Перекусы", snacks, setSnacks, "snack")}
-               {renderExpenseSection("Другое", others, setOthers, "other")}
-            </div>
 
-            <button
-               className={styles.form__submit}
-               type="submit"
-               disabled={isLoading}
-            >
-               {isLoading ? "Сохранение..." : submitLabel}
-            </button>
+               {step < steps.length - 1 ? (
+                  <button
+                     className={styles.wizard__button}
+                     type="button"
+                     onClick={handleNextStep}
+                     disabled={isLoading}
+                  >
+                     Продолжить
+                  </button>
+               ) : (
+                  <button
+                     className={styles.form__submit}
+                     type="submit"
+                     disabled={isLoading}
+                  >
+                     {isLoading ? "Сохранение..." : submitLabel}
+                  </button>
+               )}
+            </div>
          </form>
       </section>
    );

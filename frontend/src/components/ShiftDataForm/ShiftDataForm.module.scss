@@ -6,6 +6,26 @@
    gap: 1.4em;
 }
 
+.wizard__progress {
+   display: grid;
+   grid-template-columns: repeat(5, minmax(0, 1fr));
+   gap: 0.45em;
+}
+
+.wizard__dot {
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+   height: 0.5em;
+   border-radius: 999px;
+   padding: 0;
+   cursor: pointer;
+}
+
+.wizard__dot--active {
+   background: var(--color-primary);
+   border-color: rgba(var(--color-primary-rgb), 0.55);
+}
+
 .header {
    display: flex;
    flex-direction: column;
@@ -26,6 +46,58 @@
    display: flex;
    flex-direction: column;
    gap: 1.4em;
+}
+
+.wizard__card {
+   border: 0.08em solid var(--color-border);
+   border-radius: 1em;
+   background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface) 88%, transparent),
+      var(--color-surface-secondary)
+   );
+   padding: 1em;
+   display: flex;
+   flex-direction: column;
+   gap: 1em;
+}
+
+.wizard__meta {
+   display: flex;
+   flex-direction: column;
+   gap: 0.3em;
+}
+
+.wizard__stepLabel {
+   font-size: 0.8em;
+   color: var(--color-text-tertiary);
+}
+
+.wizard__stepTitle {
+   margin: 0;
+   font-size: 1.25em;
+}
+
+.wizard__stepHint {
+   margin: 0;
+   font-size: 0.92em;
+   color: var(--color-text-secondary);
+}
+
+.wizard__stage {
+   animation: wizard-slide-in 0.22s ease;
+}
+
+@keyframes wizard-slide-in {
+   from {
+      opacity: 0;
+      transform: translateY(0.25em);
+   }
+
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
 }
 
 .form__status {
@@ -50,10 +122,6 @@
    display: grid;
    grid-template-columns: repeat(2, minmax(0, 1fr));
    gap: 0.9em;
-   padding: 0.9em;
-   border: 0.08em solid var(--color-border);
-   border-radius: 1em;
-   background: var(--color-surface-secondary);
 }
 
 .form__field {
@@ -95,11 +163,17 @@
 
 .form__input {
    border-radius: 0.75em;
-   padding: 0.58em 0.75em;
+   padding: 0.72em 0.9em;
    border: 0.08em solid var(--color-border);
-   font-size: 0.98em;
+   font-size: 1.02em;
    background: var(--color-surface);
    color: var(--color-text);
+}
+
+.form__input:focus {
+   outline: none;
+   border-color: rgba(var(--color-primary-rgb), 0.6);
+   box-shadow: 0 0 0 0.18em rgba(var(--color-primary-rgb), 0.2);
 }
 
 .form__input--short {
@@ -235,20 +309,45 @@
 }
 
 .form__submit {
-   align-self: flex-start;
    border: none;
    background: var(--color-primary);
    color: var(--color-text-special);
-   padding: 0.8em 2em;
-   border-radius: 2em;
+   padding: 0.78em 1.7em;
+   border-radius: 1.5em;
    cursor: pointer;
    font-weight: 600;
 }
 
+.wizard__actions {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 0.8em;
+}
+
+.wizard__button {
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.78em 1.7em;
+   border-radius: 1.5em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.wizard__button--ghost {
+   background: transparent;
+   color: var(--color-text-secondary);
+   border: 0.08em solid var(--color-border);
+}
+
 @media (max-width: 42em) {
+   .wizard__card {
+      padding: 0.85em;
+   }
+
    .form__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      padding: 0.75em;
    }
 
    .form__field--wide {
@@ -267,6 +366,15 @@
 }
 
 @media (max-width: 30em) {
+   .wizard__actions {
+      position: sticky;
+      bottom: 0.7em;
+      background: color-mix(in srgb, var(--color-page) 72%, transparent);
+      backdrop-filter: blur(0.3em);
+      padding: 0.4em;
+      border-radius: 1em;
+   }
+
    .form__grid {
       grid-template-columns: 1fr;
    }
