@@ -10,16 +10,9 @@ export function HomePage() {
                <h1 className={styles.home__title}>
                   Приведите доходы в порядок и держите цель в фокусе
                </h1>
-               <p className={styles.home__subtitle}>
-                  Простой трекер доходов, расходов и целей. Записывайте операции
-                  за 20 секунд и видьте динамику за день, неделю и месяц.
-               </p>
                <div className={styles.home__actions}>
-                  <Link className={styles.home__primaryAction} to="/register">
+                  <Link className={styles.home__primaryAction} to="/shift/new">
                      Начать учет
-                  </Link>
-                  <Link className={styles.home__secondaryAction} to="/login">
-                     Войти
                   </Link>
                </div>
             </div>

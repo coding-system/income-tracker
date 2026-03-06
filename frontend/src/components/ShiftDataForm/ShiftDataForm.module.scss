@@ -1,14 +1,14 @@
 .panel {
+   font-size: 1rem;
    width: min(58em, 100%);
    border-radius: 1.6em;
    display: flex;
    flex-direction: column;
-   gap: 1.4em;
 }
 
 .wizard__progress {
-   display: grid;
-   grid-template-columns: repeat(5, minmax(0, 1fr));
+   padding-top: 0.4em;
+   display: flex;
    gap: 0.45em;
 }
 
@@ -19,6 +19,7 @@
    border-radius: 999px;
    padding: 0;
    cursor: pointer;
+   flex: 1;
 }
 
 .wizard__dot--active {
@@ -45,7 +46,7 @@
 .form {
    display: flex;
    flex-direction: column;
-   gap: 1.4em;
+   gap: 1em;
 }
 
 .wizard__card {
@@ -323,6 +324,66 @@
    align-items: center;
    justify-content: space-between;
    gap: 0.8em;
+   transition:
+      opacity 0.22s ease,
+      transform 0.22s ease;
+}
+
+.wizard__actions--hidden {
+   opacity: 0;
+   transform: translateY(0.25em);
+   pointer-events: none;
+}
+
+.wizard__footer {
+   position: relative;
+   min-height: 3.35em;
+}
+
+.wizard__statusPanel {
+   position: absolute;
+   inset: 0;
+   border-radius: 1em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   gap: 0.8em;
+   padding: 0.45em 0.65em;
+   opacity: 0;
+   transform: translateY(-0.2em);
+   pointer-events: none;
+   transition:
+      opacity 0.22s ease,
+      transform 0.22s ease;
+}
+
+.wizard__statusPanel--visible {
+   opacity: 1;
+   transform: translateY(0);
+   pointer-events: auto;
+}
+
+.wizard__statusPanel--error {
+   border-color: var(--color-error);
+}
+
+.wizard__statusPanel--success {
+   border-color: var(--color-success);
+}
+
+.wizard__statusText {
+   font-size: 0.94em;
+   color: var(--color-text);
+}
+
+.wizard__statusPanel--error .wizard__statusText {
+   color: var(--color-error);
+}
+
+.wizard__statusPanel--success .wizard__statusText {
+   color: var(--color-success);
 }
 
 .wizard__button {
@@ -341,45 +402,47 @@
    border: 0.08em solid var(--color-border);
 }
 
-@media (max-width: 42em) {
-   .wizard__card {
-      padding: 0.85em;
-   }
-
-   .form__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-   }
-
-   .form__field--wide {
-      grid-column: span 2;
-   }
-
-   .form__field--compact {
-      max-width: 100%;
-      align-items: flex-start;
-   }
-
-   .form__input--short {
-      max-width: 8.2em;
-      text-align: center;
-   }
+.summary {
+   display: flex;
+   flex-direction: column;
+   gap: 0.55em;
+   padding: 0.85em;
+   border-radius: 0.9em;
+   border: 0.08em solid var(--color-border);
+   background: color-mix(in srgb, var(--color-surface) 70%, transparent);
 }
 
-@media (max-width: 30em) {
-   .wizard__actions {
-      position: sticky;
-      bottom: 0.7em;
-      background: color-mix(in srgb, var(--color-page) 72%, transparent);
-      backdrop-filter: blur(0.3em);
-      padding: 0.4em;
-      border-radius: 1em;
-   }
+.summary__row {
+   display: flex;
+   align-items: baseline;
+   justify-content: space-between;
+   gap: 0.7em;
+}
 
-   .form__grid {
-      grid-template-columns: 1fr;
-   }
+.summary__label {
+   color: var(--color-text-secondary);
+   font-size: 0.95em;
+}
 
-   .form__field--wide {
-      grid-column: auto;
-   }
+.summary__value {
+   color: var(--color-text);
+   font-weight: 600;
+   text-align: right;
+}
+
+.summary__divider {
+   height: 0.08em;
+   background: var(--color-border);
+   margin: 0.2em 0;
+}
+
+.summary__row--strong .summary__label,
+.summary__row--strong .summary__value {
+   font-weight: 700;
+}
+
+.summary__row--accent .summary__label,
+.summary__row--accent .summary__value {
+   color: var(--color-primary);
+   font-weight: 700;
 }

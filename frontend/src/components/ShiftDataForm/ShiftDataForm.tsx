@@ -8,13 +8,26 @@ const toNumberArray = (values: string[]) =>
       .map((value) => Math.round(Number(value)))
       .filter((value) => Number.isFinite(value) && value >= 0);
 
-   const toDigitsOnly = (value: string) => value.replace(/\D+/g, "");
+const toDigitsOnly = (value: string) => value.replace(/\D+/g, "");
 
 const toIsoDate = (value: Date) => {
    const year = value.getFullYear();
    const month = String(value.getMonth() + 1).padStart(2, "0");
    const day = String(value.getDate()).padStart(2, "0");
    return `${year}-${month}-${day}`;
+};
+
+const formatDateRu = (value: string) => {
+   const parsed = new Date(value);
+   if (Number.isNaN(parsed.getTime())) {
+      return value;
+   }
+
+   return new Intl.DateTimeFormat("ru-RU", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+   }).format(parsed);
 };
 
 export type ShiftFormData = {
@@ -101,11 +114,21 @@ export function ShiftDataForm({
    const [step, setStep] = useState(0);
 
    const steps = [
-      { title: "Дата смены", hint: "Выберите день, за который сохраняете данные." },
+      {
+         title: "Дата смены",
+         hint: "Выберите день, за который сохраняете данные.",
+      },
       { title: "Заработок", hint: "Укажите общий заработок за смену." },
-      { title: "Пробег и поездки", hint: "Добавьте километры и количество заказов." },
+      {
+         title: "Пробег и поездки",
+         hint: "Добавьте километры и количество заказов.",
+      },
       { title: "Моточасы", hint: "Введите часы и минуты работы." },
-      { title: "Расходы", hint: "Заполните категории расходов и сохраните." },
+      { title: "Расходы", hint: "Заполните категории расходов." },
+      {
+         title: "Итог",
+         hint: "Проверьте данные перед сохранением смены.",
+      },
    ];
 
    useEffect(() => {
@@ -128,15 +151,29 @@ export function ShiftDataForm({
       setOthers(initialData.others?.map(String) ?? []);
    }, [initialData]);
 
+   useEffect(() => {
+      if (!status || status.type !== "error") {
+         return;
+      }
+
+      const timeoutId = window.setTimeout(() => {
+         setStatus((current) =>
+            current && current.type === "error" ? null : current,
+         );
+      }, 3000);
+
+      return () => {
+         window.clearTimeout(timeoutId);
+      };
+   }, [status]);
+
    const handleArrayChange = (
       setter: React.Dispatch<React.SetStateAction<string[]>>,
       index: number,
       value: string,
    ) => {
       const sanitized = toDigitsOnly(value);
-      setter((prev) =>
-         prev.map((item, i) => (i === index ? sanitized : item)),
-      );
+      setter((prev) => prev.map((item, i) => (i === index ? sanitized : item)));
    };
 
    const handleArrayAdd = (
@@ -154,6 +191,18 @@ export function ShiftDataForm({
 
    const expenseTotal = (values: string[]) =>
       toNumberArray(values).reduce((sum, value) => sum + value, 0);
+
+   const fuelingsTotal = expenseTotal(fuelings);
+   const washesTotal = expenseTotal(washes);
+   const snacksTotal = expenseTotal(snacks);
+   const othersTotal = expenseTotal(others);
+   const totalExpenses =
+      fuelingsTotal + washesTotal + snacksTotal + othersTotal;
+   const incomeValue = Math.round(Number(incomeTotal));
+   const netIncome =
+      Number.isFinite(incomeValue) && incomeValue > 0
+         ? incomeValue - totalExpenses
+         : null;
 
    const renderExpenseSection = (
       sectionTitle: string,
@@ -266,7 +315,10 @@ export function ShiftDataForm({
 
          const tripsValue = Math.round(Number(tripsCount));
          if (!Number.isFinite(tripsValue) || tripsValue <= 0) {
-            setStatus({ type: "error", text: "Введите количество поездок больше 0" });
+            setStatus({
+               type: "error",
+               text: "Введите количество поездок больше 0",
+            });
             return false;
          }
 
@@ -317,9 +369,12 @@ export function ShiftDataForm({
       setStep(prevStep);
    };
 
-   const handleSubmit = async (event: React.FormEvent) => {
-      event.preventDefault();
+   const handleSubmit = async () => {
       setStatus(null);
+
+      if (step !== steps.length - 1) {
+         return;
+      }
 
       const accessToken = localStorage.getItem("accessToken");
       if (!accessToken) {
@@ -327,7 +382,12 @@ export function ShiftDataForm({
          return;
       }
 
-      if (!validateStep(0) || !validateStep(1) || !validateStep(2) || !validateStep(3)) {
+      if (
+         !validateStep(0) ||
+         !validateStep(1) ||
+         !validateStep(2) ||
+         !validateStep(3)
+      ) {
          return;
       }
 
@@ -428,50 +488,115 @@ export function ShiftDataForm({
             <p className={styles.subtitle}>{subtitle}</p>
          </header>
 
-         <div className={styles.wizard__progress}>
-            {steps.map((item, index) => (
-               <button
-                  key={item.title}
-                  type="button"
-                  className={`${styles.wizard__dot} ${
-                     index <= step ? styles["wizard__dot--active"] : ""
-                  }`}
-                  onClick={() => {
-                     if (index < step) {
-                        setStatus(null);
-                        setStep(index);
-                     }
-                  }}
-                  aria-label={`Шаг ${index + 1}: ${item.title}`}
-               />
-            ))}
-         </div>
-
-         <form className={styles.form} onSubmit={handleSubmit}>
-            {status ? (
+         <form
+            className={styles.form}
+            onSubmit={(event) => {
+               event.preventDefault();
+            }}
+         >
+            <div className={styles.wizard__progress}>
+               {steps.map((item, index) => (
+                  <button
+                     key={item.title}
+                     type="button"
+                     className={`${styles.wizard__dot} ${
+                        index <= step ? styles["wizard__dot--active"] : ""
+                     }`}
+                     onClick={() => {
+                        if (index < step) {
+                           setStatus(null);
+                           setStep(index);
+                        }
+                     }}
+                     aria-label={`Шаг ${index + 1}: ${item.title}`}
+                  />
+               ))}
+            </div>
+            <div className={styles.wizard__footer}>
                <div
-                  className={`${styles.form__status} ${
-                     status.type === "error"
-                        ? styles["form__status--error"]
-                        : styles["form__status--success"]
+                  className={`${styles.wizard__actions} ${
+                     status ? styles["wizard__actions--hidden"] : ""
                   }`}
                >
-                  {status.text}
+                  {step > 0 ? (
+                     <button
+                        className={`${styles.wizard__button} ${styles["wizard__button--ghost"]}`}
+                        type="button"
+                        onClick={handlePrevStep}
+                        disabled={isLoading}
+                     >
+                        Назад
+                     </button>
+                  ) : (
+                     <span />
+                  )}
+
+                  {step < steps.length - 1 ? (
+                     <button
+                        className={styles.wizard__button}
+                        type="button"
+                        onClick={handleNextStep}
+                        disabled={isLoading}
+                     >
+                        Продолжить
+                     </button>
+                  ) : (
+                     <button
+                        className={styles.form__submit}
+                        type="button"
+                        onClick={() => {
+                           void handleSubmit();
+                        }}
+                        disabled={isLoading}
+                     >
+                        {isLoading ? "Сохранение..." : submitLabel}
+                     </button>
+                  )}
                </div>
-            ) : null}
+
+               <div
+                  className={`${styles.wizard__statusPanel} ${
+                     status ? styles["wizard__statusPanel--visible"] : ""
+                  } ${
+                     status?.type === "error"
+                        ? styles["wizard__statusPanel--error"]
+                        : styles["wizard__statusPanel--success"]
+                  }`}
+               >
+                  <span className={styles.wizard__statusText}>
+                     {status?.text ?? ""}
+                  </span>
+
+                  {status?.type === "success" ? (
+                     <button
+                        className={styles.wizard__button}
+                        type="button"
+                        onClick={() => setStatus(null)}
+                     >
+                        Продолжить
+                     </button>
+                  ) : null}
+               </div>
+            </div>
+
             <div className={styles.wizard__card}>
                <div className={styles.wizard__meta}>
                   <span className={styles.wizard__stepLabel}>
                      Шаг {step + 1} из {steps.length}
                   </span>
-                  <h2 className={styles.wizard__stepTitle}>{steps[step].title}</h2>
+                  <h2 className={styles.wizard__stepTitle}>
+                     {steps[step].title}
+                  </h2>
                   <p className={styles.wizard__stepHint}>{steps[step].hint}</p>
                </div>
 
                <div key={step} className={styles.wizard__stage}>
                   {step === 0 ? (
                      <div className={styles.form__field}>
-                        <label className={styles.form__label} htmlFor="shift-date">
+                        <label
+                           className={styles.form__label}
+                           htmlFor="shift-date"
+                        >
                            Дата
                         </label>
                         <input
@@ -488,7 +613,10 @@ export function ShiftDataForm({
 
                   {step === 1 ? (
                      <div className={styles.form__field}>
-                        <label className={styles.form__label} htmlFor="shift-income">
+                        <label
+                           className={styles.form__label}
+                           htmlFor="shift-income"
+                        >
                            Заработали (₽)
                         </label>
                         <input
@@ -510,7 +638,10 @@ export function ShiftDataForm({
                   {step === 2 ? (
                      <div className={styles.form__grid}>
                         <div className={styles.form__field}>
-                           <label className={styles.form__label} htmlFor="shift-mileage">
+                           <label
+                              className={styles.form__label}
+                              htmlFor="shift-mileage"
+                           >
                               Пробег (км)
                            </label>
                            <input
@@ -529,7 +660,10 @@ export function ShiftDataForm({
                         </div>
 
                         <div className={styles.form__field}>
-                           <label className={styles.form__label} htmlFor="shift-trips">
+                           <label
+                              className={styles.form__label}
+                              htmlFor="shift-trips"
+                           >
                               Поездки (шт)
                            </label>
                            <input
@@ -608,46 +742,123 @@ export function ShiftDataForm({
                            setFuelings,
                            "fueling",
                         )}
-                        {renderExpenseSection("Мойки", washes, setWashes, "wash")}
-                        {renderExpenseSection("Перекусы", snacks, setSnacks, "snack")}
-                        {renderExpenseSection("Другое", others, setOthers, "other")}
+                        {renderExpenseSection(
+                           "Мойки",
+                           washes,
+                           setWashes,
+                           "wash",
+                        )}
+                        {renderExpenseSection(
+                           "Перекусы",
+                           snacks,
+                           setSnacks,
+                           "snack",
+                        )}
+                        {renderExpenseSection(
+                           "Другое",
+                           others,
+                           setOthers,
+                           "other",
+                        )}
+                     </div>
+                  ) : null}
+
+                  {step === 5 ? (
+                     <div className={styles.summary}>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>Дата</span>
+                           <span className={styles.summary__value}>
+                              {formatDateRu(date)}
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>
+                              Заработок
+                           </span>
+                           <span className={styles.summary__value}>
+                              {incomeTotal || "0"} ₽
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>Пробег</span>
+                           <span className={styles.summary__value}>
+                              {mileageKm || "0"} км
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>
+                              Поездки
+                           </span>
+                           <span className={styles.summary__value}>
+                              {tripsCount || "0"} шт
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>
+                              Моточасы
+                           </span>
+                           <span className={styles.summary__value}>
+                              {engineHoursHours || "0"} ч{" "}
+                              {engineHoursMinutes || "0"} мин
+                           </span>
+                        </div>
+
+                        <div className={styles.summary__divider} />
+
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>
+                              Заправки
+                           </span>
+                           <span className={styles.summary__value}>
+                              {fuelingsTotal} ₽
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>Мойки</span>
+                           <span className={styles.summary__value}>
+                              {washesTotal} ₽
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>
+                              Перекусы
+                           </span>
+                           <span className={styles.summary__value}>
+                              {snacksTotal} ₽
+                           </span>
+                        </div>
+                        <div className={styles.summary__row}>
+                           <span className={styles.summary__label}>Другое</span>
+                           <span className={styles.summary__value}>
+                              {othersTotal} ₽
+                           </span>
+                        </div>
+
+                        <div className={styles.summary__divider} />
+
+                        <div
+                           className={`${styles.summary__row} ${styles["summary__row--strong"]}`}
+                        >
+                           <span className={styles.summary__label}>
+                              Итого расходов
+                           </span>
+                           <span className={styles.summary__value}>
+                              {totalExpenses} ₽
+                           </span>
+                        </div>
+                        <div
+                           className={`${styles.summary__row} ${styles["summary__row--accent"]}`}
+                        >
+                           <span className={styles.summary__label}>
+                              Чистый доход
+                           </span>
+                           <span className={styles.summary__value}>
+                              {netIncome ?? 0} ₽
+                           </span>
+                        </div>
                      </div>
                   ) : null}
                </div>
-            </div>
-
-            <div className={styles.wizard__actions}>
-               {step > 0 ? (
-                  <button
-                     className={`${styles.wizard__button} ${styles["wizard__button--ghost"]}`}
-                     type="button"
-                     onClick={handlePrevStep}
-                     disabled={isLoading}
-                  >
-                     Назад
-                  </button>
-               ) : (
-                  <span />
-               )}
-
-               {step < steps.length - 1 ? (
-                  <button
-                     className={styles.wizard__button}
-                     type="button"
-                     onClick={handleNextStep}
-                     disabled={isLoading}
-                  >
-                     Продолжить
-                  </button>
-               ) : (
-                  <button
-                     className={styles.form__submit}
-                     type="submit"
-                     disabled={isLoading}
-                  >
-                     {isLoading ? "Сохранение..." : submitLabel}
-                  </button>
-               )}
             </div>
          </form>
       </section>
