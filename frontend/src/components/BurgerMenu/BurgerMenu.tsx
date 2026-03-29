@@ -82,7 +82,7 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         Новая смена
                      </Link>
                      <Link
-                        to="/service"
+                        to="/services"
                         className={styles.menu__link}
                         onClick={onClose}
                      >

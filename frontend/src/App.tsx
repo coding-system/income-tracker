@@ -8,7 +8,9 @@ import { LoginPage } from "./pages/Login/LoginPage";
 import { NewShiftPage } from "./pages/NewShift/NewShiftPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { RegisterPage } from "./pages/Register/RegisterPage";
-import { ServicePage } from "./pages/Service/ServicePage";
+import { ServicesPage } from "./pages/Services/ServicesPage";
+import { ServiceDetailsPage } from "./pages/ServiceDetails/ServiceDetailsPage";
+import { ServiceEditPage } from "./pages/ServiceEdit/ServiceEditPage";
 import { ServiceNewPage } from "./pages/ServiceNew/ServiceNewPage";
 import { ShiftEditPage } from "./pages/ShiftEdit/ShiftEditPage";
 import { ShiftDetailsPage } from "./pages/ShiftDetails/ShiftDetailsPage";
@@ -103,10 +105,30 @@ function App() {
                   }
                />
                <Route
-                  path="/service"
+                  path="/services"
                   element={
                      isAuthenticated ? (
-                        <ServicePage />
+                        <ServicesPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/service/:id"
+                  element={
+                     isAuthenticated ? (
+                        <ServiceDetailsPage />
+                     ) : (
+                        <Navigate to="/login" replace />
+                     )
+                  }
+               />
+               <Route
+                  path="/service/:id/edit"
+                  element={
+                     isAuthenticated ? (
+                        <ServiceEditPage />
                      ) : (
                         <Navigate to="/login" replace />
                      )

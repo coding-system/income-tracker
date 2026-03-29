@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { fetchWithAuth } from "../../api/authClient";
-import styles from "./ServicePage.module.scss";
+import styles from "./ServicesPage.module.scss";
 
 type ServiceVisit = {
    id: string;
@@ -50,7 +50,8 @@ const formatDateRu = (value: string) => {
    return `${day} ${month} ${year}г.`;
 };
 
-export function ServicePage() {
+export function ServicesPage() {
+   const navigate = useNavigate();
    const [serviceVisits, setServiceVisits] = useState<ServiceVisit[]>([]);
    const [isLoading, setIsLoading] = useState(true);
 
@@ -97,18 +98,16 @@ export function ServicePage() {
             {isLoading ? (
                <p className={styles.page__empty}>Загрузка...</p>
             ) : serviceVisits.length === 0 ? (
-               <div className={styles.page__emptyBlock}>
-                  <p className={styles.page__empty}>
-                     Посещений сервиса пока нет.
-                  </p>
-                  <Link to="/service/new" className={styles.page__addButton}>
-                     Добавить тех обслуживание
-                  </Link>
-               </div>
+               <p className={styles.page__empty}>Посещений сервиса пока нет.</p>
             ) : (
                <div className={styles.page__list}>
                   {serviceVisits.map((visit) => (
-                     <div className={styles.page__row} key={visit.id}>
+                     <button
+                        className={styles.page__row}
+                        key={visit.id}
+                        type="button"
+                        onClick={() => navigate(`/service/${visit.id}`)}
+                     >
                         <span className={styles.page__rowDate}>
                            {formatDateRu(visit.date)}
                         </span>
@@ -120,7 +119,7 @@ export function ServicePage() {
                               {formatMileage(visit.mileageKm)}
                            </span>
                         </div>
-                     </div>
+                     </button>
                   ))}
                </div>
             )}

@@ -66,6 +66,21 @@
       color-mix(in srgb, var(--color-surface) 88%, transparent),
       var(--color-surface-secondary)
    );
+   width: 100%;
+   border: 0.1em solid var(--color-border);
+   text-decoration: none;
+   text-align: left;
+   cursor: pointer;
+   transition:
+      border-color 0.2s ease,
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+}
+
+.page__row:hover {
+   border-color: rgba(var(--color-primary-rgb), 0.35);
+   transform: translateY(-0.08em);
+   box-shadow: 0 0.4em 1.2em rgba(0, 0, 0, 0.06);
 }
 
 .page__rowMeta {

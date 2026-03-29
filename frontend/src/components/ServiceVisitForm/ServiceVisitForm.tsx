@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { fetchWithAuth } from "../../api/authClient";
 import styles from "./ServiceVisitForm.module.scss";
 
 type ServicePartDraft = {
@@ -11,6 +10,7 @@ type ServicePartDraft = {
 };
 
 type ServiceVisitFormData = {
+   id?: string;
    date: string;
    mileageKm: number;
    workCost: number;
@@ -22,6 +22,17 @@ type ServiceVisitFormData = {
       isOriginal: boolean;
    }>;
 };
+
+type ServiceVisitFormProps = {
+   initialData?: ServiceVisitFormData | null;
+   onSubmit: (payload: ServiceVisitFormData) => Promise<void>;
+   submitLabel?: string;
+   title?: string;
+   subtitle?: string;
+   successMessage?: string;
+};
+
+export type { ServiceVisitFormData };
 
 const toDigitsOnly = (value: string) => value.replace(/\D+/g, "");
 
@@ -69,13 +80,37 @@ const getPartTotal = (part: ServicePartDraft) => {
    return unitCost * quantity;
 };
 
-export function ServiceVisitForm() {
+const toDraftParts = (
+   parts?: ServiceVisitFormData["parts"],
+): ServicePartDraft[] =>
+   parts?.map((part) => ({
+      key: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+      name: part.name,
+      unitCost: String(part.unitCost),
+      quantity: String(part.quantity),
+      isOriginal: part.isOriginal,
+   })) ?? [];
+
+export function ServiceVisitForm({
+   initialData,
+   onSubmit,
+   submitLabel = "Сохранить",
+   title = "Новый сервис",
+   subtitle = "Заполните данные о посещении сервиса.",
+   successMessage = "Посещение сервиса сохранено",
+}: ServiceVisitFormProps) {
    const todayIso = toIsoDate(new Date());
-   const [date, setDate] = useState(todayIso);
-   const [mileageKm, setMileageKm] = useState("");
-   const [parts, setParts] = useState<ServicePartDraft[]>([]);
-   const [workCost, setWorkCost] = useState("");
-   const [notes, setNotes] = useState("");
+   const [date, setDate] = useState(initialData?.date ?? todayIso);
+   const [mileageKm, setMileageKm] = useState(
+      initialData ? String(initialData.mileageKm) : "",
+   );
+   const [parts, setParts] = useState<ServicePartDraft[]>(
+      toDraftParts(initialData?.parts),
+   );
+   const [workCost, setWorkCost] = useState(
+      initialData ? String(initialData.workCost) : "",
+   );
+   const [notes, setNotes] = useState(initialData?.notes ?? "");
    const [status, setStatus] = useState<{
       type: "error" | "success";
       text: string;
@@ -105,6 +140,18 @@ export function ServiceVisitForm() {
          hint: "Проверьте данные перед сохранением посещения.",
       },
    ];
+
+   useEffect(() => {
+      if (!initialData) {
+         return;
+      }
+
+      setDate(initialData.date);
+      setMileageKm(String(initialData.mileageKm));
+      setParts(toDraftParts(initialData.parts));
+      setWorkCost(String(initialData.workCost));
+      setNotes(initialData.notes ?? "");
+   }, [initialData]);
 
    useEffect(() => {
       if (!status || status.type !== "error") {
@@ -287,30 +334,17 @@ export function ServiceVisitForm() {
             payload.notes = trimmedNotes;
          }
 
-         const response = await fetchWithAuth("/service-visits", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-         });
+         await onSubmit(payload);
 
-         if (response.status === 401) {
-            throw new Error("Сессия истекла. Войдите снова.");
+         setStatus({ type: "success", text: successMessage });
+         if (!initialData) {
+            setDate(todayIso);
+            setMileageKm("");
+            setParts([]);
+            setWorkCost("");
+            setNotes("");
+            setStep(0);
          }
-
-         if (!response.ok) {
-            const message = await response.text();
-            throw new Error(message || "Ошибка сохранения");
-         }
-
-         setStatus({ type: "success", text: "Посещение сервиса сохранено" });
-         setDate(todayIso);
-         setMileageKm("");
-         setParts([]);
-         setWorkCost("");
-         setNotes("");
-         setStep(0);
       } catch (error) {
          const message =
             error instanceof Error ? error.message : "Ошибка сохранения";
@@ -323,10 +357,8 @@ export function ServiceVisitForm() {
    return (
       <section className={styles.panel}>
          <header className={styles.header}>
-            <h1 className={styles.title}>Новый сервис</h1>
-            <p className={styles.subtitle}>
-               Заполните данные о посещении сервиса.
-            </p>
+            <h1 className={styles.title}>{title}</h1>
+            <p className={styles.subtitle}>{subtitle}</p>
          </header>
 
          <form
@@ -383,7 +415,7 @@ export function ServiceVisitForm() {
                         }}
                         disabled={isLoading}
                      >
-                        {isLoading ? "Сохранение..." : "Сохранить"}
+                        {isLoading ? "Сохранение..." : submitLabel}
                      </button>
                   )}
                </div>
