@@ -46,6 +46,8 @@ export type ShiftFormData = {
 type ShiftDataFormProps = {
    initialData?: ShiftFormData | null;
    onSubmit: (payload: ShiftFormData) => Promise<void>;
+   onSuccess?: (payload: ShiftFormData) => Promise<void> | void;
+   showSuccessStatus?: boolean;
    submitLabel?: string;
    title?: string;
    subtitle?: string;
@@ -69,6 +71,8 @@ const splitEngineHours = (value: number | null | undefined) => {
 export function ShiftDataForm({
    initialData,
    onSubmit,
+   onSuccess,
+   showSuccessStatus = true,
    submitLabel = "Сохранить",
    title = "Новая смена",
    subtitle = "Заполните данные и сохраните смену.",
@@ -457,8 +461,12 @@ export function ShiftDataForm({
          };
 
          await onSubmit(payload);
+         await onSuccess?.(payload);
 
-         setStatus({ type: "success", text: successMessage });
+         if (showSuccessStatus) {
+            setStatus({ type: "success", text: successMessage });
+         }
+
          if (!initialData) {
             setDate(todayIso);
             setIncomeTotal("");
