@@ -4,6 +4,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./prisma/prisma.module";
+import { ServiceVisitsModule } from "./service-visits/service-visits.module";
 import { ShiftsModule } from "./shifts/shifts.module";
 import { UsersModule } from "./users/users.module";
 
@@ -16,6 +17,7 @@ import { UsersModule } from "./users/users.module";
       UsersModule,
       AuthModule,
       ShiftsModule,
+      ServiceVisitsModule,
    ],
    controllers: [AppController],
    providers: [AppService],
