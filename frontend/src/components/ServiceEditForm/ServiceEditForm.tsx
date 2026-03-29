@@ -1,24 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchWithAuth } from "../../api/authClient";
-import { ShiftDataForm } from "../ShiftDataForm";
-import type { ShiftFormData } from "../ShiftDataForm";
+import {
+   ServiceVisitForm,
+   type ServiceVisitFormData,
+} from "../ServiceVisitForm/ServiceVisitForm";
 
-type ShiftCost = {
-   costTotal: number;
+type ServicePart = {
+   id: string;
+   name: string;
+   isOriginal: boolean;
+   unitCost: number;
+   quantity: number;
+   totalCost: number;
 };
 
-type ShiftDetailsData = {
+type ServiceVisitDetails = {
    id: string;
    date: string;
-   incomeTotal: number;
-   engineHours: number | null;
-   mileageKm: number | null;
-   tripsCount: number | null;
-   fuelings?: ShiftCost[];
-   washes?: ShiftCost[];
-   snacks?: ShiftCost[];
-   others?: ShiftCost[];
+   mileageKm: number;
+   workCost: number;
+   totalCost: number;
+   notes: string | null;
+   parts: ServicePart[];
 };
 
 const toInputDate = (value: string) => {
@@ -37,49 +41,51 @@ const toInputDate = (value: string) => {
    return local.toISOString().slice(0, 10);
 };
 
-const mapCosts = (items?: ShiftCost[]) => items?.map((item) => item.costTotal);
-
-export function ShiftEditForm() {
+export function ServiceEditForm() {
    const { id } = useParams();
    const navigate = useNavigate();
-   const [initialData, setInitialData] = useState<ShiftFormData | null>(null);
+   const [initialData, setInitialData] = useState<ServiceVisitFormData | null>(
+      null,
+   );
    const [isLoading, setIsLoading] = useState(true);
    const [error, setError] = useState<string | null>(null);
 
    useEffect(() => {
       const load = async () => {
          if (!id) {
-            setError("Смена не найдена");
+            setError("Посещение сервиса не найдено");
             setIsLoading(false);
             return;
          }
 
          try {
-            const response = await fetchWithAuth(`/shifts/${id}`);
+            const response = await fetchWithAuth(`/service-visits/${id}`);
             if (response.status === 404) {
-               setError("Смена не найдена");
-               return;
-            }
-            if (!response.ok) {
-               setError("Не удалось загрузить смену");
+               setError("Посещение сервиса не найдено");
                return;
             }
 
-            const data = (await response.json()) as ShiftDetailsData;
+            if (!response.ok) {
+               setError("Не удалось загрузить посещение сервиса");
+               return;
+            }
+
+            const data = (await response.json()) as ServiceVisitDetails;
             setInitialData({
                id: data.id,
                date: toInputDate(data.date),
-               incomeTotal: data.incomeTotal,
-               mileageKm: data.mileageKm ?? 0,
-               engineHours: data.engineHours ?? 0,
-               tripsCount: data.tripsCount ?? 0,
-               fuelings: mapCosts(data.fuelings),
-               washes: mapCosts(data.washes),
-               snacks: mapCosts(data.snacks),
-               others: mapCosts(data.others),
+               mileageKm: data.mileageKm,
+               workCost: data.workCost,
+               notes: data.notes ?? undefined,
+               parts: data.parts.map((part) => ({
+                  name: part.name,
+                  unitCost: part.unitCost,
+                  quantity: part.quantity,
+                  isOriginal: part.isOriginal,
+               })),
             });
          } catch {
-            setError("Не удалось загрузить смену");
+            setError("Не удалось загрузить посещение сервиса");
          } finally {
             setIsLoading(false);
          }
@@ -88,14 +94,15 @@ export function ShiftEditForm() {
       void load();
    }, [id]);
 
-   const handleSubmit = async (payload: ShiftFormData) => {
+   const handleSubmit = async (payload: ServiceVisitFormData) => {
       if (!id) {
-         throw new Error("Смена не найдена");
+         throw new Error("Посещение сервиса не найдено");
       }
 
       const body = { ...payload };
       delete body.id;
-      const response = await fetchWithAuth(`/shifts/${id}`, {
+
+      const response = await fetchWithAuth(`/service-visits/${id}`, {
          method: "PATCH",
          headers: {
             "Content-Type": "application/json",
@@ -112,7 +119,7 @@ export function ShiftEditForm() {
          throw new Error(message || "Ошибка сохранения");
       }
 
-      navigate(`/shift/${id}`);
+      navigate(`/service/${id}`);
    };
 
    if (isLoading) {
@@ -124,17 +131,17 @@ export function ShiftEditForm() {
    }
 
    if (!initialData) {
-      return <p>Смена не найдена</p>;
+      return <p>Посещение сервиса не найдено</p>;
    }
 
    return (
-      <ShiftDataForm
+      <ServiceVisitForm
          initialData={initialData}
          onSubmit={handleSubmit}
          submitLabel="Сохранить"
-         title="Редактировать смену"
+         title="Редактировать сервис"
          subtitle="Обновите данные и сохраните изменения."
-         successMessage="Смена обновлена"
+         successMessage="Посещение сервиса обновлено"
       />
    );
 }

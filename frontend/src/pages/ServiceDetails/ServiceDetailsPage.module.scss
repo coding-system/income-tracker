@@ -1,0 +1,213 @@
+.page {
+   font-size: 1rem;
+   display: flex;
+   justify-content: center;
+   color: var(--color-text);
+}
+
+.page__panel {
+   width: 100%;
+   padding: 0.8em 0.8em 2em;
+   display: flex;
+   flex-direction: column;
+   gap: 1.6em;
+}
+
+.page__actions {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+}
+
+.page__back {
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.5em 1.2em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.page__empty {
+   margin: 0;
+   color: var(--color-text-secondary);
+}
+
+.details {
+   display: flex;
+   flex-direction: column;
+   gap: 1.6em;
+}
+
+.details__header {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.details__actions {
+   display: flex;
+   gap: 0.6em;
+}
+
+.details__editButton {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 0.4em;
+   border: 0.08em solid var(--color-border);
+   background: transparent;
+   color: var(--color-text-secondary);
+   padding: 0.4em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+   text-decoration: none;
+   font-size: 1.4em;
+}
+
+.details__editIcon {
+   font-size: 1.1em;
+}
+
+.details__deleteButton {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 0.4em;
+   border: 0.08em solid rgba(230, 72, 72, 0.5);
+   background: rgba(230, 72, 72, 0.1);
+   color: rgb(230, 72, 72);
+   padding: 0.4em;
+   border-radius: 2em;
+   cursor: pointer;
+   font-weight: 600;
+   font-size: 1.4em;
+}
+
+.details__deleteButton:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
+}
+
+.details__deleteIcon {
+   font-size: 1.1em;
+}
+
+.details__eyebrow {
+   margin: 0;
+   color: var(--color-text-secondary);
+   text-transform: uppercase;
+   letter-spacing: 0.1em;
+   font-size: 0.85em;
+}
+
+.details__title {
+   margin: 0;
+   font-size: 1.4em;
+}
+
+.details__grid {
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 1em;
+}
+
+.details__card,
+.details__noteCard,
+.details__partCard {
+   padding: 0.3em 1em;
+   border-radius: 1em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+}
+
+.details__label {
+   margin: 0;
+   color: var(--color-text-tertiary);
+   font-size: 0.85em;
+}
+
+.details__value {
+   margin: 0;
+   font-weight: 600;
+   font-size: 1.2em;
+   display: inline-flex;
+   align-items: center;
+   gap: 0.3em;
+}
+
+.details__expenses {
+   display: flex;
+   flex-direction: column;
+   gap: 0.8em;
+}
+
+.details__subtitle {
+   margin: 0;
+   font-size: 1.2em;
+}
+
+.details__noteText {
+   margin: 0;
+   line-height: 1.5;
+   white-space: pre-wrap;
+}
+
+.details__partsList {
+   display: flex;
+   flex-direction: column;
+   gap: 0.8em;
+}
+
+.details__partHeader {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 1em;
+}
+
+.details__partTitle {
+   margin: 0;
+   font-size: 1.05em;
+}
+
+.details__partType {
+   margin: 0.25em 0 0;
+   color: var(--color-text-secondary);
+}
+
+.details__partTotal {
+   font-size: 1.2em;
+}
+
+.details__partMeta {
+   margin-top: 0.9em;
+   display: grid;
+   grid-template-columns: repeat(2, minmax(0, 1fr));
+   gap: 0.8em;
+}
+
+.details__partMetaItem {
+   display: flex;
+   flex-direction: column;
+   gap: 0.2em;
+}
+
+.details__partMetaValue {
+   font-weight: 600;
+}
+
+@media (max-width: 640px) {
+   .details__grid,
+   .details__partMeta {
+      grid-template-columns: 1fr;
+   }
+
+   .details__partHeader {
+      flex-direction: column;
+      align-items: stretch;
+   }
+}

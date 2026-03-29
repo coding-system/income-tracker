@@ -19,6 +19,7 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
   days             Day[]
+  serviceVisits    ServiceVisit[]
 }
 
 model Day {
@@ -80,5 +81,39 @@ model Other {
   updatedAt DateTime @updatedAt
 
   day Day @relation(fields: [dayId], references: [id], onDelete: Cascade)
+}
+
+model ServiceVisit {
+  id         String        @id @default(cuid())
+  userId     String
+  date       String
+  mileageKm  Int
+  workCost   Int
+  totalCost  Int
+  notes      String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parts      ServicePart[]
+
+  @@index([userId, date])
+}
+
+model ServicePart {
+  id             String       @id @default(cuid())
+  serviceVisitId String
+  position       Int
+  name           String
+  isOriginal     Boolean
+  unitCost       Int
+  quantity       Int
+  totalCost      Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  serviceVisit   ServiceVisit @relation(fields: [serviceVisitId], references: [id], onDelete: Cascade)
+
+  @@index([serviceVisitId, position])
 }
 

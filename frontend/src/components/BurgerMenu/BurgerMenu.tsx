@@ -66,7 +66,9 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         className={styles.menu__link}
                         onClick={onClose}
                      >
-                        <span className="material-symbols-outlined">person</span>
+                        <span className="material-symbols-outlined">
+                           person
+                        </span>
                         Профиль
                      </Link>
                      <Link
@@ -74,8 +76,18 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         className={styles.menu__link}
                         onClick={onClose}
                      >
-                        <span className="material-symbols-outlined">local_taxi</span>
+                        <span className="material-symbols-outlined">
+                           local_taxi
+                        </span>
                         Новая смена
+                     </Link>
+                     <Link
+                        to="/services"
+                        className={styles.menu__link}
+                        onClick={onClose}
+                     >
+                        <span className="material-symbols-outlined">build</span>
+                        Сервис
                      </Link>
                      <Link
                         to="/history"
@@ -92,7 +104,9 @@ export function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         className={`${styles.menu__link} ${styles.menu__logout}`}
                         onClick={handleLogout}
                      >
-                        <span className="material-symbols-outlined">logout</span>
+                        <span className="material-symbols-outlined">
+                           logout
+                        </span>
                         Выйти
                      </button>
                   </>

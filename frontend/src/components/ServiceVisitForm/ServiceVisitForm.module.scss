@@ -101,24 +101,6 @@
    }
 }
 
-.form__status {
-   font-size: 0.95em;
-   padding: 0.8em 1em;
-   border-radius: 0.8em;
-   border: 0.08em solid var(--color-border);
-   background: var(--color-surface-secondary);
-}
-
-.form__status--error {
-   border-color: var(--color-error);
-   color: var(--color-error);
-}
-
-.form__status--success {
-   border-color: var(--color-success);
-   color: var(--color-success);
-}
-
 .form__grid {
    display: grid;
    grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -134,27 +116,6 @@
 
 .form__field--wide {
    grid-column: span 2;
-}
-
-.form__field--compact {
-   max-width: 16em;
-}
-
-.form__inlineInputs {
-   display: grid;
-   grid-template-columns: repeat(2, minmax(0, 1fr));
-   gap: 0.55em;
-}
-
-.form__inlineField {
-   display: flex;
-   flex-direction: column;
-   gap: 0.3em;
-}
-
-.form__inlineLabel {
-   font-size: 0.78em;
-   color: var(--color-text-tertiary);
 }
 
 .form__label {
@@ -177,56 +138,42 @@
    box-shadow: 0 0 0 0.18em rgba(var(--color-primary-rgb), 0.2);
 }
 
-.form__input--short {
-   max-width: 8.2em;
-   text-align: center;
+.form__textarea {
+   min-height: 7.5em;
+   resize: vertical;
 }
 
-.expenseGrid {
-   display: grid;
-   grid-template-columns: repeat(auto-fit, minmax(17em, 1fr));
-   gap: 1em;
-}
-
-.expenseCard {
+.partsCard {
    display: flex;
    flex-direction: column;
    gap: 0.8em;
-   border: 0.08em solid var(--color-border);
-   border-radius: 1em;
-   background: linear-gradient(
-      180deg,
-      var(--color-surface),
-      var(--color-surface-secondary)
-   );
-   padding: 1em;
 }
 
-.expenseCard__header {
+.partsCard__header {
    display: flex;
    align-items: flex-start;
    justify-content: space-between;
    gap: 0.7em;
 }
 
-.expenseCard__headMain {
+.partsCard__headMain {
    display: flex;
    flex-direction: column;
    gap: 0.45em;
 }
 
-.expenseCard__title {
+.partsCard__title {
    margin: 0;
    font-size: 1.05em;
 }
 
-.expenseCard__meta {
+.partsCard__meta {
    display: flex;
    gap: 0.45em;
    flex-wrap: wrap;
 }
 
-.expenseCard__badge {
+.partsCard__badge {
    font-size: 0.78em;
    color: var(--color-text-secondary);
    background: var(--color-surface);
@@ -235,7 +182,7 @@
    padding: 0.2em 0.6em;
 }
 
-.expenseCard__badge--total {
+.partsCard__badge--total {
    color: var(--color-primary);
    border-color: rgba(var(--color-primary-rgb), 0.35);
    background: rgba(var(--color-primary-rgb), 0.08);
@@ -252,32 +199,58 @@
    white-space: nowrap;
 }
 
-.expenseCard__list {
+.partsCard__list {
    display: flex;
    flex-direction: column;
-   gap: 0.65em;
+   gap: 0.9em;
 }
 
-.expenseCard__item {
-   padding: 0.6em;
-   border-radius: 0.75em;
+.partCard {
+   padding: 0.85em;
+   border-radius: 1em;
    border: 0.08em solid var(--color-border);
-   background: var(--color-surface);
+   background: linear-gradient(
+      180deg,
+      var(--color-surface),
+      var(--color-surface-secondary)
+   );
    display: flex;
    flex-direction: column;
-   gap: 0.45em;
+   gap: 0.8em;
 }
 
-.expenseCard__itemLabel {
+.partCard__header {
+   display: flex;
+   align-items: flex-start;
+   justify-content: space-between;
+   gap: 0.8em;
+}
+
+.partCard__label {
    font-size: 0.8em;
    color: var(--color-text-tertiary);
 }
 
-.expenseCard__itemRow {
-   display: grid;
-   grid-template-columns: 1fr auto;
-   gap: 0.5em;
+.partCard__name {
+   font-size: 1.05em;
+   font-weight: 600;
+   color: var(--color-text);
+}
+
+.partCard__footer {
+   display: flex;
    align-items: center;
+   justify-content: space-between;
+   gap: 0.7em;
+}
+
+.partCard__totalLabel {
+   color: var(--color-text-secondary);
+   font-size: 0.95em;
+}
+
+.partCard__totalValue {
+   color: var(--color-primary);
 }
 
 .form__removeButton {
@@ -299,7 +272,7 @@
    line-height: 1;
 }
 
-.expenseCard__empty {
+.partsCard__empty {
    margin: 0;
    color: var(--color-text-tertiary);
    font-size: 0.88em;
@@ -317,6 +290,7 @@
    border-radius: 1.5em;
    cursor: pointer;
    font-weight: 600;
+   width: 100%;
 }
 
 .wizard__actions {
