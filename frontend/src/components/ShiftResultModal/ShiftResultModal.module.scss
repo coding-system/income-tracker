@@ -1,0 +1,237 @@
+.modal {
+   position: fixed;
+   inset: 0;
+   z-index: 40;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 1.2em;
+   background: rgba(7, 14, 24, 0.48);
+   backdrop-filter: blur(0.35em);
+}
+
+.modal__dialog {
+   position: relative;
+   width: min(34em, 100%);
+   border-radius: 1.4em;
+   border: 0.1em solid var(--color-border);
+   background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface) 92%, white 8%),
+      var(--color-surface-secondary)
+   );
+   box-shadow: 0 1.8em 4em rgba(7, 14, 24, 0.18);
+   padding: 1.2em;
+   display: flex;
+   flex-direction: column;
+   gap: 1em;
+}
+
+.modal__close {
+   position: absolute;
+   top: 0.9em;
+   right: 0.9em;
+   width: 2.35em;
+   height: 2.35em;
+   border-radius: 999px;
+   border: 0.08em solid var(--color-border);
+   background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+   color: var(--color-text-secondary);
+   display: inline-flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+}
+
+.modal__iconWrap {
+   width: 5.5em;
+   height: 5.5em;
+   border-radius: 999px;
+   background: rgba(var(--color-success-rgb), 0.12);
+   color: var(--color-success);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto;
+}
+
+.modal__iconWrap--negative {
+   background: rgba(224, 73, 73, 0.12);
+   color: #df4f4f;
+}
+
+.modal__icon {
+   font-size: 5.2em;
+}
+
+.modal__header {
+   margin-top: 1em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.3em;
+   text-align: center;
+}
+
+.modal__eyebrow {
+   margin: 0;
+   font-size: 0.85em;
+   letter-spacing: 0.08em;
+   text-transform: uppercase;
+   color: var(--color-text-tertiary);
+}
+
+.modal__title {
+   margin: 0;
+   font-size: 1.8em;
+   line-height: 1.1;
+   color: var(--color-success);
+}
+
+.modal__title--warning {
+   color: #df4f4f;
+}
+
+.modal__topMeta {
+   margin: 0;
+   font-size: 1.2em;
+   font-weight: 700;
+   color: var(--color-text);
+}
+
+.modal__subtitle {
+   margin: 0;
+   color: var(--color-text-secondary);
+}
+
+.modal__weekLabel {
+   margin: 0;
+   font-size: 0.94em;
+   color: var(--color-text-tertiary);
+}
+
+.modal__todayBlock {
+   display: flex;
+   flex-direction: column;
+   gap: 0.2em;
+   margin-bottom: 1em;
+}
+
+.modal__todayValue {
+   font-size: 2em;
+   line-height: 1.05;
+   color: var(--color-text);
+}
+
+.modal__todayDelta {
+   font-size: 1em;
+   font-weight: 700;
+}
+
+.modal__todayDelta--positive {
+   color: var(--color-success);
+}
+
+.modal__todayDelta--negative {
+   color: #df4f4f;
+}
+
+.modal__progressBlock {
+   margin-top: 2.6em;
+   display: flex;
+   flex-direction: column;
+   gap: 0.7em;
+}
+
+.modal__progressHeader {
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   gap: 1em;
+}
+
+.modal__progressValue {
+   color: var(--color-text);
+   font-weight: 700;
+   font-size: 1.15em;
+   text-align: left;
+}
+
+.modal__progressTrack {
+   position: relative;
+   overflow: hidden;
+   height: 1em;
+   border-radius: 999px;
+   background: rgba(255, 255, 255, 0.2);
+}
+
+.modal__progressExpected,
+.modal__progressActual {
+   position: absolute;
+   inset: 0 auto 0 0;
+   height: 100%;
+   border-radius: inherit;
+}
+
+.modal__progressExpected {
+   background: rgba(0, 255, 0, 0.2);
+}
+
+.modal__progressActual {
+   background: linear-gradient(90deg, #23b35f, #56db85);
+}
+
+.modal__delta {
+   font-size: 1.25em;
+   line-height: 1;
+}
+
+.modal__weekDelta {
+   margin-top: 0.15em;
+}
+
+.modal__delta--positive {
+   color: var(--color-success);
+}
+
+.modal__delta--negative {
+   color: #df4f4f;
+}
+
+.modal__fallback {
+   border-radius: 1em;
+   border: 0.08em dashed var(--color-border);
+   padding: 1em;
+   background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+}
+
+.modal__fallbackText {
+   margin: 0;
+   color: var(--color-text-secondary);
+   text-align: center;
+}
+
+.modal__action {
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 0.82em 1.3em;
+   border-radius: 1.3em;
+   cursor: pointer;
+   font-weight: 700;
+}
+
+@media (max-width: 768px) {
+   .modal__dialog {
+      padding: 1.05em;
+   }
+
+   .modal__progressHeader {
+      flex-direction: column;
+      align-items: stretch;
+   }
+
+   .modal__progressValue,
+   .modal__delta {
+      text-align: left;
+   }
+}
