@@ -513,23 +513,15 @@ export function ShiftDataForm({
                ))}
             </div>
             <div className={styles.wizard__footer}>
-               <div
-                  className={`${styles.wizard__actions} ${
-                     status ? styles["wizard__actions--hidden"] : ""
-                  }`}
-               >
-                  {step > 0 ? (
-                     <button
-                        className={`${styles.wizard__button} ${styles["wizard__button--ghost"]}`}
-                        type="button"
-                        onClick={handlePrevStep}
-                        disabled={isLoading}
-                     >
-                        Назад
-                     </button>
-                  ) : (
-                     <span />
-                  )}
+               <div className={styles.wizard__actions}>
+                  <button
+                     className={`${styles.wizard__button} ${styles["wizard__button--ghost"]}`}
+                     type="button"
+                     onClick={handlePrevStep}
+                     disabled={step === 0 || isLoading}
+                  >
+                     Назад
+                  </button>
 
                   {step < steps.length - 1 ? (
                      <button
