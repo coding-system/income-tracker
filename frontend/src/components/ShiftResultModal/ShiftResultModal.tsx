@@ -73,9 +73,7 @@ export function ShiftResultModal({ state, onClose }: ShiftResultModalProps) {
                   <p className={styles.modal__subtitle}>{state.subtitle}</p>
                ) : null}
                {state.weekLabel ? (
-                  <p className={styles.modal__weekLabel}>
-                     {state.weekLabel}
-                  </p>
+                  <p className={styles.modal__weekLabel}>{state.weekLabel}</p>
                ) : null}
             </div>
 
@@ -90,7 +88,7 @@ export function ShiftResultModal({ state, onClose }: ShiftResultModalProps) {
                      {state.todayIncome !== undefined ? (
                         <div className={styles.modal__todayBlock}>
                            <strong className={styles.modal__todayValue}>
-                              {formatMoneyWhole(state.todayIncome)} / {" "}
+                              {formatMoneyWhole(state.todayIncome)} /{" "}
                               {formatMoneyWhole(todayTargetValue)} ₽
                            </strong>
                            {state.todayDelta !== undefined ? (
@@ -109,7 +107,7 @@ export function ShiftResultModal({ state, onClose }: ShiftResultModalProps) {
                      ) : null}
                      <div className={styles.modal__progressHeader}>
                         <span className={styles.modal__progressValue}>
-                           {formatMoneyWhole(weekValue)} / {" "}
+                           {formatMoneyWhole(weekValue)} /{" "}
                            {formatMoneyWhole(state.weeklyTarget)} ₽
                         </span>
                      </div>
