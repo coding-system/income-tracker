@@ -10,27 +10,27 @@ import {
 
 export class CreateShiftDto {
    @IsString()
-   date: string;
+   date!: string;
 
    @Type(() => Number)
    @IsInt()
    @Min(0)
-   incomeTotal: number;
+   incomeTotal!: number;
 
    @Type(() => Number)
    @IsInt()
    @Min(0)
-   mileageKm: number;
+   mileageKm!: number;
 
    @Type(() => Number)
    @IsNumber()
    @Min(0)
-   engineHours: number;
+   engineHours!: number;
 
    @Type(() => Number)
    @IsInt()
    @Min(0)
-   tripsCount: number;
+   tripsCount!: number;
 
    @IsOptional()
    @IsArray()

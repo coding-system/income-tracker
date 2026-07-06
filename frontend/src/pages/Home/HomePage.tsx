@@ -1,23 +1,10 @@
-import { Link } from "react-router-dom";
+import { QuickShiftEntry } from "../../components/QuickShiftEntry";
 import styles from "./HomePage.module.scss";
 
 export function HomePage() {
    return (
       <main className={styles.home}>
-         <section className={styles.home__hero}>
-            <div className={styles.home__heroContent}>
-               <p className={styles.home__eyebrow}>Деньги под контролем</p>
-               <h1 className={styles.home__title}>
-                  Приведите доходы в порядок и держите цель в фокусе
-               </h1>
-               <div className={styles.home__actions}>
-                  <Link className={styles.home__primaryAction} to="/shift/new">
-                     Начать учет
-                  </Link>
-               </div>
-            </div>
-         
-         </section>
+         <QuickShiftEntry />
       </main>
    );
 }
