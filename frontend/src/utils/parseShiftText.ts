@@ -50,7 +50,14 @@ const HUNDREDS: Record<string, number> = {
    девятьсот: 900,
 };
 
-const THOUSAND_WORDS = new Set(["тысяча", "тысячи", "тысяч"]);
+const THOUSAND_WORDS = new Set([
+   "тысяча",
+   "тысячи",
+   "тысяч",
+   "тыща",
+   "тыщи",
+   "тыщ",
+]);
 
 const KM_UNIT = /^(км|километр[а-я]*)$/;
 const TRIP_UNIT = /^(поездк[а-я]*|поездок|заказ[а-я]*|рейс[а-я]*)$/;
@@ -114,11 +121,6 @@ const parseNumberSequence = (
    tokens: string[],
    start: number,
 ): NumberMatch | null => {
-   const digitToken = tokens[start];
-   if (/^\d+([.,]\d+)?$/.test(digitToken)) {
-      return { value: Number(digitToken.replace(",", ".")), endIndex: start + 1 };
-   }
-
    let index = start;
    let total = 0;
    let group = 0;
@@ -147,6 +149,12 @@ const parseNumberSequence = (
       }
       if (token in ONES) {
          group += ONES[token];
+         consumed = true;
+         index += 1;
+         continue;
+      }
+      if (group === 0 && /^\d+([.,]\d+)?$/.test(token)) {
+         group += Number(token.replace(",", "."));
          consumed = true;
          index += 1;
          continue;
@@ -184,8 +192,12 @@ export function parseShiftText(rawText: string): ParsedShiftFields {
    const normalized = rawText
       .toLowerCase()
       .replace(/ё/g, "е")
+      .replace(/(\d{1,2}):(\d{2})/g, "$1 час $2 минут")
       .replace(/(\d)[.,](?=\d)/g, "$1@@decimal@@")
       .replace(/(\d)([а-я])/gi, "$1 $2")
+      .replace(/(\d{1,3})((?:\s\d{3})+)(?!\d)/g, (_match, first, rest) =>
+         first + String(rest).replace(/\s/g, ""),
+      )
       .replace(/[,.;:]+/g, " @@break@@ ")
       .replace(/@@decimal@@/g, ".")
       .replace(/\s+/g, " ")
