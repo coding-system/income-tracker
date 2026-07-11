@@ -76,6 +76,145 @@ const SNACK_KEYWORD =
 const OTHER_KEYWORD =
    /^(потрат[а-я]*|расход[а-я]*|прочее|другое|штраф[а-я]*|парковк[а-я]*|стоянк[а-я]*)$/;
 
+const ORDINAL_ONES: Record<string, number> = {
+   первое: 1,
+   второе: 2,
+   третье: 3,
+   четвертое: 4,
+   пятое: 5,
+   шестое: 6,
+   седьмое: 7,
+   восьмое: 8,
+   девятое: 9,
+};
+
+const ORDINAL_TEENS: Record<string, number> = {
+   десятое: 10,
+   одиннадцатое: 11,
+   двенадцатое: 12,
+   тринадцатое: 13,
+   четырнадцатое: 14,
+   пятнадцатое: 15,
+   шестнадцатое: 16,
+   семнадцатое: 17,
+   восемнадцатое: 18,
+   девятнадцатое: 19,
+};
+
+const ORDINAL_TENS_EXACT: Record<string, number> = {
+   двадцатое: 20,
+   тридцатое: 30,
+};
+
+const MONTH_MAP: Record<string, number> = {
+   январь: 1,
+   января: 1,
+   февраль: 2,
+   февраля: 2,
+   март: 3,
+   марта: 3,
+   апрель: 4,
+   апреля: 4,
+   май: 5,
+   мая: 5,
+   июнь: 6,
+   июня: 6,
+   июль: 7,
+   июля: 7,
+   август: 8,
+   августа: 8,
+   сентябрь: 9,
+   сентября: 9,
+   октябрь: 10,
+   октября: 10,
+   ноябрь: 11,
+   ноября: 11,
+   декабрь: 12,
+   декабря: 12,
+};
+
+type DayMatch = {
+   day: number;
+   endIndex: number;
+};
+
+const parseDayOrdinal = (tokens: string[], index: number): DayMatch | null => {
+   const token = tokens[index];
+
+   if (token in ORDINAL_TEENS) {
+      return { day: ORDINAL_TEENS[token], endIndex: index + 1 };
+   }
+   if (token in ORDINAL_TENS_EXACT) {
+      return { day: ORDINAL_TENS_EXACT[token], endIndex: index + 1 };
+   }
+   if (token in ORDINAL_ONES) {
+      return { day: ORDINAL_ONES[token], endIndex: index + 1 };
+   }
+   if ((token === "двадцать" || token === "тридцать") && tokens[index + 1]) {
+      const nextToken = tokens[index + 1];
+      if (nextToken in ORDINAL_ONES) {
+         return {
+            day: TENS[token] + ORDINAL_ONES[nextToken],
+            endIndex: index + 2,
+         };
+      }
+   }
+   if (/^\d{1,2}$/.test(token)) {
+      const value = Number(token);
+      if (value >= 1 && value <= 31) {
+         return { day: value, endIndex: index + 1 };
+      }
+   }
+
+   return null;
+};
+
+const toIsoDate = (value: Date) => {
+   const year = value.getFullYear();
+   const month = String(value.getMonth() + 1).padStart(2, "0");
+   const day = String(value.getDate()).padStart(2, "0");
+   return `${year}-${month}-${day}`;
+};
+
+const extractDate = (
+   tokens: string[],
+): { date: string; consumedEnd: number; consumedStart: number } | null => {
+   for (let index = 0; index < tokens.length; index += 1) {
+      const dayMatch = parseDayOrdinal(tokens, index);
+      if (!dayMatch) {
+         continue;
+      }
+
+      const monthToken = tokens[dayMatch.endIndex];
+      if (!monthToken || !(monthToken in MONTH_MAP)) {
+         continue;
+      }
+
+      const month = MONTH_MAP[monthToken];
+      let consumedEnd = dayMatch.endIndex + 1;
+      let year = new Date().getFullYear();
+
+      const yearToken = tokens[consumedEnd];
+      if (yearToken && /^\d{4}$/.test(yearToken)) {
+         year = Number(yearToken);
+         consumedEnd += 1;
+      }
+
+      const candidate = new Date(year, month - 1, dayMatch.day);
+      if (candidate.getMonth() !== month - 1) {
+         continue;
+      }
+
+      return {
+         date: toIsoDate(candidate),
+         consumedStart: index,
+         consumedEnd,
+      };
+   }
+
+   return null;
+};
+
 const EXPENSE_CONTEXT_WINDOW = 4;
 
 type ExpenseCategory = "fuel" | "wash" | "snack" | "other";
@@ -178,6 +317,7 @@ const parseNumberSequence = (
 };
 
 export type ParsedShiftFields = {
+   date?: string;
    incomeTotal?: number;
    mileageKm?: number;
    tripsCount?: number;
@@ -209,6 +349,17 @@ export function parseShiftText(rawText: string): ParsedShiftFields {
 
    const tokens = normalized.split(" ");
    const result: ParsedShiftFields = {};
+
+   const dateMatch = extractDate(tokens);
+   if (dateMatch) {
+      result.date = dateMatch.date;
+      tokens.splice(
+         dateMatch.consumedStart,
+         dateMatch.consumedEnd - dateMatch.consumedStart,
+         "@@break@@",
+      );
+   }
+
    let hoursPart: number | undefined;
    let minutesPart: number | undefined;
    const fuelings: number[] = [];

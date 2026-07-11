@@ -80,13 +80,19 @@ export function QuickShiftEntry() {
          return;
       }
 
+      const shiftDate = parsed.date ?? todayIso;
+      if (shiftDate > todayIso) {
+         setStatus({ type: "error", text: "Дата не может быть в будущем" });
+         return;
+      }
+
       setIsLoading(true);
       try {
          const response = await fetchWithAuth("/shifts", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-               date: todayIso,
+               date: shiftDate,
                incomeTotal: parsed.incomeTotal,
                mileageKm: parsed.mileageKm,
                engineHours: parsed.engineHours,
@@ -119,7 +125,7 @@ export function QuickShiftEntry() {
             ? ((await profileResponse.json()) as ProfileSettings)
             : {};
 
-         setModalState(buildWeeklyPlanModalState(shifts, profile, todayIso));
+         setModalState(buildWeeklyPlanModalState(shifts, profile, shiftDate));
          setText("");
       } catch (error) {
          const message =
