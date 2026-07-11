@@ -14,6 +14,39 @@
    color: var(--color-text-secondary);
 }
 
+.quickEntry__detailsFab {
+   position: fixed;
+   top: calc(var(--header-height) + 0.8em);
+   right: 1.2em;
+   z-index: 5;
+   display: inline-flex;
+   align-items: center;
+   gap: 0.4em;
+   border: none;
+   border-radius: 2em;
+   padding: 0.6em 1.1em;
+   font-size: 0.9em;
+   font-weight: 600;
+   background: var(--color-accent);
+   color: var(--color-text-special);
+   cursor: pointer;
+   box-shadow: 0 0.6em 1.4em rgba(0, 0, 0, 0.18);
+   transition: transform 0.2s ease;
+}
+
+.quickEntry__detailsFab .material-symbols-outlined {
+   font-size: 1.2em;
+}
+
+.quickEntry__detailsFab:hover:not(:disabled) {
+   transform: translateY(-0.1em);
+}
+
+.quickEntry__detailsFab:disabled {
+   opacity: 0.6;
+   cursor: default;
+}
+
 .quickEntry__textarea {
    font: inherit;
    width: 100%;

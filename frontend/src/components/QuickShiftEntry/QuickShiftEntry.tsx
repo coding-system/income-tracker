@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { fetchWithAuth } from "../../api/authClient";
 import { parseShiftText } from "../../utils/parseShiftText";
+import {
+   clearOpenShiftDraft,
+   createOpenShiftDraft,
+   loadOpenShiftDraft,
+   mergeParsedIntoDraft,
+   saveOpenShiftDraft,
+   type OpenShiftDraft,
+} from "../../utils/openShiftDraft";
 import { ShiftResultModal } from "../ShiftResultModal/ShiftResultModal";
 import {
    buildWeeklyPlanModalState,
@@ -8,6 +16,7 @@ import {
    type ShiftData,
    type WeeklyPlanModalState,
 } from "../ShiftResultModal/shiftResultModalState";
+import { OpenShiftModal } from "./OpenShiftModal";
 import styles from "./QuickShiftEntry.module.scss";
 
 const toIsoDate = (value: Date) => {
@@ -25,12 +34,16 @@ const formatDateRu = (value: Date) =>
    }).format(value);
 
 export function QuickShiftEntry() {
+   const [draft, setDraft] = useState<OpenShiftDraft | null>(() =>
+      loadOpenShiftDraft(),
+   );
    const [text, setText] = useState("");
    const [status, setStatus] = useState<{
       type: "error" | "success";
       text: string;
    } | null>(null);
    const [isLoading, setIsLoading] = useState(false);
+   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
    const [modalState, setModalState] = useState<WeeklyPlanModalState | null>(
       null,
    );
@@ -38,32 +51,27 @@ export function QuickShiftEntry() {
    const today = new Date();
    const todayIso = toIsoDate(today);
 
-   const handleSubmit = async () => {
+   const handleOpenShift = () => {
+      const newDraft = createOpenShiftDraft(todayIso);
+      saveOpenShiftDraft(newDraft);
+      setDraft(newDraft);
+      setStatus(null);
+   };
+
+   const closeDraft = async (draftToClose: OpenShiftDraft) => {
       setStatus(null);
 
-      if (!text.trim()) {
-         setStatus({ type: "error", text: "Опишите смену текстом" });
-         return;
-      }
-
-      const accessToken = localStorage.getItem("accessToken");
-      if (!accessToken) {
-         setStatus({ type: "error", text: "Сначала войдите в аккаунт" });
-         return;
-      }
-
-      const parsed = parseShiftText(text);
       const missing: string[] = [];
-      if (!parsed.incomeTotal || parsed.incomeTotal <= 0) {
+      if (!draftToClose.incomeTotal || draftToClose.incomeTotal <= 0) {
          missing.push("заработок (например, «4800 рублей»)");
       }
-      if (!parsed.mileageKm || parsed.mileageKm <= 0) {
+      if (!draftToClose.mileageKm || draftToClose.mileageKm <= 0) {
          missing.push("пробег (например, «120 километров»)");
       }
-      if (!parsed.tripsCount || parsed.tripsCount <= 0) {
+      if (!draftToClose.tripsCount || draftToClose.tripsCount <= 0) {
          missing.push("количество поездок (например, «15 поездок»)");
       }
-      if (!parsed.engineHours || parsed.engineHours <= 0) {
+      if (!draftToClose.engineHours || draftToClose.engineHours <= 0) {
          missing.push("время в работе (например, «5 часов 12 минут»)");
       }
 
@@ -75,14 +83,8 @@ export function QuickShiftEntry() {
          return;
       }
 
-      if (parsed.engineHours && parsed.engineHours > 24) {
+      if (draftToClose.engineHours && draftToClose.engineHours > 24) {
          setStatus({ type: "error", text: "Время в работе больше 24 часов" });
-         return;
-      }
-
-      const shiftDate = parsed.date ?? todayIso;
-      if (shiftDate > todayIso) {
-         setStatus({ type: "error", text: "Дата не может быть в будущем" });
          return;
       }
 
@@ -92,15 +94,15 @@ export function QuickShiftEntry() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-               date: shiftDate,
-               incomeTotal: parsed.incomeTotal,
-               mileageKm: parsed.mileageKm,
-               engineHours: parsed.engineHours,
-               tripsCount: parsed.tripsCount,
-               fuelings: parsed.fuelings,
-               washes: parsed.washes,
-               snacks: parsed.snacks,
-               others: parsed.others,
+               date: draftToClose.date,
+               incomeTotal: draftToClose.incomeTotal,
+               mileageKm: draftToClose.mileageKm,
+               engineHours: draftToClose.engineHours,
+               tripsCount: draftToClose.tripsCount,
+               fuelings: draftToClose.fuelings,
+               washes: draftToClose.washes,
+               snacks: draftToClose.snacks,
+               others: draftToClose.others,
             }),
          });
 
@@ -125,8 +127,13 @@ export function QuickShiftEntry() {
             ? ((await profileResponse.json()) as ProfileSettings)
             : {};
 
-         setModalState(buildWeeklyPlanModalState(shifts, profile, shiftDate));
+         clearOpenShiftDraft();
+         setDraft(null);
          setText("");
+         setIsDetailsOpen(false);
+         setModalState(
+            buildWeeklyPlanModalState(shifts, profile, draftToClose.date),
+         );
       } catch (error) {
          const message =
             error instanceof Error ? error.message : "Ошибка сохранения";
@@ -136,16 +143,111 @@ export function QuickShiftEntry() {
       }
    };
 
+   const handleAddText = async () => {
+      setStatus(null);
+
+      if (!draft) {
+         return;
+      }
+
+      if (!text.trim()) {
+         setStatus({ type: "error", text: "Введите текст" });
+         return;
+      }
+
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+         setStatus({ type: "error", text: "Сначала войдите в аккаунт" });
+         return;
+      }
+
+      const parsed = parseShiftText(text);
+      const hasAnyData =
+         parsed.incomeTotal !== undefined ||
+         parsed.mileageKm !== undefined ||
+         parsed.tripsCount !== undefined ||
+         parsed.engineHours !== undefined ||
+         (parsed.fuelings && parsed.fuelings.length > 0) ||
+         (parsed.washes && parsed.washes.length > 0) ||
+         (parsed.snacks && parsed.snacks.length > 0) ||
+         (parsed.others && parsed.others.length > 0) ||
+         parsed.closeShift;
+
+      if (!hasAnyData) {
+         setStatus({
+            type: "error",
+            text: "Не удалось ничего распознать в тексте",
+         });
+         return;
+      }
+
+      const merged = mergeParsedIntoDraft(draft, parsed);
+      saveOpenShiftDraft(merged);
+      setDraft(merged);
+      setText("");
+
+      if (parsed.closeShift) {
+         await closeDraft(merged);
+         return;
+      }
+
+      setStatus({ type: "success", text: "Добавлено в смену" });
+   };
+
+   const handleDiscardDraft = () => {
+      if (!window.confirm("Удалить черновик смены без сохранения?")) {
+         return;
+      }
+
+      clearOpenShiftDraft();
+      setDraft(null);
+      setIsDetailsOpen(false);
+      setStatus(null);
+      setText("");
+   };
+
+   if (!draft) {
+      return (
+         <section className={styles.quickEntry}>
+            <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
+            <button
+               className={styles.quickEntry__submit}
+               type="button"
+               onClick={handleOpenShift}
+            >
+               Открыть смену
+            </button>
+
+            {modalState ? (
+               <ShiftResultModal
+                  state={modalState}
+                  onClose={() => setModalState(null)}
+               />
+            ) : null}
+         </section>
+      );
+   }
+
    return (
       <section className={styles.quickEntry}>
+         <button
+            className={styles.quickEntry__detailsFab}
+            type="button"
+            onClick={() => setIsDetailsOpen(true)}
+            disabled={isLoading}
+         >
+            <span className="material-symbols-outlined">assignment</span>
+            Детали смены
+         </button>
+
          <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
 
          <textarea
             className={styles.quickEntry__textarea}
-            placeholder="Например: заработал 4800 рублей, сто двадцать километров, пятнадцать поездок, пять часов двенадцать минут, заправился на 1500, поел на 150"
+            placeholder="Добавьте ещё: «поел на 150», «заправка 2000», или продиктуйте остаток и «закрыть смену»"
             value={text}
             onChange={(event) => setText(event.target.value)}
-            rows={4}
+            rows={3}
          />
 
          <div className={styles.quickEntry__footer}>
@@ -153,11 +255,11 @@ export function QuickShiftEntry() {
                className={styles.quickEntry__submit}
                type="button"
                onClick={() => {
-                  void handleSubmit();
+                  void handleAddText();
                }}
                disabled={isLoading}
             >
-               {isLoading ? "Сохранение..." : "Отправить"}
+               {isLoading ? "Сохранение..." : "Добавить"}
             </button>
 
             {status ? (
@@ -172,6 +274,19 @@ export function QuickShiftEntry() {
                </span>
             ) : null}
          </div>
+
+         {isDetailsOpen ? (
+            <OpenShiftModal
+               draft={draft}
+               isLoading={isLoading}
+               status={status}
+               onClose={() => setIsDetailsOpen(false)}
+               onCloseShift={() => {
+                  void closeDraft(draft);
+               }}
+               onDiscard={handleDiscardDraft}
+            />
+         ) : null}
 
          {modalState ? (
             <ShiftResultModal

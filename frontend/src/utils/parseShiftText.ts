@@ -215,6 +215,32 @@ const extractDate = (
    return null;
 };
 
+const CLOSE_VERB =
+   /^(закрыть|закрой|закрываю|закрыл[а-я]*|завершить|завершил[а-я]*|закончить|закончил[а-я]*)$/;
+const SHIFT_NOUN = /^(смену|смена|смены)$/;
+
+type CloseMatch = {
+   consumedStart: number;
+   consumedEnd: number;
+};
+
+const extractCloseIntent = (tokens: string[]): CloseMatch | null => {
+   for (let index = 0; index < tokens.length; index += 1) {
+      if (!CLOSE_VERB.test(tokens[index])) {
+         continue;
+      }
+
+      let consumedEnd = index + 1;
+      if (tokens[consumedEnd] && SHIFT_NOUN.test(tokens[consumedEnd])) {
+         consumedEnd += 1;
+      }
+
+      return { consumedStart: index, consumedEnd };
+   }
+
+   return null;
+};
+
 const EXPENSE_CONTEXT_WINDOW = 4;
 
 type ExpenseCategory = "fuel" | "wash" | "snack" | "other";
@@ -318,6 +344,7 @@ const parseNumberSequence = (
 
 export type ParsedShiftFields = {
    date?: string;
+   closeShift?: boolean;
    incomeTotal?: number;
    mileageKm?: number;
    tripsCount?: number;
@@ -356,6 +383,16 @@ export function parseShiftText(rawText: string): ParsedShiftFields {
       tokens.splice(
          dateMatch.consumedStart,
          dateMatch.consumedEnd - dateMatch.consumedStart,
+         "@@break@@",
+      );
+   }
+
+   const closeMatch = extractCloseIntent(tokens);
+   if (closeMatch) {
+      result.closeShift = true;
+      tokens.splice(
+         closeMatch.consumedStart,
+         closeMatch.consumedEnd - closeMatch.consumedStart,
          "@@break@@",
       );
    }
