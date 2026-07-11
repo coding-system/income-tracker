@@ -16,7 +16,7 @@ import {
    type ShiftData,
    type WeeklyPlanModalState,
 } from "../ShiftResultModal/shiftResultModalState";
-import { OpenShiftModal } from "./OpenShiftModal";
+import { OpenShiftDetails } from "./OpenShiftDetails";
 import styles from "./QuickShiftEntry.module.scss";
 
 const toIsoDate = (value: Date) => {
@@ -230,17 +230,33 @@ export function QuickShiftEntry() {
 
    return (
       <section className={styles.quickEntry}>
+         <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
+
          <button
-            className={styles.quickEntry__detailsFab}
+            className={styles.quickEntry__detailsToggle}
             type="button"
-            onClick={() => setIsDetailsOpen(true)}
+            onClick={() => setIsDetailsOpen((prev) => !prev)}
             disabled={isLoading}
          >
             <span className="material-symbols-outlined">assignment</span>
-            Детали смены
+            {isDetailsOpen ? "Скрыть детали" : "Детали смены"}
          </button>
 
-         <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
+         <div
+            className={`${styles.quickEntry__detailsWrap} ${
+               isDetailsOpen ? styles["quickEntry__detailsWrap--open"] : ""
+            }`}
+         >
+            <OpenShiftDetails
+               draft={draft}
+               isLoading={isLoading}
+               status={status}
+               onCloseShift={() => {
+                  void closeDraft(draft);
+               }}
+               onDiscard={handleDiscardDraft}
+            />
+         </div>
 
          <textarea
             className={styles.quickEntry__textarea}
@@ -262,7 +278,7 @@ export function QuickShiftEntry() {
                {isLoading ? "Сохранение..." : "Добавить"}
             </button>
 
-            {status ? (
+            {status && !isDetailsOpen ? (
                <span
                   className={`${styles.quickEntry__status} ${
                      status.type === "error"
@@ -274,19 +290,6 @@ export function QuickShiftEntry() {
                </span>
             ) : null}
          </div>
-
-         {isDetailsOpen ? (
-            <OpenShiftModal
-               draft={draft}
-               isLoading={isLoading}
-               status={status}
-               onClose={() => setIsDetailsOpen(false)}
-               onCloseShift={() => {
-                  void closeDraft(draft);
-               }}
-               onDiscard={handleDiscardDraft}
-            />
-         ) : null}
 
          {modalState ? (
             <ShiftResultModal

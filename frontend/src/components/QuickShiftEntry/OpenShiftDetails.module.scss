@@ -1,0 +1,121 @@
+.details {
+   width: 100%;
+   display: flex;
+   flex-direction: column;
+   gap: 1em;
+   padding: 1.2em;
+   border-radius: 1.2em;
+   border: 0.08em solid var(--color-border);
+   background: var(--color-surface-secondary);
+}
+
+.details__chips {
+   display: flex;
+   flex-wrap: wrap;
+   gap: 0.6em;
+}
+
+.details__chip {
+   padding: 0.5em 1.1em;
+   border-radius: 1.6em;
+   font-size: 0.95em;
+   font-weight: 600;
+   background: var(--color-surface);
+   color: var(--color-text-secondary);
+   border: 0.08em solid var(--color-border);
+}
+
+.details__chip--income {
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   border-color: transparent;
+}
+
+.details__chip--mileage {
+   background: var(--color-error);
+   color: var(--color-text-special);
+   border-color: transparent;
+}
+
+.details__chip--hours {
+   background: var(--color-success);
+   color: var(--color-text-special);
+   border-color: transparent;
+}
+
+.details__chip--fuel {
+   background: var(--color-accent);
+   color: var(--color-text-special);
+   border-color: transparent;
+}
+
+.details__chip--snack {
+   background: var(--color-warning);
+   color: var(--palette-neutral-900);
+   border-color: transparent;
+}
+
+.details__status {
+   margin: 0;
+   font-size: 0.95em;
+}
+
+.details__status--error {
+   color: var(--color-error);
+}
+
+.details__status--success {
+   color: var(--color-primary);
+}
+
+.details__actions {
+   display: flex;
+   flex-direction: column;
+   gap: 0.6em;
+}
+
+.details__primary {
+   width: 100%;
+   border: none;
+   background: var(--color-primary);
+   color: var(--color-text-special);
+   padding: 1em 1.3em;
+   border-radius: 1.3em;
+   cursor: pointer;
+   font-weight: 700;
+   font-size: 1.05em;
+   box-shadow: 0 0.5em 1.2em rgba(var(--color-primary-rgb), 0.35);
+   transition: transform 0.2s ease;
+}
+
+.details__primary:hover:not(:disabled) {
+   transform: translateY(-0.05em);
+}
+
+.details__primary:disabled {
+   opacity: 0.6;
+   cursor: default;
+   box-shadow: none;
+}
+
+.details__danger {
+   width: 100%;
+   border: 0.08em solid var(--color-error);
+   background: transparent;
+   color: var(--color-error);
+   padding: 0.6em 1.3em;
+   border-radius: 1.3em;
+   cursor: pointer;
+   font-weight: 600;
+   font-size: 0.9em;
+   opacity: 0.85;
+}
+
+.details__danger:hover:not(:disabled) {
+   opacity: 1;
+}
+
+.details__danger:disabled {
+   opacity: 0.5;
+   cursor: default;
+}
