@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { fetchWithAuth } from "../../api/authClient";
 import { parseShiftText } from "../../utils/parseShiftText";
 import {
@@ -33,6 +33,11 @@ const formatDateRu = (value: Date) =>
       weekday: "long",
    }).format(value);
 
+const formatDateRuFromIso = (isoDate: string) => {
+   const [year, month, day] = isoDate.split("-").map(Number);
+   return formatDateRu(new Date(year, month - 1, day));
+};
+
 export function QuickShiftEntry() {
    const [draft, setDraft] = useState<OpenShiftDraft | null>(() =>
       loadOpenShiftDraft(),
@@ -47,15 +52,51 @@ export function QuickShiftEntry() {
    const [modalState, setModalState] = useState<WeeklyPlanModalState | null>(
       null,
    );
+   const dateInputRef = useRef<HTMLInputElement>(null);
 
    const today = new Date();
    const todayIso = toIsoDate(today);
+   const [openDate, setOpenDate] = useState(todayIso);
+
+   const openDatePicker = () => {
+      const input = dateInputRef.current;
+      if (!input) {
+         return;
+      }
+
+      if (typeof input.showPicker === "function") {
+         try {
+            input.showPicker();
+            return;
+         } catch {
+            // Some browsers refuse showPicker() outside certain contexts;
+            // fall back to focusing the (visually hidden) input below.
+         }
+      }
+
+      input.focus();
+   };
 
    const handleOpenShift = () => {
-      const newDraft = createOpenShiftDraft(todayIso);
+      const newDraft = createOpenShiftDraft(openDate);
       saveOpenShiftDraft(newDraft);
       setDraft(newDraft);
       setStatus(null);
+   };
+
+   const handleDateChange = (newDate: string) => {
+      if (!newDate) {
+         return;
+      }
+
+      if (!draft) {
+         setOpenDate(newDate);
+         return;
+      }
+
+      const updated = { ...draft, date: newDate };
+      saveOpenShiftDraft(updated);
+      setDraft(updated);
    };
 
    const closeDraft = async (draftToClose: OpenShiftDraft) => {
@@ -131,6 +172,7 @@ export function QuickShiftEntry() {
          setDraft(null);
          setText("");
          setIsDetailsOpen(false);
+         setOpenDate(todayIso);
          setModalState(
             buildWeeklyPlanModalState(shifts, profile, draftToClose.date),
          );
@@ -163,6 +205,7 @@ export function QuickShiftEntry() {
 
       const parsed = parseShiftText(text);
       const hasAnyData =
+         parsed.date !== undefined ||
          parsed.incomeTotal !== undefined ||
          parsed.mileageKm !== undefined ||
          parsed.tripsCount !== undefined ||
@@ -204,12 +247,31 @@ export function QuickShiftEntry() {
       setIsDetailsOpen(false);
       setStatus(null);
       setText("");
+      setOpenDate(todayIso);
    };
 
    if (!draft) {
       return (
          <section className={styles.quickEntry}>
-            <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
+            <div className={styles.quickEntry__dateField}>
+               <button
+                  className={styles.quickEntry__dateButton}
+                  type="button"
+                  onClick={openDatePicker}
+               >
+                  {formatDateRuFromIso(openDate)}
+               </button>
+               <input
+                  ref={dateInputRef}
+                  className={styles.quickEntry__dateInputHidden}
+                  type="date"
+                  value={openDate}
+                  max={todayIso}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  onChange={(event) => handleDateChange(event.target.value)}
+               />
+            </div>
             <button
                className={styles.quickEntry__submit}
                type="button"
@@ -230,7 +292,25 @@ export function QuickShiftEntry() {
 
    return (
       <section className={styles.quickEntry}>
-         <p className={styles.quickEntry__date}>{formatDateRu(today)}</p>
+         <div className={styles.quickEntry__dateField}>
+            <button
+               className={styles.quickEntry__dateButton}
+               type="button"
+               onClick={openDatePicker}
+            >
+               {formatDateRuFromIso(draft.date)}
+            </button>
+            <input
+               ref={dateInputRef}
+               className={styles.quickEntry__dateInputHidden}
+               type="date"
+               value={draft.date}
+               max={todayIso}
+               tabIndex={-1}
+               aria-hidden="true"
+               onChange={(event) => handleDateChange(event.target.value)}
+            />
+         </div>
 
          <button
             className={styles.quickEntry__detailsToggle}

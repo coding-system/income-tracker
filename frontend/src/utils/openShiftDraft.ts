@@ -60,6 +60,7 @@ export const mergeParsedIntoDraft = (
    parsed: ParsedShiftFields,
 ): OpenShiftDraft => ({
    ...draft,
+   date: parsed.date ?? draft.date,
    incomeTotal: parsed.incomeTotal ?? draft.incomeTotal,
    mileageKm: parsed.mileageKm ?? draft.mileageKm,
    tripsCount: parsed.tripsCount ?? draft.tripsCount,
