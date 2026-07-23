@@ -6,7 +6,7 @@
 }
 
 .page__panel {
-   width: 100%;
+   width: min(46em, 100%);
    padding: 0.8em 0.8em 2em;
    display: flex;
    flex-direction: column;

@@ -13,6 +13,12 @@
    height: 5.5em;
 }
 
+@media (min-width: 80em) {
+   .header {
+      display: none;
+   }
+}
+
 .header__brand {
    position: absolute;
    top: 50%;
@@ -20,13 +26,21 @@
    transform: translate(-50%, -50%);
    text-decoration: none;
    font-size: 1em;
+   display: inline-flex;
+   align-items: baseline;
+   gap: 0.25em;
 }
 
 .header__title {
-   font-size: 1.4em;
-   letter-spacing: 0.08em;
-   text-transform: uppercase;
+   font-family: "Beau Rivage", cursive;
+   font-size: 2em;
    color: var(--color-primary);
+}
+
+.header__titleSecondary {
+   font-family: "Beau Rivage", cursive;
+   font-size: 1.6em;
+   color: var(--color-text);
 }
 
 .header__actions {

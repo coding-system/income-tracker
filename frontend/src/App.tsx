@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppHeader } from "./components/AppHeader/AppHeader";
+import { SideNav } from "./components/SideNav/SideNav";
 import { useAuthStatus } from "./hooks/useAuthStatus";
 import styles from "./App.module.scss";
 import { HomePage } from "./pages/Home/HomePage";
@@ -21,6 +22,7 @@ function App() {
    return (
       <div className={styles.app}>
          <AppHeader />
+         <SideNav />
          <main className={styles.app__content}>
             <Routes>
                <Route path="/" element={<HomePage />} />
